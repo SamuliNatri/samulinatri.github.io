@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="How to use CKEditor with Django forms and add syntax highlighted code snippets.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+		<link rel="manifest" href="/images/favicon/site.webmanifest">
+		<link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+		
+    <title>Django - CKEditor Tutorial |  Samuli Natri. Software developer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+    
+    </script>
+    
+
+</head>
+<body>
+<div class="main ">
+
+    
+
+    
+
+    <div class="blog">
+
+        <div class="blog-dates">
+            <span itemprop="dateModified" 
+                content="Jun 18, 2020" 
+                class="blog-updated">Updated Jun 18, 2020
+            </span>
+            
+        </div>
+
+        <h1 class="blog-title">Django - CKEditor Tutorial</h1>
+        <div class="blog-description">How to use CKEditor with Django forms and add syntax highlighted code snippets.</div>
+
+        
+            
+        
+        
+        <div class="blog-content"><p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/00.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>CKEditor is a rich text WYSIWYG editor. This tutorial shows how to add a RichTextUploading field to a model that enables all basic CKEditor features plus allows users to upload images and insert code snippets.</p>
+<h2 id="quickstart">Quickstart</h2>
+<h3 id="mysite-settings-py">mysite/settings.py</h3>
+<p>Add these lines to the project settings file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#616e88;"># START
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;ckeditor&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;ckeditor_uploader&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># END
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>]
+</span><span>
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">CKEDITOR_UPLOAD_PATH = </span><span style="color:#a3be8c;">&#39;uploads/&#39;
+</span><span style="color:#81a1c1;">MEDIA_URL = </span><span style="color:#a3be8c;">&#39;/media/&#39; 
+</span><span style="color:#81a1c1;">MEDIA_ROOT = </span><span style="color:#a3be8c;">&#39;media/&#39;
+</span><span style="color:#616e88;"># END
+</span></code></pre>
+<h3 id="blog-models-py">blog/models.py</h3>
+<p>Add <code>RichTextUploadingField</code> to a model:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>ckeditor_uploader</span><span style="color:#81a1c1;">.</span><span>fields </span><span style="color:#81a1c1;">import </span><span>RichTextUploadingField
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    body </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">RichTextUploadingField</span><span>(blank</span><span style="color:#81a1c1;">=True</span><span>)
+</span></code></pre>
+<h3 id="mysite-urls-py">mysite/urls.py</h3>
+<p>Edit the project URL configuration file and include ckeditor URLs. Serve uploaded media files using the <code>static</code> function:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;ckeditor/&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(
+</span><span>        </span><span style="color:#a3be8c;">&#39;ckeditor_uploader.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>] </span><span style="color:#81a1c1;">+ </span><span style="color:#88c0d0;">static</span><span>(settings</span><span style="color:#81a1c1;">.MEDIA_URL</span><span style="color:#eceff4;">, </span><span>document_root</span><span style="color:#81a1c1;">=</span><span>settings</span><span style="color:#81a1c1;">.MEDIA_ROOT</span><span>)
+</span></code></pre>
+<h3 id="templates-blog-post-detail-html">templates/blog/post_detail.html</h3>
+<p>Use the <code>safe</code> filter in templates:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;p&gt;</span><span>{{ post.body|safe }}</span><span style="color:#81a1c1;">&lt;/p&gt;
+</span></code></pre>
+<h3 id="templates-blog-post-form-html">templates/blog/post_form.html</h3>
+<p>Use the <code>{{ form.media }}</code> tag with forms:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>    {{ form.media }} 
+</span><span>    {{ form.as_p }}
+</span><span>    </span><span style="color:#81a1c1;">&lt;input </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot; </span><span style="color:#8fbcbb;">value</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;Save&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
+</span></code></pre>
+<h2 id="full-tutorial">Full tutorial</h2>
+<h3 id="setup">Setup</h3>
+<p>Run these commands to setup a project:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite
+</span><span style="color:#88c0d0;">python3</span><span> -m venv venv
+</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate
+</span><span style="color:#88c0d0;">pip</span><span> install django django-ckeditor
+</span><span style="color:#88c0d0;">django-admin</span><span> startproject mysite .
+</span><span style="color:#88c0d0;">python</span><span> manage.py startapp blog
+</span></code></pre>
+<h3 id="mysite-settings-py-1">mysite/settings.py</h3>
+<p>Add these lines to the project <code>settings.py</code> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#616e88;"># START
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;ckeditor&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;ckeditor_uploader&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># END
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>]
+</span><span>
+</span><span style="color:#81a1c1;">CKEDITOR_UPLOAD_PATH = </span><span style="color:#a3be8c;">&#39;uploads/&#39;
+</span><span style="color:#81a1c1;">MEDIA_URL = </span><span style="color:#a3be8c;">&#39;/media/&#39; 
+</span><span style="color:#81a1c1;">MEDIA_ROOT = </span><span style="color:#a3be8c;">&#39;media/&#39;
+</span><span>
+</span><span style="color:#81a1c1;">TEMPLATES = </span><span>[
+</span><span>    {
+</span><span>        </span><span style="color:#616e88;"># ...
+</span><span>        </span><span style="color:#616e88;"># HERE
+</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>)]</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#616e88;"># ...
+</span><span>    }</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<ul>
+<li>Add <code>ckeditor</code> to the <code>INSTALLED_APPS</code> list.</li>
+<li>Add <code>ckeditor_uploader</code> to the <code>INSTALLED_APPS</code> list if you want to upload images.</li>
+<li>We enable the <code>blog</code> app by adding its configuration class to the <code>INSTALLED_APPS</code> list.</li>
+<li><code>CKEDITOR_UPLOAD_PATH</code> specifies the directory where the uploaded files are stored inside the <code>MEDIA_ROOT</code> directory (<code>media/uploads</code>).</li>
+<li>The <code>MEDIA_URL</code> specifies the URL that we use to serve the uploaded files to the client (<code>mysite.com/media/uploads/2020/06/11/04.jpg</code>).</li>
+<li><code>MEDIA_ROOT</code> is the physical directory where the files are stored. In this case the <code>media</code> directory in the project root.</li>
+<li><code>'DIRS': [os.path.join(BASE_DIR, 'templates')]</code> makes Django look for template files in the project root <code>templates</code> directory.</li>
+</ul>
+<h3 id="blog-models-py-1">blog/models.py</h3>
+<p>Add a class called <code>Post</code> to the <em>blog</em> app <code>models.py</code> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
+</span><span style="color:#81a1c1;">from </span><span>ckeditor_uploader</span><span style="color:#81a1c1;">.</span><span>fields </span><span style="color:#81a1c1;">import </span><span>RichTextUploadingField
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    body </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">RichTextUploadingField</span><span>(blank</span><span style="color:#81a1c1;">=True</span><span>)
+</span></code></pre>
+<ul>
+<li>The <code>RichTextUploadingField</code> field works like the standard <code>TextField</code> but also adds the CKEditor rich text capabilities to it. Use <code>RichTextField</code> if you don't need to upload files.</li>
+</ul>
+<p>Run migrations:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">python</span><span> manage.py migrate
+</span><span style="color:#88c0d0;">python</span><span> manage.py createsuperuser
+</span></code></pre>
+<p>This makes the necessary changes to the database and creates a superuser.</p>
+<h3 id="mysite-urls-py-1">mysite/urls.py</h3>
+<p>Edit the project <code>urls.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf</span><span style="color:#81a1c1;">.</span><span>urls</span><span style="color:#81a1c1;">.</span><span>static </span><span style="color:#81a1c1;">import </span><span>static
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf </span><span style="color:#81a1c1;">import </span><span>settings
+</span><span style="color:#616e88;"># END
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#616e88;"># START
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;ckeditor/&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(
+</span><span>        </span><span style="color:#a3be8c;">&#39;ckeditor_uploader.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># END
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>] </span><span style="color:#81a1c1;">+ </span><span style="color:#88c0d0;">static</span><span>(settings</span><span style="color:#81a1c1;">.MEDIA_URL</span><span style="color:#eceff4;">, 
+</span><span>           document_root</span><span style="color:#81a1c1;">=</span><span>settings</span><span style="color:#81a1c1;">.MEDIA_ROOT</span><span>)
+</span></code></pre>
+<ul>
+<li>Blog URLs are stored in the <em>blog</em> app <code>urls.py</code> file.</li>
+<li>Include the <code>ckeditor_uploader</code> URLs to add views that can upload and browse files. By default these views require the <em>Staff status</em> permission.</li>
+<li>The <code>static</code> function allows us to serve uploaded media files during development.</li>
+</ul>
+<h3 id="blog-urls-py">blog/urls.py</h3>
+<p>Create a file called <code>urls.py</code> in the <em>blog</em> app directory:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
+</span><span style="color:#81a1c1;">from .</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostDetailView
+</span><span>
+</span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog&#39;
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         PostDetailView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, 
+</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;detail&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<p>This routes <code>mysite.com/blog/&lt;id&gt;/</code> to the <code>PostDetailView</code>.</p>
+<h3 id="blog-views-py">blog/views.py</h3>
+<p>Edit the <em>blog</em> app <code>views.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>DetailView
+</span><span>
+</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDetailView</span><span>(</span><span style="color:#8fbcbb;">DetailView</span><span>):
+</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog/post_detail.html&#39;
+</span></code></pre>
+<p>With the <code>PostDetailView</code> class we display data about one post object using the <code>post_detail.html</code> template file.</p>
+<h3 id="templates-blog-post-detail-html-1">templates/blog/post_detail.html</h3>
+<p>Create a directory called <code>templates</code> in the project root. Add a directory called <code>blog</code> in it. Add a file called <code>post_detail.html</code> inside the <code>blog</code> subdirectory.</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;p&gt;</span><span>{{ post.body|safe }}</span><span style="color:#81a1c1;">&lt;/p&gt;
+</span></code></pre>
+<ul>
+<li>The <code>safe</code> filter allows us to render the necessary HTML tags that Django escapes by default. Otherwise <code>&lt;strong&gt;Hello&lt;/strong&gt;</code> actually looks like <code>&lt;strong&gt;Hello&lt;/strong&gt;</code> on the page, not &quot;<strong>Hello</strong>&quot;.</li>
+</ul>
+<h3 id="add-post">Add Post</h3>
+<p>Add these lines to the <em>blog</em> app <code>admin.py</code> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span>
+</span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">register</span><span>(Post)
+</span></code></pre>
+<p>This allows us to manage <code>Post</code> objects in the admin. </p>
+<p>Visit admin and add a blog post with an image:</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/01.png" alt="" /></p>
+<ul>
+<li>Click the <em>Upload</em> tab.</li>
+<li>Choose a file.</li>
+<li>Cick the <em>Send it to the server</em> button.</li>
+</ul>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/02.png" alt="" /></p>
+<p>The interface allows you to change some image <em>properties</em>. The <em>width</em> and <em>height</em> settings just sets the element <em>inline</em> style: <code>style=&quot;height:225px; width:300px&quot;</code>. Keep this in mind if you upload large images:</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/03.png" alt="" /></p>
+<p>Visit the blog detail page in <code>mysite.com/blog/1/</code> and you should see the formatted output:</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/05.png" alt="" /></p>
+<h3 id="custom-forms">Custom Forms</h3>
+<p>CKEditor also works outside the admin. Add the following path to the <em>blog</em> app <code>urls.py</code> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
+</span><span style="color:#616e88;"># HERE
+</span><span style="color:#81a1c1;">from .</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostCreateView</span><span style="color:#eceff4;">, </span><span>PostDetailView
+</span><span>
+</span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog&#39;
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         PostDetailView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, 
+</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;detail&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;create/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         PostCreateView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, 
+</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;create&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<p>Edit the <em>blog</em> app <code>views.py</code> file and a class called <code>PostCreateView</code> to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>DetailView
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic</span><span style="color:#81a1c1;">.</span><span>edit </span><span style="color:#81a1c1;">import </span><span>CreateView
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>reverse
+</span><span style="color:#616e88;"># END
+</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDetailView</span><span>(</span><span style="color:#8fbcbb;">DetailView</span><span>):
+</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog/post_detail.html&#39;
+</span><span>    
+</span><span style="color:#616e88;"># HERE
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostCreateView</span><span>(</span><span style="color:#8fbcbb;">CreateView</span><span>):
+</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>    fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;body&#39;</span><span>]
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">get_success_url</span><span>(self):
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">, 
+</span><span>                       args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>object</span><span style="color:#81a1c1;">.</span><span>pk])
+</span></code></pre>
+<p>Create a file called <code>post_form.html</code> in the <code>templates/blog/</code> directory:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>    {{ form.media }} 
+</span><span>    {{ form.as_p }}
+</span><span>    </span><span style="color:#81a1c1;">&lt;input </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot; </span><span style="color:#8fbcbb;">value</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;Save&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
+</span></code></pre>
+<ul>
+<li>Use the <code>{{ form.media }}</code> tag to include required media assets.</li>
+</ul>
+<p>Visit <code>mysite.com/blog/create/</code> to create an item. Make sure you are logged-in.</p>
+<h3 id="toolbar-customization">Toolbar Customization</h3>
+<p>You can customize the toolbar by configuring the <code>CKEDITOR_CONFIGS</code> setting. Put this in the project <code>settings.py</code> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">CKEDITOR_CONFIGS = </span><span>{
+</span><span>    </span><span style="color:#a3be8c;">&#39;default&#39;</span><span style="color:#eceff4;">:
+</span><span>        {</span><span style="color:#a3be8c;">&#39;toolbar&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;Custom&#39;</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="color:#a3be8c;">&#39;toolbar_Custom&#39;</span><span style="color:#eceff4;">: </span><span>[
+</span><span>            [</span><span style="color:#a3be8c;">&#39;Bold&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Link&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Unlink&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Image&#39;</span><span>]</span><span style="color:#eceff4;">, 
+</span><span>        ]</span><span style="color:#eceff4;">, 
+</span><span>}}
+</span></code></pre>
+<p>Now the toolbar has only these options:</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/06.png" alt="" /></p>
+<p>You can define multiple configurations like this:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">CKEDITOR_CONFIGS = </span><span>{
+</span><span>    </span><span style="color:#a3be8c;">&#39;default&#39;</span><span style="color:#eceff4;">:
+</span><span>        {</span><span style="color:#a3be8c;">&#39;toolbar&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;Custom&#39;</span><span style="color:#eceff4;">,
+</span><span>         </span><span style="color:#a3be8c;">&#39;toolbar_Custom&#39;</span><span style="color:#eceff4;">: </span><span>[
+</span><span>             [</span><span style="color:#a3be8c;">&#39;Bold&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Link&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Unlink&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Image&#39;</span><span>]</span><span style="color:#eceff4;">,
+</span><span>         ]</span><span style="color:#eceff4;">,
+</span><span>         }</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;special&#39;</span><span style="color:#eceff4;">: 
+</span><span>        {</span><span style="color:#a3be8c;">&#39;toolbar&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;Special&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;height&#39;</span><span style="color:#eceff4;">: </span><span style="color:#b48ead;">500</span><span style="color:#eceff4;">,
+</span><span>         </span><span style="color:#a3be8c;">&#39;toolbar_Special&#39;</span><span style="color:#eceff4;">: 
+</span><span>             [
+</span><span>                 [</span><span style="color:#a3be8c;">&#39;Bold&#39;</span><span>]</span><span style="color:#eceff4;">, 
+</span><span>             ]</span><span style="color:#eceff4;">, 
+</span><span>         }
+</span><span>}
+</span></code></pre>
+<p>The <code>special</code> editor can only make texts <strong>bold</strong> and its default height is <code>500</code> px. You can find the default <em>Full toolbar</em> configuration in the CKEditor package <code>widgets.py</code> file:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>site-packages/ckeditor/widgets.py
+</span></code></pre>
+<p>Edit the <em>blog</em> app <code>models.py</code> file and specify the configuration using the <code>config_name</code> argument:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    body </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">RichTextUploadingField</span><span>(blank</span><span style="color:#81a1c1;">=True</span><span style="color:#eceff4;">, 
+</span><span>                                  config_name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;special&#39;</span><span>)
+</span></code></pre>
+<h3 id="codesnippet-plugin">CodeSnippet Plugin</h3>
+<p>The <code>ckeditor-package</code> includes bunch of plugins that you might want to use. One of them is the <code>codesnippet</code> plugin. This allows us to add code snippets. Enable it like this:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">CKEDITOR_CONFIGS = </span><span>{
+</span><span>    </span><span style="color:#a3be8c;">&#39;default&#39;</span><span style="color:#eceff4;">:
+</span><span>        {</span><span style="color:#a3be8c;">&#39;toolbar&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;Custom&#39;</span><span style="color:#eceff4;">,
+</span><span>         </span><span style="color:#a3be8c;">&#39;toolbar_Custom&#39;</span><span style="color:#eceff4;">: </span><span>[
+</span><span>             [</span><span style="color:#a3be8c;">&#39;Bold&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Link&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Unlink&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Image&#39;</span><span>]</span><span style="color:#eceff4;">,
+</span><span>         ]</span><span style="color:#eceff4;">,
+</span><span>         }</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;special&#39;</span><span style="color:#eceff4;">: 
+</span><span>        {</span><span style="color:#a3be8c;">&#39;toolbar&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;Special&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;height&#39;</span><span style="color:#eceff4;">: </span><span style="color:#b48ead;">500</span><span style="color:#eceff4;">,
+</span><span>         </span><span style="color:#a3be8c;">&#39;toolbar_Special&#39;</span><span style="color:#eceff4;">: 
+</span><span>             [
+</span><span>                 [</span><span style="color:#a3be8c;">&#39;Bold&#39;</span><span>]</span><span style="color:#eceff4;">,
+</span><span>                 [</span><span style="color:#a3be8c;">&#39;CodeSnippet&#39;</span><span>]</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>             ]</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;extraPlugins&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;codesnippet&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>         }
+</span><span>}
+</span></code></pre>
+<p>Edit a post and add some code to it using the widget:</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/07.png" alt="" /></p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">make_pizza</span><span>():
+</span><span>    </span><span style="color:#88c0d0;">add_ingredients</span><span>([</span><span style="color:#a3be8c;">&#39;Tomatoes&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Mozzarella&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Basil&#39;</span><span>])
+</span><span>    </span><span style="color:#88c0d0;">cook</span><span>()
+</span></code></pre>
+<p>I'm using the <em><a href="http://highlightjs.org/">highlight.js</a></em> library for syntax highlighting. Edit the <code>post_detail.html</code> template file and add these lines to it:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;!</span><span>DOCTYPE </span><span style="color:#81a1c1;">html&gt;
+</span><span style="color:#81a1c1;">&lt;html </span><span style="color:#8fbcbb;">lang</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;en&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;head&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">charset</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;UTF-8&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">name</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;viewport&quot; </span><span style="color:#8fbcbb;">content</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;width=device-width, initial-scale=1.0&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;title&gt;</span><span>Document</span><span style="color:#81a1c1;">&lt;/title&gt;
+</span><span>    </span><span style="color:#616e88;">&lt;!-- highlight.js--&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;link </span><span style="color:#8fbcbb;">rel</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;stylesheet&quot; 
+</span><span>          </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;script </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js&quot;</span><span style="color:#81a1c1;">&gt;&lt;/script&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;script&gt;</span><span>hljs</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">initHighlightingOnLoad</span><span>()</span><span style="color:#eceff4;">;</span><span style="color:#81a1c1;">&lt;/script&gt;
+</span><span>    </span><span style="color:#616e88;">&lt;!-- highlight.js --&gt;
+</span><span style="color:#81a1c1;">&lt;/head&gt;
+</span><span style="color:#81a1c1;">&lt;body&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;p&gt;</span><span>{{ post.body|safe }}</span><span style="color:#81a1c1;">&lt;/p&gt;
+</span><span style="color:#81a1c1;">&lt;/body&gt;
+</span><span style="color:#81a1c1;">&lt;/html&gt;
+</span></code></pre>
+<p>Refresh the blog detail page and you should see the code snippet highlighted:</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/08.png" alt="" /></p>
+</div>
+        
+    </div>
+
+    
+
+
+    <div class="clear"></div>
+
+    <div class="navbar hide">
+        <a class="navbar hide" href="https://samulinatri.com">
+            <img class="navbar-author-img" src="https://samulinatri.com/images/misc/author_30_30.png" alt="Author">
+        </a>
+
+        <div class="navbar-wrapper">
+            
+            <div class="navbar-menu">
+                <a class="navbar-link navbar-link-author" href="https://samulinatri.com">Home</a> |
+                <a class="navbar-link" href="https://samulinatri.com/blog/">Blog</a> |
+                <a class="navbar-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+                
+            </div>  
+            
+        </div>        
+    </div>
+
+    <div class="footer">
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+        
+        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
+        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        
+        
+        <br>
+        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
+    </div>
+
+    
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+    
+</body>
+</html>
+

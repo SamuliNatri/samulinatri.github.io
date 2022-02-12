@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Basic tic-tac-toe functionality.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+		<link rel="manifest" href="/images/favicon/site.webmanifest">
+		<link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+		
+    <title>Tic-tac-toe with C (OpenGL&#x2F;SDL) |  Samuli Natri. Software developer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+    
+    </script>
+    
+
+</head>
+<body>
+<div class="main ">
+
+    
+
+    
+
+    <div class="blog">
+
+        <div class="blog-dates">
+            <span itemprop="dateModified" 
+                content="Feb  3, 2022" 
+                class="blog-updated">Updated Feb  3, 2022
+            </span>
+            
+        </div>
+
+        <h1 class="blog-title">Tic-tac-toe with C (OpenGL&#x2F;SDL)</h1>
+        <div class="blog-description">Basic tic-tac-toe functionality.</div>
+
+        
+            
+            <div class="blog-video">
+                <iframe class="blog-video-iframe" height="315" 
+                src="https://www.youtube.com/embed/cWw3KKrZlMM/" 
+                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
+        
+        
+        <div class="blog-content"><h2 id="main-c">main.c</h2>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">/*
+</span><span style="color:#616e88;">INSTALLATION:
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">sudo apt-get install libsdl2-dev
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">COMPILING:
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">cc main.c lib/glad/glad.c -ldl -lSDL2 -Ilib
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">GET GLAD FROM HERE:
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">https://glad.dav1d.de/
+</span><span style="color:#616e88;">- select version 4.6 from the &quot;gl&quot; list
+</span><span style="color:#616e88;">- hit generate
+</span><span style="color:#616e88;">- extract the package in the &quot;lib&quot; folder
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">PROJECT STRUCTURE:
+</span><span style="color:#616e88;">.
+</span><span style="color:#616e88;">├── a.out
+</span><span style="color:#616e88;">├── build.sh
+</span><span style="color:#616e88;">├── lib
+</span><span style="color:#616e88;">│   ├── glad
+</span><span style="color:#616e88;">│   │   ├── glad.c
+</span><span style="color:#616e88;">│   │   └── glad.h
+</span><span style="color:#616e88;">│   └── KHR
+</span><span style="color:#616e88;">│       └── khrplatform.h
+</span><span style="color:#616e88;">└── main.c
+</span><span style="color:#616e88;">*/
+</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL2/SDL.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;glad/glad.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;GL/gl.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;time.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">uint32_t </span><span style="color:#81a1c1;">u32</span><span style="color:#eceff4;">;
+</span><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">int32_t </span><span style="color:#81a1c1;">i32</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#616e88;">// globals, for simplicity
+</span><span>
+</span><span>SDL_Window </span><span style="color:#81a1c1;">*</span><span>window</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>u32 client_width </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">600</span><span style="color:#eceff4;">;
+</span><span>u32 client_height </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">600</span><span style="color:#eceff4;">;
+</span><span>u32 tile_size </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">200</span><span style="color:#eceff4;">;
+</span><span>u32 x_tiles </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">;
+</span><span>u32 y_tiles </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>u32 available_tiles</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">typedef enum </span><span>{
+</span><span>	TURN_NONE</span><span style="color:#eceff4;">,
+</span><span>	TURN_PLAYER</span><span style="color:#eceff4;">,
+</span><span>	TURN_COMPUTER
+</span><span>} </span><span style="color:#81a1c1;">Turn</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>Turn turn </span><span style="color:#81a1c1;">=</span><span> TURN_PLAYER</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>u32 board[] </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>	</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#616e88;">// ratio for converting pixels
+</span><span style="color:#616e88;">// [client_width, client_height] to [-1,1] range
+</span><span>
+</span><span style="color:#81a1c1;">float</span><span> ratio_x</span><span style="color:#eceff4;">;
+</span><span style="color:#81a1c1;">float</span><span> ratio_y</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">unsigned int</span><span> shader_program</span><span style="color:#eceff4;">;
+</span><span style="color:#81a1c1;">unsigned int</span><span> VAO</span><span style="color:#eceff4;">,</span><span> VBO</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">const char *</span><span>vertex_shader_source </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&quot;#version 330 core</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;layout (location = 0) in vec3 aPos;</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;uniform mat4 world;</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;void main()</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;{</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;   gl_Position = world * vec4(aPos.x, aPos.y, aPos.z, 1.0);</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;}</span><span style="color:#ebcb8b;">\0</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">const char *</span><span>fragment_shader_source </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&quot;#version 330 core</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;out vec4 FragColor;</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;uniform vec3 color;&quot;
+</span><span style="color:#a3be8c;">&quot;void main()</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;{</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;   FragColor = vec4(color, 1.0f);</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;
+</span><span style="color:#a3be8c;">&quot;}</span><span style="color:#ebcb8b;">\n\0</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">draw_rectangle</span><span>(u32 x</span><span style="color:#eceff4;">,</span><span> u32 y</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">float </span><span>color[])</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">check_win_condition</span><span>(Turn t) {
+</span><span>	</span><span style="color:#616e88;">/*
+</span><span style="color:#616e88;">		000
+</span><span style="color:#616e88;">		000
+</span><span style="color:#616e88;">		000
+</span><span style="color:#616e88;">	 */
+</span><span>	u32 combinations[</span><span style="color:#b48ead;">24</span><span>] </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>		</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">5</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">6</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">7</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">8</span><span style="color:#eceff4;">,
+</span><span>		</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">6</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">7</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">5</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">8</span><span style="color:#eceff4;">,
+</span><span>		</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">8</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">6
+</span><span>	}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(u32 i </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> i </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">24</span><span style="color:#eceff4;">;</span><span> i</span><span style="color:#81a1c1;">+=</span><span style="color:#b48ead;">3</span><span>) {
+</span><span>		</span><span style="color:#81a1c1;">if</span><span>(
+</span><span>			board[combinations[i]] </span><span style="color:#81a1c1;">==</span><span> t </span><span style="color:#81a1c1;">&amp;&amp;
+</span><span>			board[combinations[i</span><span style="color:#81a1c1;">+</span><span style="color:#b48ead;">1</span><span>]] </span><span style="color:#81a1c1;">==</span><span> t </span><span style="color:#81a1c1;">&amp;&amp;
+</span><span>			board[combinations[i</span><span style="color:#81a1c1;">+</span><span style="color:#b48ead;">2</span><span>]] </span><span style="color:#81a1c1;">==</span><span> t
+</span><span>			)
+</span><span>		{
+</span><span>			board[combinations[i]] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">;
+</span><span>			board[combinations[i</span><span style="color:#81a1c1;">+</span><span style="color:#b48ead;">1</span><span>]] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">;
+</span><span>			board[combinations[i</span><span style="color:#81a1c1;">+</span><span style="color:#b48ead;">2</span><span>]] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">;
+</span><span>			
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(t </span><span style="color:#81a1c1;">==</span><span> TURN_PLAYER) {
+</span><span>				</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Player wins.</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>			} </span><span style="color:#81a1c1;">else </span><span>{
+</span><span>				</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Computer wins.</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>			}
+</span><span>		  turn </span><span style="color:#81a1c1;">=</span><span> TURN_NONE</span><span style="color:#eceff4;">;
+</span><span>			</span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>		}
+</span><span>	}
+</span><span>}
+</span><span>
+</span><span style="color:#616e88;">// identity matrix
+</span><span>
+</span><span style="color:#81a1c1;">float</span><span> matrix[] </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>	</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">update</span><span>() {
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> r </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">rand</span><span>() </span><span style="color:#81a1c1;">% </span><span>(x_tiles </span><span style="color:#81a1c1;">*</span><span> y_tiles)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">while</span><span>(board[r] </span><span style="color:#81a1c1;">!= </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>		r </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">rand</span><span>() </span><span style="color:#81a1c1;">% </span><span>(x_tiles </span><span style="color:#81a1c1;">*</span><span> y_tiles)</span><span style="color:#eceff4;">;
+</span><span>	}
+</span><span>
+</span><span>	board[r] </span><span style="color:#81a1c1;">=</span><span> TURN_COMPUTER</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#81a1c1;">--</span><span>available_tiles</span><span style="color:#eceff4;">;
+</span><span>	turn </span><span style="color:#81a1c1;">=</span><span> TURN_PLAYER</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">check_win_condition</span><span>(TURN_COMPUTER)</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">draw_board</span><span>() {
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(u32 y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> y </span><span style="color:#81a1c1;">&lt;</span><span> y_tiles</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>y) {
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(u32 x </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> x </span><span style="color:#81a1c1;">&lt;</span><span> x_tiles</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>x) {
+</span><span>			</span><span style="color:#81a1c1;">float</span><span> color[] </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span>}</span><span style="color:#eceff4;">;
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(board[y </span><span style="color:#81a1c1;">*</span><span> x_tiles </span><span style="color:#81a1c1;">+</span><span> x] </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">1</span><span>) { color[</span><span style="color:#b48ead;">2</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">; </span><span>} 
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(board[y </span><span style="color:#81a1c1;">*</span><span> x_tiles </span><span style="color:#81a1c1;">+</span><span> x] </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">2</span><span>) { color[</span><span style="color:#b48ead;">1</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">; </span><span>} 
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(board[y </span><span style="color:#81a1c1;">*</span><span> x_tiles </span><span style="color:#81a1c1;">+</span><span> x] </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">3</span><span>) { color[</span><span style="color:#b48ead;">0</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">; </span><span>} 
+</span><span>			</span><span style="color:#88c0d0;">draw_rectangle</span><span>(x </span><span style="color:#81a1c1;">*</span><span> tile_size</span><span style="color:#eceff4;">,
+</span><span>										 y </span><span style="color:#81a1c1;">*</span><span> tile_size</span><span style="color:#eceff4;">,</span><span> color)</span><span style="color:#eceff4;">;
+</span><span>		}
+</span><span>	}
+</span><span>}
+</span><span>
+</span><span style="color:#616e88;">// draws a tile_size sized rectangle
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">draw_rectangle</span><span>(u32 x</span><span style="color:#eceff4;">,</span><span> u32 y</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">float </span><span>color[]) {
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// x and y: rectangle left top corner in pixels
+</span><span>  </span><span style="color:#616e88;">// client area left top corner is (0,0)
+</span><span>
+</span><span>	</span><span style="color:#88c0d0;">glUseProgram</span><span>(shader_program)</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">unsigned int</span><span> uniform_loc </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#88c0d0;">glGetUniformLocation</span><span>(shader_program</span><span style="color:#eceff4;">,</span><span style="color:#a3be8c;">&quot;world&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#616e88;">// matrix[12] and matrix[13] transforms the rectangle along the x and y axis
+</span><span>	</span><span style="color:#616e88;">// 1. with identity matrix the rectangle center is in the center of the client area
+</span><span>	</span><span style="color:#616e88;">// 2. -1.0f moves the rectangle center to the left edge of the client area
+</span><span>	</span><span style="color:#616e88;">// 3. (tile_size / 2) * ratio_x moves the rectangle to the right, so that its left edge aligns with the left side of the client area 
+</span><span>  </span><span style="color:#616e88;">// 4. (float)x * ratio_x moves the rectangle x pixels to the right, to its x position  
+</span><span>	matrix[</span><span style="color:#b48ead;">12</span><span>] </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f + </span><span>(tile_size </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">*</span><span> ratio_x </span><span style="color:#81a1c1;">+ </span><span>(</span><span style="color:#81a1c1;">float</span><span>)x </span><span style="color:#81a1c1;">*</span><span> ratio_x</span><span style="color:#eceff4;">;
+</span><span>	matrix[</span><span style="color:#b48ead;">13</span><span>] </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f - </span><span>(tile_size </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">*</span><span> ratio_y </span><span style="color:#81a1c1;">- </span><span>(</span><span style="color:#81a1c1;">float</span><span>)y </span><span style="color:#81a1c1;">*</span><span> ratio_y</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glUniformMatrix4fv</span><span>(
+</span><span>		uniform_loc</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span> GL_FALSE</span><span style="color:#eceff4;">,</span><span> matrix)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">unsigned int</span><span> color_uniform_loc </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#88c0d0;">glGetUniformLocation</span><span>(shader_program</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;color&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#88c0d0;">glUniform3fv</span><span>(color_uniform_loc</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span> color)</span><span style="color:#eceff4;">; 
+</span><span>	
+</span><span>	</span><span style="color:#88c0d0;">glBindVertexArray</span><span>(VAO)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glDrawArrays</span><span>(GL_TRIANGLES</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">6</span><span>)</span><span style="color:#eceff4;">;		
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">init</span><span>() {
+</span><span>
+</span><span>	available_tiles </span><span style="color:#81a1c1;">=</span><span> x_tiles </span><span style="color:#81a1c1;">*</span><span> y_tiles</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#88c0d0;">srand</span><span>(</span><span style="color:#88c0d0;">time</span><span>(</span><span style="color:#81a1c1;">NULL</span><span>))</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	ratio_x </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f / </span><span>(</span><span style="color:#81a1c1;">float</span><span>)client_width</span><span style="color:#eceff4;">;
+</span><span>	ratio_y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f / </span><span>(</span><span style="color:#81a1c1;">float</span><span>)client_height</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#88c0d0;">SDL_Init</span><span>(SDL_INIT_VIDEO)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	window </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#88c0d0;">SDL_CreateWindow</span><span>(
+</span><span>			</span><span style="color:#a3be8c;">&quot;Game&quot;</span><span style="color:#eceff4;">,
+</span><span>			SDL_WINDOWPOS_UNDEFINED</span><span style="color:#eceff4;">,
+</span><span>			SDL_WINDOWPOS_UNDEFINED</span><span style="color:#eceff4;">,
+</span><span>			client_width</span><span style="color:#eceff4;">,
+</span><span>			client_height</span><span style="color:#eceff4;">,
+</span><span>			SDL_WINDOW_OPENGL)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#88c0d0;">SDL_GL_SetAttribute</span><span>(SDL_GL_CONTEXT_MAJOR_VERSION</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">3</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">SDL_GL_SetAttribute</span><span>(SDL_GL_CONTEXT_MINOR_VERSION</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">3</span><span>)</span><span style="color:#eceff4;">;  
+</span><span>	</span><span style="color:#88c0d0;">SDL_GL_SetAttribute</span><span>(SDL_GL_CONTEXT_PROFILE_MASK</span><span style="color:#eceff4;">,
+</span><span>											SDL_GL_CONTEXT_PROFILE_CORE)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	SDL_GLContext main_context </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">SDL_GL_CreateContext</span><span>(window)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">gladLoadGLLoader</span><span>((GLADloadproc)SDL_GL_GetProcAddress)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glViewport</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> client_width</span><span style="color:#eceff4;">,</span><span> client_height)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">SDL_GL_SetSwapInterval</span><span>(</span><span style="color:#b48ead;">1</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#616e88;">// shaders
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">unsigned int</span><span> vertex_shader </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#88c0d0;">glCreateShader</span><span>(GL_VERTEX_SHADER)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glShaderSource</span><span>(
+</span><span>		vertex_shader</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>vertex_shader_source</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glCompileShader</span><span>(vertex_shader)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> success</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glGetShaderiv</span><span>(
+</span><span>		vertex_shader</span><span style="color:#eceff4;">,</span><span> GL_COMPILE_STATUS</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>success)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#81a1c1;">unsigned int</span><span> fragment_shader </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="color:#88c0d0;">glCreateShader</span><span>(GL_FRAGMENT_SHADER)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glShaderSource</span><span>(
+</span><span>		fragment_shader</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>fragment_shader_source</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glCompileShader</span><span>(fragment_shader)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	shader_program </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">glCreateProgram</span><span>()</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glAttachShader</span><span>(shader_program</span><span style="color:#eceff4;">,</span><span> vertex_shader)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glAttachShader</span><span>(shader_program</span><span style="color:#eceff4;">,</span><span> fragment_shader)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glLinkProgram</span><span>(shader_program)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#88c0d0;">glDeleteShader</span><span>(vertex_shader)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glDeleteShader</span><span>(fragment_shader)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// geometry
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// vertices array describes a tile_size sized rectangle
+</span><span>	</span><span style="color:#616e88;">// o (offset) is the distance of each corner from the rectangle center
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">float</span><span> o </span><span style="color:#81a1c1;">= </span><span>(</span><span style="color:#81a1c1;">float</span><span>)tile_size </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2 </span><span style="color:#81a1c1;">*</span><span> ratio_x</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">float</span><span> vertices[] </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>		</span><span style="color:#81a1c1;">-</span><span>o</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span>o</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>		o</span><span style="color:#eceff4;">,</span><span> o</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, 
+</span><span>		</span><span style="color:#81a1c1;">-</span><span>o</span><span style="color:#eceff4;">,</span><span> o</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>		</span><span style="color:#81a1c1;">-</span><span>o</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span>o</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>		o</span><span style="color:#eceff4;">,</span><span> o</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>		o</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span>o</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, 
+</span><span>	}</span><span style="color:#eceff4;">; 
+</span><span>		
+</span><span>	</span><span style="color:#616e88;">// vao &amp; vbo
+</span><span>			
+</span><span>	</span><span style="color:#88c0d0;">glGenVertexArrays</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>VAO)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glGenBuffers</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>VBO)</span><span style="color:#eceff4;">;
+</span><span>		
+</span><span>	</span><span style="color:#88c0d0;">glBindVertexArray</span><span>(VAO)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glBindBuffer</span><span>(GL_ARRAY_BUFFER</span><span style="color:#eceff4;">,</span><span> VBO)</span><span style="color:#eceff4;">;	
+</span><span>
+</span><span>	</span><span style="color:#88c0d0;">glBufferData</span><span>(
+</span><span>		GL_ARRAY_BUFFER</span><span style="color:#eceff4;">, </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(vertices)</span><span style="color:#eceff4;">,
+</span><span>		vertices</span><span style="color:#eceff4;">,</span><span> GL_STATIC_DRAW)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#88c0d0;">glVertexAttribPointer</span><span>(
+</span><span>		</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">3</span><span style="color:#eceff4;">,</span><span> GL_FLOAT</span><span style="color:#eceff4;">,</span><span> GL_FALSE</span><span style="color:#eceff4;">,
+</span><span>		</span><span style="color:#b48ead;">3 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">float</span><span>)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void*</span><span>)</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glEnableVertexAttribArray</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#88c0d0;">glBindBuffer</span><span>(GL_ARRAY_BUFFER</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#88c0d0;">glBindVertexArray</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">; 
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#88c0d0;">main</span><span>(</span><span style="color:#81a1c1;">int </span><span>argc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">char **</span><span>argv)
+</span><span>{
+</span><span>	</span><span style="color:#88c0d0;">init</span><span>()</span><span style="color:#eceff4;">;
+</span><span> 	
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;
+</span><span>	SDL_Event event</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">while</span><span>(running)
+</span><span>	{
+</span><span>		</span><span style="color:#81a1c1;">while</span><span>(</span><span style="color:#88c0d0;">SDL_PollEvent</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>event))
+</span><span>		{
+</span><span>			</span><span style="color:#81a1c1;">switch</span><span>(event</span><span style="color:#81a1c1;">.</span><span>type) {
+</span><span>				</span><span style="color:#81a1c1;">case</span><span> SDL_QUIT</span><span style="color:#eceff4;">: </span><span>{ running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>				</span><span style="color:#81a1c1;">case</span><span> SDL_MOUSEBUTTONDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>					</span><span style="color:#81a1c1;">if</span><span>(turn </span><span style="color:#81a1c1;">==</span><span> TURN_NONE) </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>					</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;</span><span style="color:#ebcb8b;">%d</span><span style="color:#a3be8c;">, </span><span style="color:#ebcb8b;">%d\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">,</span><span> event</span><span style="color:#81a1c1;">.</span><span>button</span><span style="color:#81a1c1;">.</span><span>x</span><span style="color:#eceff4;">,</span><span> event</span><span style="color:#81a1c1;">.</span><span>button</span><span style="color:#81a1c1;">.</span><span>y)</span><span style="color:#eceff4;">;
+</span><span>					u32 x </span><span style="color:#81a1c1;">=</span><span> event</span><span style="color:#81a1c1;">.</span><span>button</span><span style="color:#81a1c1;">.</span><span>x </span><span style="color:#81a1c1;">/</span><span> tile_size</span><span style="color:#eceff4;">;
+</span><span>					u32 y </span><span style="color:#81a1c1;">=</span><span> event</span><span style="color:#81a1c1;">.</span><span>button</span><span style="color:#81a1c1;">.</span><span>y </span><span style="color:#81a1c1;">/</span><span> tile_size</span><span style="color:#eceff4;">;
+</span><span>					</span><span style="color:#81a1c1;">if</span><span>(board[y </span><span style="color:#81a1c1;">*</span><span> x_tiles </span><span style="color:#81a1c1;">+</span><span> x] </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>						board[y </span><span style="color:#81a1c1;">*</span><span> x_tiles </span><span style="color:#81a1c1;">+</span><span> x] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;		
+</span><span>						turn </span><span style="color:#81a1c1;">=</span><span> TURN_COMPUTER</span><span style="color:#eceff4;">;
+</span><span>						</span><span style="color:#88c0d0;">check_win_condition</span><span>(TURN_PLAYER)</span><span style="color:#eceff4;">;
+</span><span>						</span><span style="color:#81a1c1;">--</span><span>available_tiles</span><span style="color:#eceff4;">;
+</span><span>						</span><span style="color:#81a1c1;">if</span><span>(available_tiles </span><span style="color:#81a1c1;">&lt;= </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>							turn </span><span style="color:#81a1c1;">=</span><span> TURN_NONE</span><span style="color:#eceff4;">;
+</span><span>						}	
+</span><span>					}
+</span><span>			
+</span><span>				} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>				</span><span style="color:#81a1c1;">case</span><span> SDL_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>					</span><span style="color:#81a1c1;">switch</span><span>(event</span><span style="color:#81a1c1;">.</span><span>key</span><span style="color:#81a1c1;">.</span><span>keysym</span><span style="color:#81a1c1;">.</span><span>sym) {
+</span><span>						</span><span style="color:#81a1c1;">case</span><span> SDLK_o</span><span style="color:#eceff4;">: </span><span>{ running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>					}
+</span><span>				}
+</span><span>			}
+</span><span>		}
+</span><span>        
+</span><span>		</span><span style="color:#88c0d0;">glClearColor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">1</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">1</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">1</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span>)</span><span style="color:#eceff4;">;
+</span><span>		</span><span style="color:#88c0d0;">glClear</span><span>(GL_COLOR_BUFFER_BIT)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>		</span><span style="color:#88c0d0;">draw_board</span><span>()</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>		</span><span style="color:#81a1c1;">if</span><span>(turn </span><span style="color:#81a1c1;">==</span><span> TURN_COMPUTER) </span><span style="color:#88c0d0;">update</span><span>()</span><span style="color:#eceff4;">;
+</span><span>		
+</span><span>		</span><span style="color:#616e88;">//draw_rectangle(64, 64, (float[]){1.0f, 0.0f, 0.0f});
+</span><span>
+</span><span>		</span><span style="color:#88c0d0;">SDL_GL_SwapWindow</span><span>(window)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>	}
+</span><span>    
+</span><span>	</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;</span><span style="color:#ebcb8b;">%s\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">glGetString</span><span>(GL_VERSION))</span><span style="color:#eceff4;">;
+</span><span>  
+</span><span>	</span><span style="color:#616e88;">// apparently, with some platforms, in some circumstances, the original resolution of the display is not restored if you don&#39;t call SDL_Quit(): https://discourse.libsdl.org/t/does-sdl2-sdl-quit-require-ttf-quit-sdl-destroywindow-etc/25182/3
+</span><span>	
+</span><span>	</span><span style="color:#88c0d0;">SDL_Quit</span><span>()</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>  </span><span style="color:#616e88;">// other than that, program termination frees all allocated memory
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+</div>
+        
+    </div>
+
+    
+
+
+    <div class="clear"></div>
+
+    <div class="navbar hide">
+        <a class="navbar hide" href="https://samulinatri.com">
+            <img class="navbar-author-img" src="https://samulinatri.com/images/misc/author_30_30.png" alt="Author">
+        </a>
+
+        <div class="navbar-wrapper">
+            
+            <div class="navbar-menu">
+                <a class="navbar-link navbar-link-author" href="https://samulinatri.com">Home</a> |
+                <a class="navbar-link" href="https://samulinatri.com/blog/">Blog</a> |
+                <a class="navbar-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+                
+            </div>  
+            
+        </div>        
+    </div>
+
+    <div class="footer">
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+        
+        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
+        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        
+        
+        <br>
+        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
+    </div>
+
+    
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+    
+</body>
+</html>
+

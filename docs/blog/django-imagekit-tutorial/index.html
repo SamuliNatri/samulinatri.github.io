@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="How to create thumbnails using the django-imagekit package.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+		<link rel="manifest" href="/images/favicon/site.webmanifest">
+		<link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="theme-color" content="#ffffff">
+		
+    <title>Django - ImageKit Tutorial |  Samuli Natri. Software developer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+    
+    </script>
+    
+
+</head>
+<body>
+<div class="main ">
+
+    
+
+    
+
+    <div class="blog">
+
+        <div class="blog-dates">
+            <span itemprop="dateModified" 
+                content="Jun 29, 2020" 
+                class="blog-updated">Updated Jun 29, 2020
+            </span>
+            
+        </div>
+
+        <h1 class="blog-title">Django - ImageKit Tutorial</h1>
+        <div class="blog-description">How to create thumbnails using the django-imagekit package.</div>
+
+        
+            
+        
+        
+        <div class="blog-content"><p><img src="/images/blog/django-imagekit-tutorial/01.png" alt="" /></p>
+<h2 id="introduction">Introduction</h2>
+<p>We use the ImageSpecField to generate an image thumbnail on the fly when a page where the image is used is accessed for the first time.</p>
+<h2 id="quickstart">Quickstart</h2>
+<p>Install these packages:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">pip</span><span> install pillow django-imagekit
+</span></code></pre>
+<p>Add these lines to the project <code>settings.py</code> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="color:#a3be8c;">&#39;imagekit&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># ...
+</span><span>]
+</span><span>
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">MEDIA_URL = </span><span style="color:#a3be8c;">&#39;/media/&#39; 
+</span><span style="color:#81a1c1;">MEDIA_ROOT = </span><span>os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;media&#39;</span><span>)
+</span><span style="color:#616e88;"># END
+</span></code></pre>
+<p>Add these fields to a model:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
+</span><span style="color:#81a1c1;">from </span><span>imagekit</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>ImageSpecField
+</span><span style="color:#81a1c1;">from </span><span>pilkit</span><span style="color:#81a1c1;">.</span><span>processors </span><span style="color:#81a1c1;">import </span><span>Thumbnail
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    image </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">ImageField</span><span>(upload_to</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;images&#39;</span><span>)
+</span><span>    image_medium </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">ImageSpecField</span><span>(source</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;image&#39;</span><span style="color:#eceff4;">,
+</span><span>                                  processors</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#88c0d0;">Thumbnail</span><span>(</span><span style="color:#b48ead;">200</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span>)]</span><span style="color:#eceff4;">,
+</span><span>                                  format</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;JPEG&#39;</span><span style="color:#eceff4;">,
+</span><span>                                  options</span><span style="color:#81a1c1;">=</span><span>{</span><span style="color:#a3be8c;">&#39;quality&#39;</span><span style="color:#eceff4;">: </span><span style="color:#b48ead;">60</span><span>})
+</span><span>    image_small </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">ImageSpecField</span><span>(source</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;image&#39;</span><span style="color:#eceff4;">,
+</span><span>                                 processors</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#88c0d0;">Thumbnail</span><span>(</span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span>)]</span><span style="color:#eceff4;">,
+</span><span>                                 format</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;JPEG&#39;</span><span style="color:#eceff4;">,
+</span><span>                                 options</span><span style="color:#81a1c1;">=</span><span>{</span><span style="color:#a3be8c;">&#39;quality&#39;</span><span style="color:#eceff4;">: </span><span style="color:#b48ead;">60</span><span>})
+</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">SlugField</span><span>(max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span>unique</span><span style="color:#81a1c1;">=True</span><span>)
+</span></code></pre>
+<p>Output image URLs in templates like this:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image_medium.url }}&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image_small.url }}&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image.url }}&quot;</span><span style="color:#81a1c1;">&gt;
+</span></code></pre>
+<h2 id="setup">Setup</h2>
+<p>Run these commands to setup a new project:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python3</span><span> -m venv venv </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">pip</span><span> install --upgrade pip </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">pip</span><span> install django pillow django-imagekit </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">django-admin</span><span> startproject mysite . </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">python</span><span> manage.py startapp blog </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">python</span><span> manage.py createsuperuser
+</span></code></pre>
+<ul>
+<li>The <code>django-imagekit</code> package adds image processing functionality to our project. It requires the <code>pillow</code> imaging library to work.</li>
+</ul>
+<p>Edit the project <code>settings.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#616e88;"># START
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;imagekit&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># END
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>]
+</span><span>
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">MEDIA_URL = </span><span style="color:#a3be8c;">&#39;/media/&#39; 
+</span><span style="color:#81a1c1;">MEDIA_ROOT = </span><span>os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;media&#39;</span><span>)
+</span><span style="color:#616e88;"># END
+</span></code></pre>
+<ul>
+<li>The <code>MEDIA_URL</code> setting defines the base URL for serving user uploaded files.</li>
+<li>The <code>MEDIA_ROOT</code> setting defines the <em>physical</em> location where the files are stored in the system. In this case the files are stored in the project root <code>media</code> directory.</li>
+</ul>
+<h2 id="post-model">Post model</h2>
+<p>Edit the <em>blog</em> app <code>models.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
+</span><span style="color:#81a1c1;">from </span><span>imagekit</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>ImageSpecField
+</span><span style="color:#81a1c1;">from </span><span>pilkit</span><span style="color:#81a1c1;">.</span><span>processors </span><span style="color:#81a1c1;">import </span><span>Thumbnail
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    image </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">ImageField</span><span>(upload_to</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;images&#39;</span><span>)
+</span><span>    image_medium </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">ImageSpecField</span><span>(source</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;image&#39;</span><span style="color:#eceff4;">,
+</span><span>                                  processors</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#88c0d0;">Thumbnail</span><span>(</span><span style="color:#b48ead;">200</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span>)]</span><span style="color:#eceff4;">,
+</span><span>                                  format</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;JPEG&#39;</span><span style="color:#eceff4;">,
+</span><span>                                  options</span><span style="color:#81a1c1;">=</span><span>{</span><span style="color:#a3be8c;">&#39;quality&#39;</span><span style="color:#eceff4;">: </span><span style="color:#b48ead;">60</span><span>})
+</span><span>    image_small </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">ImageSpecField</span><span>(source</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;image&#39;</span><span style="color:#eceff4;">,
+</span><span>                                 processors</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#88c0d0;">Thumbnail</span><span>(</span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span>)]</span><span style="color:#eceff4;">,
+</span><span>                                 format</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;JPEG&#39;</span><span style="color:#eceff4;">,
+</span><span>                                 options</span><span style="color:#81a1c1;">=</span><span>{</span><span style="color:#a3be8c;">&#39;quality&#39;</span><span style="color:#eceff4;">: </span><span style="color:#b48ead;">60</span><span>})
+</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">SlugField</span><span>(max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span>unique</span><span style="color:#81a1c1;">=True</span><span>)
+</span></code></pre>
+<ul>
+<li>The <code>ImageSpecField</code> field specifes an <em>image spec</em> that generates new images from a <em>source</em> field. In this case from the <code>image</code> field. You can pass it bunch of parameters that defines how the image is generated.</li>
+<li>The <code>Thumbnail</code> processor creates a thumbnail and tries to be smart about how it crops it.</li>
+</ul>
+<p>The processors are imported from <a href="https://github.com/matthewwithanm/pilkit/blob/master/pilkit/processors/">PILKit</a> utilities.</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="color:#88c0d0;">python</span><span> manage.py migrate
+</span></code></pre>
+<p>Edit the <em>blog</em> app <code>admin.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span>
+</span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">register</span><span>(Post)
+</span></code></pre>
+<h2 id="urls">URLs</h2>
+<p>Edit the project <code>urls.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
+</span><span>
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf</span><span style="color:#81a1c1;">.</span><span>urls</span><span style="color:#81a1c1;">.</span><span>static </span><span style="color:#81a1c1;">import </span><span>static
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf </span><span style="color:#81a1c1;">import </span><span>settings
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostDetailView
+</span><span style="color:#616e88;"># END
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&lt;slug:slug&gt;/&#39;</span><span style="color:#eceff4;">,
+</span><span>         PostDetailView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">,
+</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_detail&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>] </span><span style="color:#81a1c1;">+ </span><span style="color:#88c0d0;">static</span><span>(settings</span><span style="color:#81a1c1;">.MEDIA_URL</span><span style="color:#eceff4;">,
+</span><span>           document_root</span><span style="color:#81a1c1;">=</span><span>settings</span><span style="color:#81a1c1;">.MEDIA_ROOT</span><span>)
+</span></code></pre>
+<h2 id="postdetailview">PostDetailView</h2>
+<p>Edit the <em>blog</em> app <code>views.py</code> file and add these lines to it:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>DetailView
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDetailView</span><span>(</span><span style="color:#8fbcbb;">DetailView</span><span>):
+</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
+</span></code></pre>
+<h2 id="template">Template</h2>
+<p>Create a file called <code>post_detail.html</code> in the <code>blog/templates/blog</code> directory. Add these lines to it:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span>{% </span><span style="color:#81a1c1;">if </span><span>post.image %}
+</span><span>    </span><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image_medium.url }}&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image_small.url }}&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>{% </span><span style="color:#81a1c1;">endif </span><span>%}
+</span></code></pre>
+<ul>
+<li>The <code>PostDetailView</code> view uses a template named <code>post_detail.html</code> automatically without us having to specify it.</li>
+<li>The thumbnails are generated when you first visit the detail page.</li>
+</ul>
+<p>Visit <code>/admin/</code> to create a new blog post:</p>
+<p><img src="/images/blog/django-imagekit-tutorial/02.png" alt="" /></p>
+<p>Visit <code>/blog/django-tutorial/</code> and you should see something like this:</p>
+<p><img src="/images/blog/django-imagekit-tutorial/01.png" alt="" /></p>
+<p>You can access the original image with <code>{{ post.image.url }}</code>. </p>
+<p>Images are served from the <code>media</code> folder:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">media/images/05.jpg
+</span></code></pre>
+<p>Its thumbnails are served from the <code>CACHE</code> subdirectory:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">media/CACHE/images/images/05/9bba...22ce9e.jpg
+</span></code></pre>
+</div>
+        
+    </div>
+
+    
+
+
+    <div class="clear"></div>
+
+    <div class="navbar hide">
+        <a class="navbar hide" href="https://samulinatri.com">
+            <img class="navbar-author-img" src="https://samulinatri.com/images/misc/author_30_30.png" alt="Author">
+        </a>
+
+        <div class="navbar-wrapper">
+            
+            <div class="navbar-menu">
+                <a class="navbar-link navbar-link-author" href="https://samulinatri.com">Home</a> |
+                <a class="navbar-link" href="https://samulinatri.com/blog/">Blog</a> |
+                <a class="navbar-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+                
+            </div>  
+            
+        </div>        
+    </div>
+
+    <div class="footer">
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+        
+        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
+        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        
+        
+        <br>
+        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
+    </div>
+
+    
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+    
+</body>
+</html>
+
