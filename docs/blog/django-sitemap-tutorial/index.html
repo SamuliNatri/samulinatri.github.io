@@ -41,28 +41,24 @@
 
     
 
-    <div class="blog">
+<div class="blog">
+    
+    <div class="blog-dates">
+        <span itemprop="dateModified" 
+        content="Jun  7, 2020" 
+        class="blog-updated">Updated <strong>Jun  7, 2020</strong> 
+    </span>
+    
+    <span itemprop="datePublished" 
+    content="May 24, 2018" 
+    class="blog-updated">(Posted May 24, 2018)
+</span>
+</div>
 
-        <div class="blog-dates">
-            <span itemprop="dateModified" 
-                content="Jun  7, 2020" 
-                class="blog-updated">(Updated <strong>Jun  7, 2020</strong>) 
-            </span>
+<h1 class="blog-title">Django - Sitemap Tutorial</h1>
+<div class="blog-description">How to create XML sitemaps with Django sitemap framework.</div>
 
-            <span itemprop="datePublished" 
-                content="May 24, 2018" 
-                class="blog-updated">[Posted May 24, 2018]
-            </span>
-        </div>
-
-        <h1 class="blog-title">Django - Sitemap Tutorial</h1>
-        <div class="blog-description">How to create XML sitemaps with Django sitemap framework.</div>
-
-        
-            
-        
-        
-        <div class="blog-content"><p><img src="/static/images/blog/django-sitemap-tutorial/00.png" alt="" /></p>
+<div class="blog-content"><p><img src="/static/images/blog/django-sitemap-tutorial/00.png" alt="" /></p>
 <h2 id="introduction">Introduction</h2>
 <p>Sitemap is an XML file that lists URLs for a site. Each URL can be associated with metadata. For example, we can tell the crawler how important a URL is related to other URLs in the site, how often it usually changes and when it was last updated. This helps search engines to index your site.</p>
 <h2 id="quickstart">Quickstart</h2>
@@ -79,11 +75,11 @@
 <p>Add a field called <code>modified</code> and a method called <code>get_absolute_url()</code> to a model:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):</span><span>
 </span><span>    </span><span style="color:#616e88;"># Add &quot;modified&quot; field:</span><span style="color:#616e88;">
-</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">DateTimeField</span><span>(auto_now</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
+</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">DateTimeField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">auto_now</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
 </span><span>    </span><span style="color:#616e88;"># Add &quot;get_absolute_url()&quot; method:</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">get_absolute_url</span><span>(self):</span><span>
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                       args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_absolute_url</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">,</span><span>
+</span><span>                       </span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])</span><span>
 </span></code></pre>
 <p>Make these changes to your URL configuration file:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin</span><span>
@@ -96,19 +92,19 @@
 </span><span>
 </span><span style="color:#616e88;"># Add `sitemaps` dictionary:</span><span style="color:#616e88;">
 </span><span>sitemaps </span><span style="color:#81a1c1;">= </span><span>{</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="color:#88c0d0;">GenericSitemap</span><span>({</span><span>
-</span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="font-weight:bold;color:#88c0d0;">GenericSitemap</span><span>({</span><span>
+</span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#a3be8c;">&#39;date_field&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;modified&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    }</span><span style="color:#eceff4;">, </span><span>priority</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">9</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    }</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">priority</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">9</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>    </span><span style="color:#a3be8c;">&#39;static&#39;</span><span style="color:#eceff4;">: </span><span>StaticViewSitemap</span><span style="color:#eceff4;">,</span><span>
 </span><span>}</span><span>
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
 </span><span>    </span><span style="color:#616e88;"># ...</span><span style="color:#616e88;">
 </span><span>    </span><span style="color:#616e88;"># Pass the `sitemaps` dictionary to the `sitemap` view:</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,</span><span>
 </span><span>         {</span><span style="color:#a3be8c;">&#39;sitemaps&#39;</span><span style="color:#eceff4;">: </span><span>sitemaps}</span><span style="color:#eceff4;">,</span><span>
-</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <p>Create a file called <code>sitemaps.py</code> somewhere (in the <code>mysite</code> directory in this case) and add these lines to it:</p>
@@ -117,23 +113,23 @@
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">StaticViewSitemap</span><span>(</span><span style="color:#8fbcbb;">Sitemap</span><span>):</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">items</span><span>(self):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">items</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>[</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>]</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">location</span><span>(self</span><span style="color:#eceff4;">, </span><span>item):</span><span>
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">reverse</span><span>(item)</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">location</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">item</span><span>):</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(item)</span><span>
 </span></code></pre>
 <p>Visit <code>/sitemap.xml</code>.</p>
 <h2 id="full-tutorial">Full tutorial</h2>
 <h3 id="setup">Setup</h3>
 <p>Run these commands to setup a project:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite</span><span>
-</span><span style="color:#88c0d0;">python3</span><span> -m venv venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv</span><span>
 </span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span>
-</span><span style="color:#88c0d0;">pip</span><span> install django</span><span>
-</span><span style="color:#88c0d0;">django-admin</span><span> startproject mysite .</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py startapp blog</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py startapp pages</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite .</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp pages</span><span>
 </span></code></pre>
 <h3 id="configure-settings-py">Configure settings.py</h3>
 <p>Add these lines to the project <code>settings.py</code> file:</p>
@@ -161,7 +157,7 @@
 </span><span>    {</span><span>
 </span><span>        </span><span style="color:#616e88;"># ...</span><span style="color:#616e88;">
 </span><span>        </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>)]</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>)]</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#616e88;"># ...</span><span style="color:#616e88;">
 </span><span>    }</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
@@ -182,25 +178,25 @@
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):</span><span>
 </span><span>
-</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">CharField</span><span>(max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">,</span><span>
-</span><span>                             unique</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
-</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">SlugField</span><span>(max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">,</span><span>
-</span><span>                            unique</span><span style="color:#81a1c1;">=True</span><span style="color:#eceff4;">,</span><span>
-</span><span>                            default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)</span><span>
+</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">,</span><span>
+</span><span>                             </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
+</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">SlugField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">,</span><span>
+</span><span>                            </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span style="color:#eceff4;">,</span><span>
+</span><span>                            </span><span style="font-weight:bold;color:#d8dee9;">default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">DateTimeField</span><span>(auto_now</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
+</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">DateTimeField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">auto_now</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">__str__</span><span>(self):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">__str__</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return self.</span><span>title</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">save</span><span>(self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">*</span><span>args</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>kwargs):</span><span>
-</span><span>        </span><span style="color:#81a1c1;">self.</span><span>slug </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">slugify</span><span>(</span><span style="color:#81a1c1;">self.</span><span>title)</span><span>
-</span><span>        </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">save</span><span>(</span><span style="color:#81a1c1;">*</span><span>args</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>kwargs)</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">save</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span style="font-weight:bold;color:#d8dee9;">kwargs</span><span>):</span><span>
+</span><span>        </span><span style="color:#81a1c1;">self.</span><span>slug </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">slugify</span><span>(</span><span style="color:#81a1c1;">self.</span><span>title)</span><span>
+</span><span>        </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>(</span><span style="color:#81a1c1;">*</span><span>args</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>kwargs)</span><span>
 </span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">get_absolute_url</span><span>(self):</span><span>
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                       args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_absolute_url</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">,</span><span>
+</span><span>                       </span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])</span><span>
 </span></code></pre>
 <ul>
 <li>The <code>modified</code> field is used for the sitemap <code>lastmod</code> attribute. It tells when the item was last modified.</li>
@@ -211,17 +207,17 @@
 </span><span style="color:#81a1c1;">&lt;lastmod&gt;</span><span style="color:#eceff4;">2020-05-30</span><span style="color:#81a1c1;">&lt;/lastmod&gt;</span><span style="color:#eceff4;">
 </span></code></pre>
 <h3 id="run-migrations">Run migrations</h3>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py migrate</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate</span><span>
 </span></code></pre>
 <p>This makes the necessary changes to the database.</p>
 <h3 id="create-posts">Create posts</h3>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py shell</span><span>
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> from </span><span style="color:#88c0d0;">blog.models</span><span> import Post</span><span>
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> import </span><span style="color:#88c0d0;">uuid</span><span>
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> for </span><span style="color:#88c0d0;">x</span><span> in range(10)</span><span style="color:#88c0d0;">:</span><span>
-</span><span style="color:#88c0d0;">...</span><span>     post = Post.objects.create(title=</span><span style="color:#a3be8c;">&#39;%d&#39; </span><span style="color:#81a1c1;">%</span><span> uuid.uuid4())</span><span>
-</span><span style="color:#88c0d0;">...</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py shell</span><span>
+</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> from </span><span style="font-weight:bold;color:#88c0d0;">blog.models</span><span> import Post</span><span>
+</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> import </span><span style="font-weight:bold;color:#88c0d0;">uuid</span><span>
+</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> for </span><span style="font-weight:bold;color:#88c0d0;">x</span><span> in range(10)</span><span style="color:#88c0d0;">:</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">...</span><span>     post = Post.objects.create(title=</span><span style="color:#a3be8c;">&#39;%d&#39; </span><span style="color:#81a1c1;">%</span><span> uuid.uuid4())</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">...</span><span>
 </span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span>
 </span></code></pre>
 <ul>
@@ -241,21 +237,21 @@
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>TemplateView</span><span>
 </span><span>
 </span><span>sitemaps </span><span style="color:#81a1c1;">= </span><span>{</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="color:#88c0d0;">GenericSitemap</span><span>({</span><span>
-</span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="font-weight:bold;color:#88c0d0;">GenericSitemap</span><span>({</span><span>
+</span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#a3be8c;">&#39;date_field&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;modified&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    }</span><span style="color:#eceff4;">, </span><span>priority</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">9</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    }</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">priority</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">9</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>    </span><span style="color:#a3be8c;">&#39;static&#39;</span><span style="color:#eceff4;">: </span><span>StaticViewSitemap</span><span style="color:#eceff4;">,</span><span>
 </span><span>}</span><span>
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>PostListView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;about/&#39;</span><span style="color:#eceff4;">, </span><span>TemplateView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>(template_name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about.html&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>PostListView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;about/&#39;</span><span style="color:#eceff4;">, </span><span>TemplateView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">template_name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about.html&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,</span><span>
 </span><span>         {</span><span style="color:#a3be8c;">&#39;sitemaps&#39;</span><span style="color:#eceff4;">: </span><span>sitemaps}</span><span style="color:#eceff4;">,</span><span>
-</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <ul>
@@ -276,11 +272,11 @@
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">StaticViewSitemap</span><span>(</span><span style="color:#8fbcbb;">Sitemap</span><span>):</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">items</span><span>(self):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">items</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>[</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>]</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">location</span><span>(self</span><span style="color:#eceff4;">, </span><span>item):</span><span>
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">reverse</span><span>(item)</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">location</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">item</span><span>):</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(item)</span><span>
 </span></code></pre>
 <ul>
 <li>Use the <code>items</code> method to return the pages you want to add to the sitemap. You should return a <em>QuerySet</em> or <em>sequence</em>. In this case we provide the <code>about</code> URL pattern name in a list.</li>
@@ -294,7 +290,7 @@
 </span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span>
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&lt;slug:slug&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>PostDetailView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;detail&#39;</span><span>)</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&lt;slug:slug&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>PostDetailView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;detail&#39;</span><span>)</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <h3 id="edit-blog-app-views">Edit blog app views</h3>
@@ -347,7 +343,7 @@
 <p>This displays the post title.</p>
 <h3 id="result">Result</h3>
 <p>Run the development server:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py runserver</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver</span><span>
 </span></code></pre>
 <p>Visit <code>/sitemap.xml</code> and you should see the generated sitemap:</p>
 <pre data-lang="xml" style="background-color:#2e3440;color:#d8dee9;" class="language-xml "><code class="language-xml" data-lang="xml"><span style="color:#81a1c1;">&lt;urlset </span><span style="color:#8fbcbb;">xmlns</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;</span><span style="color:#81a1c1;">&gt;</span><span style="color:#eceff4;">
@@ -362,10 +358,38 @@
 </span><span style="color:#81a1c1;">&lt;/urlset&gt;</span><span style="color:#eceff4;">
 </span></code></pre>
 </div>
-        
-    </div>
 
-    
+
+
+
+
+</div>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(()=> {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
+
+
 
 
     <div class="clear"></div>
@@ -373,7 +397,7 @@
     
 
     <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
         <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
         <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
         <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
@@ -384,6 +408,7 @@
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
 </body>
 </html>
 

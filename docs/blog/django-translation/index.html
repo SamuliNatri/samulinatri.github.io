@@ -41,33 +41,29 @@
 
     
 
-    <div class="blog">
+<div class="blog">
+    
+    <div class="blog-dates">
+        <span itemprop="dateModified" 
+        content="Jul 14, 2020" 
+        class="blog-updated">Updated <strong>Jul 14, 2020</strong> 
+    </span>
+    
+    <span itemprop="datePublished" 
+    content="Mar 16, 2018" 
+    class="blog-updated">(Posted Mar 16, 2018)
+</span>
+</div>
 
-        <div class="blog-dates">
-            <span itemprop="dateModified" 
-                content="Jul 14, 2020" 
-                class="blog-updated">(Updated <strong>Jul 14, 2020</strong>) 
-            </span>
+<h1 class="blog-title">Django - Translation Tutorial</h1>
+<div class="blog-description">How to create multilingual websites using Django.</div>
 
-            <span itemprop="datePublished" 
-                content="Mar 16, 2018" 
-                class="blog-updated">[Posted Mar 16, 2018]
-            </span>
-        </div>
-
-        <h1 class="blog-title">Django - Translation Tutorial</h1>
-        <div class="blog-description">How to create multilingual websites using Django.</div>
-
-        
-            
-        
-        
-        <div class="blog-content"><p><img src="/images/blog/django-translation/00.png" alt="" /></p>
+<div class="blog-content"><p><img src="/images/blog/django-translation/00.png" alt="" /></p>
 <h2 id="introduction">Introduction</h2>
 <p>This tutorial shows how to translate texts in templates, code and database. We explore several ways to determine user's language preference, translate URLs and add a language switcher.</p>
 <h2 id="quickstart">Quickstart</h2>
 <p>Add <code>LOCALE_PATHS</code> setting to the project settings file and change the default language:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">LOCALE_PATHS = </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;locale&#39;</span><span>)]</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">LOCALE_PATHS = </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;locale&#39;</span><span>)]</span><span>
 </span><span style="color:#616e88;"># LANGUAGE_CODE = &#39;en-us&#39; </span><span style="color:#616e88;">
 </span><span style="color:#81a1c1;">LANGUAGE_CODE = </span><span style="color:#a3be8c;">&#39;fi&#39;</span><span>
 </span></code></pre>
@@ -76,15 +72,15 @@
 </span><span style="color:#81a1c1;">&lt;p&gt;</span><span>{% </span><span style="color:#81a1c1;">trans </span><span style="color:#a3be8c;">&quot;Life is life.&quot; </span><span>%}</span><span style="color:#81a1c1;">&lt;/p&gt;</span><span>
 </span></code></pre>
 <p>Create a directory for the translation files and run the <code>makemessages</code> command:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">mkdir</span><span> locale</span><span>
-</span><span style="color:#88c0d0;">django-admin</span><span> makemessages -l fi --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> locale</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> fi</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>Edit <code>locale/fi/LC_MESSAGES/django.po</code> and add the translation:</p>
 <pre style="background-color:#2e3440;color:#d8dee9;"><code><span>msgid &quot;Life is life.&quot;</span><span>
 </span><span>msgstr &quot;Elämä on laiffii.&quot; # HERE</span><span>
 </span></code></pre>
 <p>Compile the messages:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">django-admin</span><span> compilemessages --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> compilemessages</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>Result:</p>
 <pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;p&gt;</span><span>Elämä on laiffii.</span><span style="color:#81a1c1;">&lt;/p&gt;</span><span>
@@ -92,14 +88,14 @@
 <h2 id="full-tutorial">Full Tutorial</h2>
 <h3 id="setup">Setup</h3>
 <p>Run these commands to setup a new project:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python3</span><span> -m venv venv </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">pip</span><span> install django --upgrade pip </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">django-admin</span><span> startproject config . </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py startapp pages </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py migrate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py createsuperuser</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django</span><span style="font-weight:bold;color:#d8dee9;"> --upgrade</span><span> pip </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject config . </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp pages </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py createsuperuser</span><span>
 </span></code></pre>
 <p>Edit the project <code>settings.py</code> file and add these lines to it:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[</span><span>
@@ -110,13 +106,13 @@
 </span><span>]</span><span>
 </span><span>
 </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span style="color:#81a1c1;">LOCALE_PATHS = </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;locale&#39;</span><span>)]</span><span>
+</span><span style="color:#81a1c1;">LOCALE_PATHS = </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;locale&#39;</span><span>)]</span><span>
 </span><span>
 </span><span style="color:#81a1c1;">TEMPLATES = </span><span>[</span><span>
 </span><span>    {</span><span>
 </span><span>        </span><span style="color:#a3be8c;">&#39;BACKEND&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;django.template.backends.django.DjangoTemplates&#39;</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>)]</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>)]</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#616e88;"># ..</span><span style="color:#616e88;">
 </span><span>    }</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
@@ -140,9 +136,9 @@
 </span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;pages&#39;</span><span>
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         HomePageView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>
-</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>
+</span><span>         HomePageView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <p>Edit the main <code>urls.py</code> file and add these lines to it:</p>
@@ -152,8 +148,8 @@
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <h3 id="homepage-template">Homepage template</h3>
@@ -166,8 +162,8 @@
 <p><img src="/images/blog/django-translation/01.png" alt="" /></p>
 <h3 id="translation">Translation</h3>
 <p>Run these commands:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">mkdir</span><span> locale</span><span>
-</span><span style="color:#88c0d0;">django-admin</span><span> makemessages -l fi --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> locale</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> fi</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <ul>
 <li>The <code>makemessages</code> command creates a message file (or updates it).</li>
@@ -180,7 +176,7 @@
 </span><span>msgstr &quot;Elämä on laiffii.&quot;</span><span>
 </span></code></pre>
 <p>Run this command:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">django-admin</span><span> compilemessages --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> compilemessages</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>The <code>compilemessages</code> command creates <code>.mo</code> files from <code>.po</code> files. <code>.mo</code> files are binary files optimized for the <code>gettext</code> function. The <code>gettext</code> function translates a message and returns it as a string.</p>
 <p>Now if we change the <code>LANGUAGE_CODE</code> setting in the <code>settings.py</code> file to <code>fi</code>, we can see the translation in action:</p>
@@ -215,10 +211,10 @@
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path</span><span>
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf</span><span style="color:#81a1c1;">.</span><span>urls</span><span style="color:#81a1c1;">.</span><span>i18n </span><span style="color:#81a1c1;">import </span><span>i18n_patterns </span><span>
 </span><span>
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">i18n_patterns</span><span>(</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>        prefix_default_language</span><span style="color:#81a1c1;">=False</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">i18n_patterns</span><span>(</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#d8dee9;">prefix_default_language</span><span style="color:#81a1c1;">=False</span><span>
 </span><span>    )                    </span><span>
 </span></code></pre>
 <ul>
@@ -257,13 +253,13 @@
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">HomePageView</span><span>(</span><span style="color:#8fbcbb;">TemplateView</span><span>):</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">render_to_response</span><span>(self</span><span style="color:#eceff4;">, </span><span>context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>response_kwargs):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">render_to_response</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span style="font-weight:bold;color:#d8dee9;">response_kwargs</span><span>):</span><span>
 </span><span>    </span><span>
 </span><span>        </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils </span><span style="color:#81a1c1;">import </span><span>translation</span><span>
 </span><span>        user_language </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;fi&#39; </span><span>
-</span><span>        translation</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">activate</span><span>(user_language)</span><span>
-</span><span>        response </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>(HomePageView</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">self</span><span>)</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">render_to_response</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>response_kwargs)</span><span>
-</span><span>        response</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">set_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span style="color:#eceff4;">, </span><span>user_language)</span><span>
+</span><span>        translation</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">activate</span><span>(user_language)</span><span>
+</span><span>        response </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>(HomePageView</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">self</span><span>)</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">render_to_response</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>response_kwargs)</span><span>
+</span><span>        response</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">set_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span style="color:#eceff4;">, </span><span>user_language)</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>response</span><span>
 </span><span>    </span><span>
 </span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>
@@ -274,12 +270,12 @@
 </ul>
 <p>Now the language for the home page will always be Finnish. Our custom code overrides all other behaviours.</p>
 <p>You can do this with <em>function-based</em> views:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">home</span><span>(request): </span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">home</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>): </span><span>
 </span><span>    </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils </span><span style="color:#81a1c1;">import </span><span>translation</span><span>
 </span><span>    user_language </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;fi&#39; </span><span>
-</span><span>    translation</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">activate</span><span>(user_language)</span><span>
-</span><span>    response </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>)</span><span>
-</span><span>    response</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">set_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span style="color:#eceff4;">, </span><span>user_language)</span><span>
+</span><span>    translation</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">activate</span><span>(user_language)</span><span>
+</span><span>    response </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>)</span><span>
+</span><span>    response</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">set_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span style="color:#eceff4;">, </span><span>user_language)</span><span>
 </span><span>    </span><span style="color:#81a1c1;">return </span><span>response</span><span>
 </span></code></pre>
 <p>Add it to <em>pages</em> app URLs:</p>
@@ -290,13 +286,13 @@
 </span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;pages&#39;</span><span>
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         HomePageView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>
-</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>
+</span><span>         HomePageView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;home/&#39;</span><span style="color:#eceff4;">, </span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;home/&#39;</span><span style="color:#eceff4;">, </span><span>
 </span><span>         home</span><span style="color:#eceff4;">,</span><span>
-</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home_function&#39;</span><span>)</span><span>
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home_function&#39;</span><span>)</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <h4 id="browser-detection">Browser detection</h4>
@@ -305,24 +301,24 @@
 <p>Comment out the language setting code and clear the cookie:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">HomePageView</span><span>(</span><span style="color:#8fbcbb;">TemplateView</span><span>):</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">render_to_response</span><span>(self</span><span style="color:#eceff4;">, </span><span>context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>response_kwargs):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">render_to_response</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span style="font-weight:bold;color:#d8dee9;">response_kwargs</span><span>):</span><span>
 </span><span>    </span><span>
 </span><span>        </span><span style="color:#616e88;"># from django.utils import translation</span><span style="color:#616e88;">
 </span><span>        </span><span style="color:#616e88;"># user_language = &#39;fi&#39; </span><span style="color:#616e88;">
 </span><span>        </span><span style="color:#616e88;"># translation.activate(user_language)</span><span style="color:#616e88;">
-</span><span>        response </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>(HomePageView</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">self</span><span>)</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">render_to_response</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>response_kwargs)</span><span>
+</span><span>        response </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>(HomePageView</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">self</span><span>)</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">render_to_response</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>response_kwargs)</span><span>
 </span><span>        </span><span style="color:#616e88;"># response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)</span><span style="color:#616e88;">
-</span><span>        response</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">delete_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span>)</span><span>
+</span><span>        response</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">delete_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span>)</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>response</span><span>
 </span><span>    </span><span>
 </span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>
 </span></code></pre>
 <p>Do this in a <em>function-based</em> view:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">home</span><span>(request): </span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">home</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>): </span><span>
 </span><span>    </span><span style="color:#616e88;"># from django.utils import translation</span><span style="color:#616e88;">
 </span><span>    </span><span style="color:#616e88;"># user_language = &#39;fi&#39; </span><span style="color:#616e88;">
 </span><span>    </span><span style="color:#616e88;"># translation.activate(user_language)</span><span style="color:#616e88;">
-</span><span>    response </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>)</span><span>
+</span><span>    response </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>)</span><span>
 </span><span>    </span><span style="color:#616e88;"># response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)</span><span style="color:#616e88;">
 </span><span>    </span><span style="color:#81a1c1;">return </span><span>response</span><span>
 </span></code></pre>
@@ -332,8 +328,8 @@
 </span><span style="color:#616e88;"># from django.conf.urls.i18n import i18n_patterns </span><span style="color:#616e88;">
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span><span>
 </span><span style="color:#616e88;"># urlpatterns = i18n_patterns(</span><span style="color:#616e88;">
@@ -359,17 +355,17 @@
 </span><span style="color:#616e88;"># ]</span><span style="color:#616e88;">
 </span><span>
 </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">i18n_patterns</span><span>(</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>        prefix_default_language</span><span style="color:#81a1c1;">=False</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">i18n_patterns</span><span>(</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#d8dee9;">prefix_default_language</span><span style="color:#81a1c1;">=False</span><span>
 </span><span>    )             </span><span>
 </span></code></pre>
 <ul>
 <li>The <code>gettext_lazy</code> function translates the string when the value is accessed, not when we call the function.</li>
 </ul>
 <p>Run the <code>makemessages</code> command:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">django-admin</span><span> makemessages -l fi --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> fi</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>Edit the messages file:</p>
 <pre style="background-color:#2e3440;color:#d8dee9;"><code><span>#: config/urls.py:13</span><span>
@@ -377,7 +373,7 @@
 </span><span>msgstr &quot;yllapito/&quot;</span><span>
 </span></code></pre>
 <p>Run the <code>compilemessages</code> command:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">django-admin</span><span> compilemessages --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> compilemessages</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>Edit the <code>home.html</code> template file and add these lines to it:</p>
 <pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span>{% </span><span style="color:#81a1c1;">load </span><span>i18n %}</span><span>
@@ -429,10 +425,10 @@
 <p>Edit the <em>pages</em> app <code>views.py</code> file and add this function to it:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>http </span><span style="color:#81a1c1;">import </span><span>HttpResponseRedirect</span><span>
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">change_language</span><span>(request):</span><span>
-</span><span>    response </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">HttpResponseRedirect</span><span>(</span><span style="color:#a3be8c;">&#39;/&#39;</span><span>)</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">change_language</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>):</span><span>
+</span><span>    response </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">HttpResponseRedirect</span><span>(</span><span style="color:#a3be8c;">&#39;/&#39;</span><span>)</span><span>
 </span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&#39;POST&#39;</span><span>:</span><span>
-</span><span>        language </span><span style="color:#81a1c1;">= </span><span>request</span><span style="color:#81a1c1;">.</span><span>POST</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">get</span><span>(</span><span style="color:#a3be8c;">&#39;language&#39;</span><span>)</span><span>
+</span><span>        language </span><span style="color:#81a1c1;">= </span><span>request</span><span style="color:#81a1c1;">.</span><span>POST</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">get</span><span>(</span><span style="color:#a3be8c;">&#39;language&#39;</span><span>)</span><span>
 </span><span>        </span><span style="color:#81a1c1;">if </span><span>language:</span><span>
 </span><span>            </span><span style="color:#81a1c1;">if </span><span>language </span><span style="color:#81a1c1;">!= </span><span>settings</span><span style="color:#81a1c1;">.LANGUAGE_CODE and </span><span>[lang </span><span style="color:#81a1c1;">for </span><span>lang </span><span style="color:#81a1c1;">in </span><span>settings</span><span style="color:#81a1c1;">.LANGUAGES if </span><span>lang[</span><span style="color:#b48ead;">0</span><span>] </span><span style="color:#81a1c1;">== </span><span>language]:</span><span>
 </span><span>                redirect_path </span><span style="color:#81a1c1;">= f</span><span style="color:#a3be8c;">&#39;/</span><span>{language}</span><span style="color:#a3be8c;">/&#39;</span><span>
@@ -441,9 +437,9 @@
 </span><span>            </span><span style="color:#81a1c1;">else</span><span>:</span><span>
 </span><span>                </span><span style="color:#81a1c1;">return </span><span>response</span><span>
 </span><span>            </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils </span><span style="color:#81a1c1;">import </span><span>translation</span><span>
-</span><span>            translation</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">activate</span><span>(language)</span><span>
-</span><span>            response </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">HttpResponseRedirect</span><span>(redirect_path)</span><span>
-</span><span>            response</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">set_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span style="color:#eceff4;">, </span><span>language)</span><span>
+</span><span>            translation</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">activate</span><span>(language)</span><span>
+</span><span>            response </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">HttpResponseRedirect</span><span>(redirect_path)</span><span>
+</span><span>            response</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">set_cookie</span><span>(settings</span><span style="color:#81a1c1;">.LANGUAGE_COOKIE_NAME</span><span style="color:#eceff4;">, </span><span>language)</span><span>
 </span><span>    </span><span style="color:#81a1c1;">return </span><span>response</span><span>
 </span></code></pre>
 <ul>
@@ -463,16 +459,16 @@
 </span><span>
 </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;change_language/&#39;</span><span style="color:#eceff4;">, </span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;change_language/&#39;</span><span style="color:#eceff4;">, </span><span>
 </span><span>         change_language</span><span style="color:#eceff4;">, </span><span>
-</span><span>         name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;change_language&#39;</span><span>)</span><span>
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;change_language&#39;</span><span>)</span><span>
 </span><span>]</span><span>
 </span><span>
 </span><span style="color:#616e88;"># HERE (add +)</span><span style="color:#616e88;">
-</span><span>urlpatterns </span><span style="color:#81a1c1;">+= </span><span style="color:#88c0d0;">i18n_patterns</span><span>(</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>        </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>        prefix_default_language</span><span style="color:#81a1c1;">=False</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">+= </span><span style="font-weight:bold;color:#88c0d0;">i18n_patterns</span><span>(</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;pages.urls&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#d8dee9;">prefix_default_language</span><span style="color:#81a1c1;">=False</span><span>
 </span><span>    )</span><span>
 </span></code></pre>
 <p>The official docs offer slightly different <a href="https://docs.djangoproject.com/en/dev/topics/i18n/translation/#the-set-language-redirect-view">switcher</a> implementation.</p>
@@ -482,9 +478,9 @@
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">HomePageView</span><span>(</span><span style="color:#8fbcbb;">TemplateView</span><span>):</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">get_context_data</span><span>(self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>kwargs):  </span><span>
-</span><span>        context </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">get_context_data</span><span>(</span><span style="color:#81a1c1;">**</span><span>kwargs)</span><span>
-</span><span>        context[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>] </span><span style="color:#81a1c1;">= _</span><span>(</span><span style="color:#a3be8c;">&#39;Home&#39;</span><span>)</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_context_data</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span style="font-weight:bold;color:#d8dee9;">kwargs</span><span>):  </span><span>
+</span><span>        context </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">get_context_data</span><span>(</span><span style="color:#81a1c1;">**</span><span>kwargs)</span><span>
+</span><span>        context[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>] </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;Home&#39;</span><span>)</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>context</span><span>
 </span><span>
 </span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span>
@@ -497,10 +493,10 @@
 <li><code>context['title'] = _('Home')</code> changes the context.</li>
 </ul>
 <p>With function-based views you can pass the context like this:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">home</span><span>(request): </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">home</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>): </span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span>
 </span><span>                  </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>                  {</span><span style="color:#a3be8c;">&#39;title&#39;</span><span style="color:#eceff4;">: </span><span style="color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;Home&#39;</span><span>)})</span><span>
+</span><span>                  {</span><span style="color:#a3be8c;">&#39;title&#39;</span><span style="color:#eceff4;">: </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;Home&#39;</span><span>)})</span><span>
 </span></code></pre>
 <p>Edit the <em>pages</em> app <code>home.html</code> template and print out the title:</p>
 <pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span>{% </span><span style="color:#81a1c1;">load </span><span>i18n %}</span><span>
@@ -513,7 +509,7 @@
 </span><span>LANGUAGE_CODE: {{ LANGUAGE_CODE }}</span><span>
 </span></code></pre>
 <p>Run the <code>makemessages</code> command:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">django-admin</span><span> makemessages -l fi --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> fi</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>Edit the translation file:</p>
 <pre style="background-color:#2e3440;color:#d8dee9;"><code><span>#: pages/views.py:21 pages/views.py:29</span><span>
@@ -521,25 +517,25 @@
 </span><span>msgstr &quot;Etusivu&quot;</span><span>
 </span></code></pre>
 <p>Run the <code>compilemessages</code> command:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">django-admin</span><span> compilemessages --ignore venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> compilemessages</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv</span><span>
 </span></code></pre>
 <p>The home page should now display the translated title:</p>
 <p><img src="/images/blog/django-translation/06.png" alt="" /></p>
 <h3 id="model-translation">Model translation</h3>
 <p>Let's use the <code>django-modeltranslation</code> package to translate database items:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">pip</span><span> install django-modeltranslation</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django-modeltranslation</span><span>
 </span></code></pre>
 <p>Edit the <em>pages</em> app <code>models.py</code> file and add these lines to it:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models</span><span>
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):</span><span>
-</span><span>    text </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">TextField</span><span>()</span><span>
+</span><span>    text </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">TextField</span><span>()</span><span>
 </span></code></pre>
 <p>Edit the <em>pages</em> app <code>admin.py</code> file and add these lines to it:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin</span><span>
 </span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post</span><span>
 </span><span>
-</span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">register</span><span>(Post)</span><span>
+</span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">register</span><span>(Post)</span><span>
 </span></code></pre>
 <p>Create a file called <code>translation.py</code> in the <em>pages</em> app directory and add these lines to it:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>modeltranslation</span><span style="color:#81a1c1;">.</span><span>translator </span><span style="color:#81a1c1;">import </span><span>translator</span><span style="color:#eceff4;">, </span><span>TranslationOptions</span><span>
@@ -548,7 +544,7 @@
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostTranslationOptions</span><span>(</span><span style="color:#8fbcbb;">TranslationOptions</span><span>):</span><span>
 </span><span>    fields </span><span style="color:#81a1c1;">= </span><span>(</span><span style="color:#a3be8c;">&#39;text&#39;</span><span style="color:#eceff4;">, </span><span>)</span><span>
 </span><span>
-</span><span>translator</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">register</span><span>(Post</span><span style="color:#eceff4;">, </span><span>PostTranslationOptions)</span><span>
+</span><span>translator</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">register</span><span>(Post</span><span style="color:#eceff4;">, </span><span>PostTranslationOptions)</span><span>
 </span></code></pre>
 <p>Make sure to add the comma (<code>,</code>) in <code>fields = ('text', )</code> if you have only one field.</p>
 <p>Edit the project <code>settings.py</code> file and add <code>modeltranslation</code> to the <code>INSTALLED_APPS</code> list:</p>
@@ -569,13 +565,13 @@
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils</span><span style="color:#81a1c1;">.</span><span>translation </span><span style="color:#81a1c1;">import </span><span>ugettext_lazy </span><span style="color:#81a1c1;">as _</span><span>
 </span><span>
 </span><span style="color:#81a1c1;">LANGUAGES = </span><span>(</span><span>
-</span><span>    (</span><span style="color:#a3be8c;">&#39;en-us&#39;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;English&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
-</span><span>    (</span><span style="color:#a3be8c;">&#39;fi&#39;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;Finnish&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>    (</span><span style="color:#a3be8c;">&#39;en-us&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;English&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
+</span><span>    (</span><span style="color:#a3be8c;">&#39;fi&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;Finnish&#39;</span><span>))</span><span style="color:#eceff4;">,</span><span>
 </span><span>)</span><span>
 </span></code></pre>
 <p>Run migrations:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">\</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py migrate</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate</span><span>
 </span></code></pre>
 <p>Edit the <em>pages</em> app <code>views.py</code> file and make these changes to the <code>HomePageView</code>:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
@@ -583,11 +579,11 @@
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">HomePageView</span><span>(</span><span style="color:#8fbcbb;">TemplateView</span><span>):</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">get_context_data</span><span>(self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>kwargs):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_context_data</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span style="font-weight:bold;color:#d8dee9;">kwargs</span><span>):</span><span>
 </span><span>        </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>        posts </span><span style="color:#81a1c1;">= </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">all</span><span>()</span><span>
-</span><span>        context </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">get_context_data</span><span>(</span><span style="color:#81a1c1;">**</span><span>kwargs)</span><span>
-</span><span>        context[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>] </span><span style="color:#81a1c1;">= _</span><span>(</span><span style="color:#a3be8c;">&#39;Home&#39;</span><span>)</span><span>
+</span><span>        posts </span><span style="color:#81a1c1;">= </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span>
+</span><span>        context </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">get_context_data</span><span>(</span><span style="color:#81a1c1;">**</span><span>kwargs)</span><span>
+</span><span>        context[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>] </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;Home&#39;</span><span>)</span><span>
 </span><span>        </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
 </span><span>        context[</span><span style="color:#a3be8c;">&#39;posts&#39;</span><span>] </span><span style="color:#81a1c1;">= </span><span>posts </span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>context</span><span>
@@ -603,10 +599,38 @@
 </span></code></pre>
 <p><img src="/images/blog/django-translation/10.png" alt="" /></p>
 </div>
-        
-    </div>
 
-    
+
+
+
+
+</div>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(()=> {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
+
+
 
 
     <div class="clear"></div>
@@ -614,7 +638,7 @@
     
 
     <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
         <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
         <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
         <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
@@ -625,6 +649,7 @@
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
 </body>
 </html>
 

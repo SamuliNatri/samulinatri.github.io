@@ -41,28 +41,24 @@
 
     
 
-    <div class="blog">
+<div class="blog">
+    
+    <div class="blog-dates">
+        <span itemprop="dateModified" 
+        content="Jun 26, 2020" 
+        class="blog-updated">Updated <strong>Jun 26, 2020</strong> 
+    </span>
+    
+    <span itemprop="datePublished" 
+    content="Feb 11, 2018" 
+    class="blog-updated">(Posted Feb 11, 2018)
+</span>
+</div>
 
-        <div class="blog-dates">
-            <span itemprop="dateModified" 
-                content="Jun 26, 2020" 
-                class="blog-updated">(Updated <strong>Jun 26, 2020</strong>) 
-            </span>
+<h1 class="blog-title">Django - Pagination Tutorial</h1>
+<div class="blog-description">How to split content across pages.</div>
 
-            <span itemprop="datePublished" 
-                content="Feb 11, 2018" 
-                class="blog-updated">[Posted Feb 11, 2018]
-            </span>
-        </div>
-
-        <h1 class="blog-title">Django - Pagination Tutorial</h1>
-        <div class="blog-description">How to split content across pages.</div>
-
-        
-            
-        
-        
-        <div class="blog-content"><p><img src="/static/images/blog/django-pagination-tutorial/02.png" alt="" /></p>
+<div class="blog-content"><p><img src="/static/images/blog/django-pagination-tutorial/02.png" alt="" /></p>
 <h2 id="introduction">Introduction</h2>
 <p>We use Django's pagination tools to spread content across multiple pages.</p>
 <h2 id="quickstart-with-a-class-based-view">Quickstart (with a class-based view)</h2>
@@ -109,12 +105,12 @@
 <h2 id="full-tutorial">Full tutorial</h2>
 <h3 id="setup">Setup</h3>
 <p>Run these commands to setup a new project:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite</span><span>
-</span><span style="color:#88c0d0;">python3</span><span> -m venv venv</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv</span><span>
 </span><span style="color:#88c0d0;">source</span><span> venv/bin/activate</span><span>
-</span><span style="color:#88c0d0;">pip</span><span> install django</span><span>
-</span><span style="color:#88c0d0;">django-admin</span><span> startproject mysite .</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py startapp blog</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite .</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog</span><span>
 </span></code></pre>
 <p>Add <em>blog</em> configuration class to the <code>INSTALLED_APPS</code> list:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[</span><span>
@@ -133,21 +129,21 @@
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models</span><span>
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):</span><span>
-</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">CharField</span><span>(max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span>)</span><span>
+</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span>)</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">__str__</span><span>(self):</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">__str__</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return self.</span><span>title</span><span>
 </span></code></pre>
 <p>Run migrations:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py makemigrations</span><span>
-</span><span style="color:#88c0d0;">python</span><span> manage.py migrate</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate</span><span>
 </span></code></pre>
 <h3 id="create-posts">Create posts</h3>
 <p>Create some content:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#88c0d0;">python</span><span> manage.py shell</span><span>
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> from </span><span style="color:#88c0d0;">blog.models</span><span> import Post</span><span>
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> for </span><span style="color:#88c0d0;">i</span><span> in range(10)</span><span style="color:#88c0d0;">:</span><span>
-</span><span style="color:#88c0d0;">...</span><span>     Post.objects.create(title=</span><span style="color:#a3be8c;">&quot;Lorem ipsum %s&quot; </span><span style="color:#81a1c1;">%</span><span> i)</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py shell</span><span>
+</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> from </span><span style="font-weight:bold;color:#88c0d0;">blog.models</span><span> import Post</span><span>
+</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> for </span><span style="font-weight:bold;color:#88c0d0;">i</span><span> in range(10)</span><span style="color:#88c0d0;">:</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">...</span><span>     Post.objects.create(title=</span><span style="color:#a3be8c;">&quot;Lorem ipsum %s&quot; </span><span style="color:#81a1c1;">%</span><span> i)</span><span>
 </span></code></pre>
 <h3 id="mysite-urls-py">mysite/urls.py</h3>
 <p>Edit the project <code>urls.py</code> file and add the following path to it:</p>
@@ -158,8 +154,8 @@
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <h3 id="blog-views-py">blog/views.py</h3>
@@ -232,14 +228,14 @@
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>core</span><span style="color:#81a1c1;">.</span><span>paginator </span><span style="color:#81a1c1;">import </span><span>Paginator</span><span>
 </span><span>
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="color:#88c0d0;">function_based</span><span>(request):</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">function_based</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>):</span><span>
 </span><span>
-</span><span>    posts </span><span style="color:#81a1c1;">= </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">all</span><span>()</span><span>
-</span><span>    paginator </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">Paginator</span><span>(posts</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">5</span><span>)</span><span>
-</span><span>    page </span><span style="color:#81a1c1;">= </span><span>request</span><span style="color:#81a1c1;">.</span><span>GET</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">get</span><span>(</span><span style="color:#a3be8c;">&#39;page&#39;</span><span>)</span><span>
-</span><span>    posts </span><span style="color:#81a1c1;">= </span><span>paginator</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">get_page</span><span>(page)</span><span>
+</span><span>    posts </span><span style="color:#81a1c1;">= </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span>
+</span><span>    paginator </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">Paginator</span><span>(posts</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">5</span><span>)</span><span>
+</span><span>    page </span><span style="color:#81a1c1;">= </span><span>request</span><span style="color:#81a1c1;">.</span><span>GET</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">get</span><span>(</span><span style="color:#a3be8c;">&#39;page&#39;</span><span>)</span><span>
+</span><span>    posts </span><span style="color:#81a1c1;">= </span><span>paginator</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">get_page</span><span>(page)</span><span>
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,</span><span>
 </span><span>                  </span><span style="color:#a3be8c;">&#39;blog/function_based.html&#39;</span><span style="color:#eceff4;">,</span><span>
 </span><span>                  {</span><span style="color:#a3be8c;">&#39;posts&#39;</span><span style="color:#eceff4;">: </span><span>posts})</span><span>
 </span></code></pre>
@@ -281,10 +277,10 @@
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>blog </span><span style="color:#81a1c1;">import </span><span>views</span><span>
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;function-based/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>function_based</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;function_based&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;function-based/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>function_based</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;function_based&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <p>Visit <code>/function-based/</code>.</p>
@@ -399,11 +395,11 @@
 </span></code></pre>
 <p>Add this path to the project <code>urls.py</code> file:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;function-based/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>function_based</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;function_based&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;function-based/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>function_based</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;function_based&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blue-theme/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>BlueThemeView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;blue_theme&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blue-theme/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>BlueThemeView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;blue_theme&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <p>Visit <code>/blue-theme/</code>.</p>
@@ -516,20 +512,48 @@
 </span></code></pre>
 <p>Add this path to the project <code>urls.py</code> file:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;function-based/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>function_based</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;function_based&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blue-theme/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>BlueThemeView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;blue_theme&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>HomepageView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;function-based/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>function_based</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;function_based&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blue-theme/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>BlueThemeView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;blue_theme&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
 </span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;green-theme/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>GreenThemeView</span><span style="color:#81a1c1;">.</span><span style="color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span>name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;green_theme&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;green-theme/&#39;</span><span style="color:#eceff4;">, </span><span>views</span><span style="color:#81a1c1;">.</span><span>GreenThemeView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;green_theme&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
 </span><span>]</span><span>
 </span></code></pre>
 <p>Visit <code>/green-theme/</code>.</p>
 </div>
-        
-    </div>
 
-    
+
+
+
+
+</div>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(()=> {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
+
+
 
 
     <div class="clear"></div>
@@ -537,7 +561,7 @@
     
 
     <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
         <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
         <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
         <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
@@ -548,6 +572,7 @@
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
 </body>
 </html>
 

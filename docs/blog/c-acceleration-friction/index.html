@@ -41,34 +41,24 @@
 
     
 
-    <div class="blog">
+<div class="blog">
+    
+    <div class="blog-dates">
+        <span itemprop="dateModified" 
+        content="Apr 29, 2021" 
+        class="blog-updated">Updated <strong>Apr 29, 2021</strong> 
+    </span>
+    
+    <span itemprop="datePublished" 
+    content="Dec 17, 2020" 
+    class="blog-updated">(Posted Dec 17, 2020)
+</span>
+</div>
 
-        <div class="blog-dates">
-            <span itemprop="dateModified" 
-                content="Apr 29, 2021" 
-                class="blog-updated">(Updated <strong>Apr 29, 2021</strong>) 
-            </span>
+<h1 class="blog-title">Acceleration &amp; Friction (C&#x2F;C++ &amp; Win32)</h1>
+<div class="blog-description">How to accelerate a rectangle and slow it down with friction.</div>
 
-            <span itemprop="datePublished" 
-                content="Dec 17, 2020" 
-                class="blog-updated">[Posted Dec 17, 2020]
-            </span>
-        </div>
-
-        <h1 class="blog-title">Acceleration &amp; Friction (C&#x2F;C++ &amp; Win32)</h1>
-        <div class="blog-description">How to accelerate a rectangle and slow it down with friction.</div>
-
-        
-            
-            <div class="blog-video">
-                <iframe class="blog-video-iframe" height="315" 
-                src="https://www.youtube.com/embed/34QCGDQbIhk/" 
-                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            
-        
-        
-        <div class="blog-content"><h2 id="code-main-cpp">Code (main.cpp)</h2>
+<div class="blog-content"><h2 id="code-main-cpp">Code (main.cpp)</h2>
 <pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;wchar.h&gt;</span><span>
@@ -78,11 +68,11 @@
 </span><span style="color:#81a1c1;">struct </span><span style="color:#8fbcbb;">v2</span><span>
 </span><span>{</span><span>
 </span><span>    </span><span style="color:#81a1c1;">float</span><span> x</span><span style="color:#eceff4;">,</span><span> y</span><span style="color:#eceff4;">;</span><span>
-</span><span>    v2</span><span style="color:#81a1c1;">&amp; </span><span style="color:#88c0d0;">operator*=</span><span>(</span><span style="color:#81a1c1;">float </span><span>a)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    v2</span><span style="color:#81a1c1;">&amp; </span><span style="color:#88c0d0;">operator+=</span><span>(v2 a)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    v2</span><span style="color:#81a1c1;">&amp; </span><span style="font-weight:bold;color:#88c0d0;">operator*=</span><span>(</span><span style="color:#81a1c1;">float </span><span style="font-weight:bold;color:#d8dee9;">a</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    v2</span><span style="color:#81a1c1;">&amp; </span><span style="font-weight:bold;color:#88c0d0;">operator+=</span><span>(v2 </span><span style="font-weight:bold;color:#d8dee9;">a</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span style="color:#eceff4;">;</span><span>
 </span><span>
-</span><span>v2 </span><span style="color:#88c0d0;">operator*</span><span>(</span><span style="color:#81a1c1;">float </span><span>a</span><span style="color:#eceff4;">,</span><span> v2 b)</span><span>
+</span><span>v2 </span><span style="font-weight:bold;color:#88c0d0;">operator*</span><span>(</span><span style="color:#81a1c1;">float </span><span style="font-weight:bold;color:#d8dee9;">a</span><span style="color:#eceff4;">,</span><span> v2 </span><span style="font-weight:bold;color:#d8dee9;">b</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    v2 result</span><span style="color:#eceff4;">;</span><span>
 </span><span>    result</span><span style="color:#81a1c1;">.</span><span>x </span><span style="color:#81a1c1;">=</span><span> a </span><span style="color:#81a1c1;">*</span><span> b</span><span style="color:#81a1c1;">.</span><span>x</span><span style="color:#eceff4;">;</span><span>
@@ -90,13 +80,13 @@
 </span><span>    </span><span style="color:#81a1c1;">return</span><span> result</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span>
 </span><span>
-</span><span>v2</span><span style="color:#81a1c1;">&amp; </span><span>v2</span><span style="color:#81a1c1;">::</span><span style="color:#88c0d0;">operator*=</span><span>(</span><span style="color:#81a1c1;">float </span><span>a)</span><span>
+</span><span>v2</span><span style="color:#81a1c1;">&amp; </span><span>v2</span><span style="color:#81a1c1;">::</span><span style="font-weight:bold;color:#88c0d0;">operator*=</span><span>(</span><span style="color:#81a1c1;">float </span><span style="font-weight:bold;color:#d8dee9;">a</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    </span><span style="color:#81a1c1;">*this =</span><span> a </span><span style="color:#81a1c1;">* *this</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span style="color:#81a1c1;">return *this</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span>
 </span><span>
-</span><span>v2 </span><span style="color:#88c0d0;">operator+</span><span>(v2 a</span><span style="color:#eceff4;">,</span><span> v2 b)</span><span>
+</span><span>v2 </span><span style="font-weight:bold;color:#88c0d0;">operator+</span><span>(v2 </span><span style="font-weight:bold;color:#d8dee9;">a</span><span style="color:#eceff4;">,</span><span> v2 </span><span style="font-weight:bold;color:#d8dee9;">b</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    v2 result</span><span style="color:#eceff4;">;</span><span>
 </span><span>    result</span><span style="color:#81a1c1;">.</span><span>x </span><span style="color:#81a1c1;">=</span><span> a</span><span style="color:#81a1c1;">.</span><span>x </span><span style="color:#81a1c1;">+</span><span> b</span><span style="color:#81a1c1;">.</span><span>x</span><span style="color:#eceff4;">;</span><span>
@@ -104,7 +94,7 @@
 </span><span>    </span><span style="color:#81a1c1;">return</span><span> result</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span>
 </span><span>
-</span><span>v2</span><span style="color:#81a1c1;">&amp; </span><span>v2</span><span style="color:#81a1c1;">::</span><span style="color:#88c0d0;">operator+=</span><span>(v2 a)</span><span>
+</span><span>v2</span><span style="color:#81a1c1;">&amp; </span><span>v2</span><span style="color:#81a1c1;">::</span><span style="font-weight:bold;color:#88c0d0;">operator+=</span><span>(v2 </span><span style="font-weight:bold;color:#d8dee9;">a</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    </span><span style="color:#81a1c1;">*this = *this +</span><span> a</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span style="color:#81a1c1;">return *this</span><span style="color:#eceff4;">;</span><span>
@@ -132,14 +122,14 @@
 </span><span>
 </span><span>LARGE_INTEGER frequency</span><span style="color:#eceff4;">;</span><span>
 </span><span>
-</span><span style="color:#81a1c1;">float </span><span style="color:#88c0d0;">get_seconds_per_frame</span><span>(LARGE_INTEGER start_counter</span><span style="color:#eceff4;">,</span><span>
-</span><span>                            LARGE_INTEGER end_counter)</span><span>
+</span><span style="color:#81a1c1;">float </span><span style="font-weight:bold;color:#88c0d0;">get_seconds_per_frame</span><span>(LARGE_INTEGER </span><span style="font-weight:bold;color:#d8dee9;">start_counter</span><span style="color:#eceff4;">,</span><span>
+</span><span>                            LARGE_INTEGER </span><span style="font-weight:bold;color:#d8dee9;">end_counter</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#81a1c1;">return </span><span>((</span><span style="color:#81a1c1;">float</span><span>)(end_counter</span><span style="color:#81a1c1;">.</span><span>QuadPart </span><span style="color:#81a1c1;">-</span><span> start_counter</span><span style="color:#81a1c1;">.</span><span>QuadPart) </span><span style="color:#81a1c1;">/ </span><span>(</span><span style="color:#81a1c1;">float</span><span>)frequency</span><span style="color:#81a1c1;">.</span><span>QuadPart)</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span>
 </span><span>
-</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">clear_screen</span><span>(u32 color)</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">clear_screen</span><span>(u32 </span><span style="font-weight:bold;color:#d8dee9;">color</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)memory</span><span style="color:#eceff4;">; </span><span>
 </span><span>    </span><span>
@@ -151,11 +141,11 @@
 </span><span>    }</span><span>
 </span><span>}</span><span>
 </span><span>
-</span><span style="color:#81a1c1;">void </span><span style="color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#81a1c1;">int </span><span>rec_x</span><span style="color:#eceff4;">,</span><span>
-</span><span>                    </span><span style="color:#81a1c1;">int </span><span>rec_y</span><span style="color:#eceff4;">,</span><span>
-</span><span>                    </span><span style="color:#81a1c1;">int </span><span>rec_width</span><span style="color:#eceff4;">,</span><span>
-</span><span>                    </span><span style="color:#81a1c1;">int </span><span>rec_height</span><span style="color:#eceff4;">,</span><span>
-</span><span>                    u32 color)</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">rec_x</span><span style="color:#eceff4;">,</span><span>
+</span><span>                    </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">rec_y</span><span style="color:#eceff4;">,</span><span>
+</span><span>                    </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">rec_width</span><span style="color:#eceff4;">,</span><span>
+</span><span>                    </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">rec_height</span><span style="color:#eceff4;">,</span><span>
+</span><span>                    u32 </span><span style="font-weight:bold;color:#d8dee9;">color</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)memory</span><span style="color:#eceff4;">;</span><span>
 </span><span>    pixel </span><span style="color:#81a1c1;">+=</span><span> rec_y </span><span style="color:#81a1c1;">*</span><span> client_width </span><span style="color:#81a1c1;">+</span><span> rec_x</span><span style="color:#eceff4;">;</span><span>
@@ -177,7 +167,7 @@
 </span><span>
 </span><span>
 </span><span>LRESULT CALLBACK </span><span>
-</span><span style="color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND</span><span> window</span><span style="color:#eceff4;">, </span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND</span><span> window</span><span style="color:#eceff4;">, </span><span>
 </span><span>           </span><span style="color:#8fbcbb;">UINT</span><span> message</span><span style="color:#eceff4;">, </span><span>
 </span><span>           </span><span style="color:#8fbcbb;">WPARAM</span><span> w_param</span><span style="color:#eceff4;">, </span><span>
 </span><span>           </span><span style="color:#8fbcbb;">LPARAM</span><span> l_param)</span><span>
@@ -245,7 +235,7 @@
 </span><span>        </span><span>
 </span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">:</span><span>
 </span><span>        {</span><span>
-</span><span>            result </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">DefWindowProc</span><span>(window</span><span style="color:#eceff4;">,</span><span>
+</span><span>            result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProc</span><span>(window</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                   message</span><span style="color:#eceff4;">, </span><span>
 </span><span>                                   w_param</span><span style="color:#eceff4;">, </span><span>
 </span><span>                                   l_param)</span><span style="color:#eceff4;">;</span><span>
@@ -256,10 +246,10 @@
 </span><span>}</span><span>
 </span><span>
 </span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span>
-</span><span style="color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span>instance</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="color:#8fbcbb;">HINSTANCE </span><span>prev_instance</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="color:#8fbcbb;">PWSTR </span><span>cmd_line</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="color:#81a1c1;">int </span><span>cmd_show)</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">, </span><span>
+</span><span>         </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">prev_instance</span><span style="color:#eceff4;">, </span><span>
+</span><span>         </span><span style="color:#8fbcbb;">PWSTR </span><span style="font-weight:bold;color:#d8dee9;">cmd_line</span><span style="color:#eceff4;">, </span><span>
+</span><span>         </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">cmd_show</span><span>)</span><span>
 </span><span>{</span><span>
 </span><span>    WNDCLASS window_class </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
@@ -268,7 +258,7 @@
 </span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">;</span><span>
 </span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> instance</span><span style="color:#eceff4;">;</span><span>
 </span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">=</span><span> class_name</span><span style="color:#eceff4;">;</span><span>
-</span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                      IDC_CROSS</span><span>
 </span><span>                                      )</span><span style="color:#eceff4;">;</span><span>
 </span><span>    RECT window_rect</span><span style="color:#eceff4;">;</span><span>
@@ -277,7 +267,7 @@
 </span><span>    window_rect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">=</span><span> client_width</span><span style="color:#eceff4;">;</span><span>
 </span><span>    window_rect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">=</span><span> client_height</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">AdjustWindowRectEx</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>window_rect</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AdjustWindowRectEx</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>window_rect</span><span style="color:#eceff4;">,</span><span>
 </span><span>                       WS_OVERLAPPEDWINDOW</span><span style="color:#eceff4;">,</span><span>
 </span><span>                       </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span style="color:#b48ead;">0</span><span>
 </span><span>                       )</span><span style="color:#eceff4;">;</span><span>
@@ -285,15 +275,15 @@
 </span><span>    </span><span style="color:#81a1c1;">int</span><span> window_width </span><span style="color:#81a1c1;">=</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span style="color:#81a1c1;">int</span><span> window_height </span><span style="color:#81a1c1;">=</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> screen_width </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">GetSystemMetrics</span><span>(SM_CXSCREEN)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> screen_height </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">GetSystemMetrics</span><span>(SM_CYSCREEN)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> screen_width </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetSystemMetrics</span><span>(SM_CXSCREEN)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> screen_height </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetSystemMetrics</span><span>(SM_CYSCREEN)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#81a1c1;">int</span><span> window_x </span><span style="color:#81a1c1;">= </span><span>(screen_width </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">- </span><span>(window_width </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span style="color:#81a1c1;">int</span><span> window_y </span><span style="color:#81a1c1;">= </span><span>(screen_height </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">- </span><span>(window_height </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>window_class)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>window_class)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                 class_name</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                 </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Game&quot;</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                 WS_OVERLAPPEDWINDOW</span><span style="color:#81a1c1;">|</span><span>WS_VISIBLE</span><span style="color:#eceff4;">,</span><span>
@@ -306,7 +296,7 @@
 </span><span>                                 instance</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                 </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    memory </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">VirtualAlloc</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>    memory </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">VirtualAlloc</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
 </span><span>                          client_width </span><span style="color:#81a1c1;">*</span><span> client_height </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">,</span><span>
 </span><span>                          MEM_RESERVE</span><span style="color:#81a1c1;">|</span><span>MEM_COMMIT</span><span style="color:#eceff4;">,</span><span>
 </span><span>                          PAGE_READWRITE</span><span>
@@ -319,26 +309,26 @@
 </span><span>    bitmap_info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biBitCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">32</span><span style="color:#eceff4;">;</span><span>
 </span><span>    bitmap_info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biCompression </span><span style="color:#81a1c1;">=</span><span> BI_RGB</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">HDC</span><span> hdc </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">GetDC</span><span>(window)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">HDC</span><span> hdc </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetDC</span><span>(window)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
 </span><span>    LARGE_INTEGER start_counter</span><span style="color:#eceff4;">,</span><span> end_counter</span><span style="color:#eceff4;">,</span><span> counts</span><span style="color:#eceff4;">,</span><span> fps</span><span style="color:#eceff4;">,</span><span> ms</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>start_counter)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>start_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">QueryPerformanceFrequency</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>frequency)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceFrequency</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>frequency)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#81a1c1;">while</span><span>(running)</span><span>
 </span><span>    {</span><span>
 </span><span>        MSG message</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>message</span><span style="color:#eceff4;">,</span><span> window</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE))</span><span>
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>message</span><span style="color:#eceff4;">,</span><span> window</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE))</span><span>
 </span><span>        {</span><span>
-</span><span>            </span><span style="color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>message)</span><span style="color:#eceff4;">;</span><span>
-</span><span>            </span><span style="color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>message)</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>message)</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>message)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        }</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>end_counter)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>end_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#81a1c1;">float</span><span> seconds_per_frame </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">get_seconds_per_frame</span><span>(start_counter</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="color:#81a1c1;">float</span><span> seconds_per_frame </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_seconds_per_frame</span><span>(start_counter</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                                        end_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
 </span><span>        </span><span style="color:#81a1c1;">if</span><span>(seconds_per_frame </span><span style="color:#81a1c1;">&lt;</span><span> target_seconds_per_frame)</span><span>
@@ -347,20 +337,20 @@
 </span><span>            </span><span>
 </span><span>            sleep_ms </span><span style="color:#81a1c1;">= </span><span>(</span><span style="color:#8fbcbb;">DWORD</span><span>)(</span><span style="color:#b48ead;">1000 </span><span style="color:#81a1c1;">* </span><span>(target_seconds_per_frame </span><span style="color:#81a1c1;">-</span><span> seconds_per_frame))</span><span style="color:#eceff4;">;</span><span>
 </span><span>            </span><span>
-</span><span>            </span><span style="color:#88c0d0;">Sleep</span><span>(sleep_ms)</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">Sleep</span><span>(sleep_ms)</span><span style="color:#eceff4;">;</span><span>
 </span><span>            </span><span>
 </span><span>            </span><span style="color:#81a1c1;">while</span><span>(seconds_per_frame </span><span style="color:#81a1c1;">&lt;</span><span> target_seconds_per_frame)</span><span>
 </span><span>            {</span><span>
-</span><span>                </span><span style="color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>end_counter)</span><span style="color:#eceff4;">;</span><span>
+</span><span>                </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>end_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>                </span><span>
-</span><span>                seconds_per_frame </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">get_seconds_per_frame</span><span>(start_counter</span><span style="color:#eceff4;">,</span><span>
+</span><span>                seconds_per_frame </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_seconds_per_frame</span><span>(start_counter</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                                          end_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>            }</span><span>
 </span><span>        }</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>end_counter)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>end_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        seconds_per_frame </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">get_seconds_per_frame</span><span>(start_counter</span><span style="color:#eceff4;">,</span><span>
+</span><span>        seconds_per_frame </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_seconds_per_frame</span><span>(start_counter</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                                  end_counter)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
 </span><span>        start_counter </span><span style="color:#81a1c1;">=</span><span> end_counter</span><span style="color:#eceff4;">;</span><span>
@@ -389,19 +379,19 @@
 </span><span>        dd_player</span><span style="color:#81a1c1;">.</span><span>x </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
 </span><span>        dd_player</span><span style="color:#81a1c1;">.</span><span>y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">clear_screen</span><span>(</span><span style="color:#b48ead;">0x111111</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">clear_screen</span><span>(</span><span style="color:#b48ead;">0x111111</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x222222</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#b48ead;">150</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">150</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">25</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">25</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x333333</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#b48ead;">175</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">175</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">15</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">15</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x444444</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x222222</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#b48ead;">150</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">150</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">25</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">25</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x333333</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">draw_rectangle</span><span>(</span><span style="color:#b48ead;">175</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">175</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">15</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">15</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x444444</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">draw_rectangle</span><span>(player</span><span style="color:#81a1c1;">.</span><span>x</span><span style="color:#eceff4;">, </span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">draw_rectangle</span><span>(player</span><span style="color:#81a1c1;">.</span><span>x</span><span style="color:#eceff4;">, </span><span>
 </span><span>                       player</span><span style="color:#81a1c1;">.</span><span>y</span><span style="color:#eceff4;">, </span><span>
 </span><span>                       tile_size</span><span style="color:#eceff4;">, </span><span>
 </span><span>                       tile_size</span><span style="color:#eceff4;">, </span><span>
 </span><span>                       </span><span style="color:#b48ead;">0xff00f7</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">StretchDIBits</span><span>(hdc</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">StretchDIBits</span><span>(hdc</span><span style="color:#eceff4;">,</span><span>
 </span><span>                      </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
 </span><span>                      </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
 </span><span>                      client_width</span><span style="color:#eceff4;">,</span><span>
@@ -418,10 +408,10 @@
 </span><span>        </span><span>
 </span><span>        </span><span style="color:#81a1c1;">wchar_t</span><span> buf[</span><span style="color:#b48ead;">100</span><span>]</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#88c0d0;">swprintf_s</span><span>(buf</span><span style="color:#eceff4;">, </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(buf)</span><span style="color:#eceff4;">,</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">swprintf_s</span><span>(buf</span><span style="color:#eceff4;">, </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(buf)</span><span style="color:#eceff4;">,</span><span>
 </span><span>                   </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;</span><span style="color:#ebcb8b;">%0.4f\n\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">,</span><span>
 </span><span>                   seconds_per_frame)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#88c0d0;">OutputDebugString</span><span>(buf)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">OutputDebugString</span><span>(buf)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    }</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
@@ -435,10 +425,44 @@
 </span><span>user32.lib gdi32.lib</span><span>
 </span></code></pre>
 </div>
-        
-    </div>
 
-    
+
+
+<div class="blog-video">
+    <iframe class="blog-video-iframe" height="315" 
+    src="https://www.youtube.com/embed/34QCGDQbIhk/" 
+    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+
+
+</div>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(()=> {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
+
+
 
 
     <div class="clear"></div>
@@ -446,7 +470,7 @@
     
 
     <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com">Home</a>
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
         <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
         <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
         <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
@@ -457,6 +481,7 @@
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
 </body>
 </html>
 
