@@ -45,8 +45,8 @@
     
     <div class="blog-dates">
         <span itemprop="dateModified" 
-        content="Sep 26, 2021" 
-        class="blog-updated">Updated <strong>Sep 26, 2021</strong> 
+        content="Jun 26, 2022" 
+        class="blog-updated">Updated <strong>Jun 26, 2022</strong> 
     </span>
     
     <span itemprop="datePublished" 
@@ -58,242 +58,192 @@
 <h1 class="blog-title">DirectX 11 - Textures (C&#x2F;C++ &amp; Win32) </h1>
 <div class="blog-description">How to load an image and map it on a surface.</div>
 
-<div class="blog-content"><h2 id="main-cpp">main.cpp</h2>
+<div class="blog-content"><ul>
+<li>Download <code>stb_image.h</code> from here: <a href="https://github.com/nothings/stb/blob/master/stb_image.h">https://github.com/nothings/stb/blob/master/stb_image.h</a> and put it in the project root.</li>
+<li>Put some <code>image.jpg</code> in the root.</li>
+</ul>
+<h2 id="main-cpp">main.cpp</h2>
 <pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN</span><span>
 </span><span style="color:#81a1c1;">#define UNICODE</span><span>
-</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;assert.h&gt;</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;d3d11_1.h&gt;</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;d3dcompiler.h&gt;</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;float.h&gt;</span><span>
 </span><span style="color:#81a1c1;">#define STB_IMAGE_IMPLEMENTATION</span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&quot;stb_image.h&quot;</span><span>
 </span><span>
-</span><span>LRESULT CALLBACK </span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">window_proc</span><span>(</span><span style="color:#8fbcbb;">HWND</span><span> window</span><span style="color:#eceff4;">, </span><span>
-</span><span>            </span><span style="color:#8fbcbb;">UINT</span><span> message</span><span style="color:#eceff4;">, </span><span>
-</span><span>            </span><span style="color:#8fbcbb;">WPARAM</span><span> w_param</span><span style="color:#eceff4;">, </span><span>
-</span><span>            </span><span style="color:#8fbcbb;">LPARAM</span><span> l_param)</span><span>
-</span><span>{</span><span>
-</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(message)</span><span>
-</span><span>    {</span><span>
-</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">:</span><span>
-</span><span>        {</span><span>
-</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(w_param)</span><span>
-</span><span>            {</span><span>
-</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">:</span><span>
-</span><span>                {</span><span>
-</span><span>                    </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(window)</span><span style="color:#eceff4;">;</span><span>
-</span><span>                }</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">Window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">Message</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">WParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">LParam</span><span>) {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(Message) {</span><span>
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{</span><span>
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(WParam) {</span><span>
+</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(Window)</span><span style="color:#eceff4;">; </span><span>}</span><span style="color:#eceff4;">;</span><span>
 </span><span>            }</span><span>
 </span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">:</span><span>
-</span><span>        {</span><span>
-</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span>
-</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">:</span><span>
-</span><span>        {</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProc</span><span>(window</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                 message</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                 w_param</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                 l_param)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{</span><span>
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProc</span><span>(Window</span><span style="color:#eceff4;">,</span><span> Message</span><span style="color:#eceff4;">,</span><span> WParam</span><span style="color:#eceff4;">,</span><span>  LParam)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        }</span><span>
 </span><span>    }</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span>
 </span><span>
-</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">prev_instance</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="color:#8fbcbb;">PWSTR </span><span style="font-weight:bold;color:#d8dee9;">cmd_line</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">cmd_show</span><span>)</span><span>
-</span><span>{</span><span>
-</span><span>    </span><span style="color:#616e88;">// window creation</span><span style="color:#616e88;">
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">Instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">PrevInstance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">PWSTR </span><span style="font-weight:bold;color:#d8dee9;">CmdLine</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">CmdShow</span><span>) {</span><span>
 </span><span>    </span><span>
-</span><span>    WNDCLASS window_class </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WNDCLASS WindowClass </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">const wchar_t</span><span> class_name[] </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">const wchar_t</span><span> ClassName[] </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> window_proc</span><span style="color:#eceff4;">;</span><span>
-</span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> instance</span><span style="color:#eceff4;">;</span><span>
-</span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">=</span><span> class_name</span><span style="color:#eceff4;">;</span><span>
-</span><span>    window_class</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> Instance</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">=</span><span> ClassName</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>window_class))</span><span>
-</span><span>    {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>WindowClass)) {</span><span>
 </span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;RegisterClass failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    }</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 class_name</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Window&quot;</span><span style="color:#eceff4;">,</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> Window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> ClassName</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Window&quot;</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                 WS_OVERLAPPEDWINDOW</span><span style="color:#81a1c1;">|</span><span>WS_VISIBLE</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 instance</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> Instance</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span>window)</span><span>
-</span><span>    {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span>Window) {</span><span>
 </span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;CreateWindowEx failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    }</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// viewport</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Viewport</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    RECT window_rect </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">GetClientRect</span><span>(window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>window_rect)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    RECT WindowRect </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">GetClientRect</span><span>(Window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>WindowRect)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> client_width </span><span style="color:#81a1c1;">=</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> client_height </span><span style="color:#81a1c1;">=</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> window_rect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ClientWidth </span><span style="color:#81a1c1;">=</span><span> WindowRect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> WindowRect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ClientHeight </span><span style="color:#81a1c1;">=</span><span> WindowRect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> WindowRect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    D3D11_VIEWPORT viewport </span><span style="color:#81a1c1;">= </span><span>{ </span><span>
+</span><span>    D3D11_VIEWPORT Viewport </span><span style="color:#81a1c1;">= </span><span>{ </span><span>
 </span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span>
-</span><span>        (</span><span style="color:#81a1c1;">float</span><span>)client_width</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">float</span><span>) client_height</span><span style="color:#eceff4;">, </span><span>
+</span><span>        (</span><span style="color:#81a1c1;">float</span><span>)ClientWidth</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">float</span><span>) ClientHeight</span><span style="color:#eceff4;">, </span><span>
 </span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f </span><span>
 </span><span>    }</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// dx device &amp; context</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Device &amp; Context</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    ID3D11Device </span><span style="color:#81a1c1;">*</span><span>base_device</span><span style="color:#eceff4;">;</span><span>
-</span><span>    ID3D11DeviceContext </span><span style="color:#81a1c1;">*</span><span>base_context</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11Device </span><span style="color:#81a1c1;">*</span><span>BaseDevice</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11DeviceContext </span><span style="color:#81a1c1;">*</span><span>BaseContext</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> creation_flags </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> CreationFlags </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
 </span><span style="color:#5e81ac;">#ifdef</span><span> _DEBUG</span><span>
-</span><span>    creation_flags </span><span style="color:#81a1c1;">=</span><span> D3D11_CREATE_DEVICE_DEBUG</span><span style="color:#eceff4;">;</span><span>
+</span><span>    CreationFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_CREATE_DEVICE_DEBUG</span><span style="color:#eceff4;">;</span><span>
 </span><span style="color:#5e81ac;">#endif</span><span>
 </span><span>    </span><span>
-</span><span>    D3D_FEATURE_LEVEL feature_levels[] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
+</span><span>    D3D_FEATURE_LEVEL FeatureLevels[] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
 </span><span>        D3D_FEATURE_LEVEL_11_0</span><span>
 </span><span>    }</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">HRESULT</span><span> result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3D11CreateDevice</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       D3D_DRIVER_TYPE_HARDWARE</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       creation_flags</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       feature_levels</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="font-weight:bold;color:#88c0d0;">ARRAYSIZE</span><span>(feature_levels)</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       D3D11_SDK_VERSION</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>base_device</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>base_context</span><span>
-</span><span>                                       )</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">HRESULT</span><span> Result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3D11CreateDevice</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> D3D_DRIVER_TYPE_HARDWARE</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       CreationFlags</span><span style="color:#eceff4;">,</span><span> FeatureLevels</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       </span><span style="font-weight:bold;color:#88c0d0;">ARRAYSIZE</span><span>(FeatureLevels)</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       D3D11_SDK_VERSION</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>BaseDevice</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>BaseContext)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">FAILED</span><span>(result))</span><span>
-</span><span>    {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">FAILED</span><span>(Result)) {</span><span>
 </span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;D3D11CreateDevice failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    }</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11Device1 </span><span style="color:#81a1c1;">*</span><span>device</span><span style="color:#eceff4;">;</span><span>
-</span><span>    ID3D11DeviceContext1 </span><span style="color:#81a1c1;">*</span><span>context</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11Device1 </span><span style="color:#81a1c1;">*</span><span>Device</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11DeviceContext1 </span><span style="color:#81a1c1;">*</span><span>Context</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> base_device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">QueryInterface</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(ID3D11Device1)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>device)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    base_device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> BaseDevice</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">QueryInterface</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(ID3D11Device1)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>Device)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    BaseDevice</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> base_context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">QueryInterface</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(ID3D11DeviceContext1)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>context)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    base_context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> BaseContext</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">QueryInterface</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(ID3D11DeviceContext1)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>Context)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    BaseContext</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// swap chain</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Swap chain</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    DXGI_SWAP_CHAIN_DESC1 swap_chain_desc </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    DXGI_SWAP_CHAIN_DESC1 SwapChainDesc </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>Format </span><span style="color:#81a1c1;">=</span><span> DXGI_FORMAT_R8G8B8A8_UNORM_SRGB</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Count </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Quality </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>BufferUsage </span><span style="color:#81a1c1;">=</span><span> DXGI_USAGE_RENDER_TARGET_OUTPUT</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>BufferCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>Scaling </span><span style="color:#81a1c1;">=</span><span> DXGI_SCALING_STRETCH</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>SwapEffect </span><span style="color:#81a1c1;">=</span><span> DXGI_SWAP_EFFECT_DISCARD</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>AlphaMode </span><span style="color:#81a1c1;">=</span><span> DXGI_ALPHA_MODE_UNSPECIFIED</span><span style="color:#eceff4;">;</span><span>
-</span><span>    swap_chain_desc</span><span style="color:#81a1c1;">.</span><span>Flags </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>Format </span><span style="color:#81a1c1;">=</span><span> DXGI_FORMAT_R8G8B8A8_UNORM_SRGB</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Count </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Quality </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>BufferUsage </span><span style="color:#81a1c1;">=</span><span> DXGI_USAGE_RENDER_TARGET_OUTPUT</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>BufferCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>Scaling </span><span style="color:#81a1c1;">=</span><span> DXGI_SCALING_STRETCH</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>SwapEffect </span><span style="color:#81a1c1;">=</span><span> DXGI_SWAP_EFFECT_DISCARD</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>AlphaMode </span><span style="color:#81a1c1;">=</span><span> DXGI_ALPHA_MODE_UNSPECIFIED</span><span style="color:#eceff4;">;</span><span>
+</span><span>    SwapChainDesc</span><span style="color:#81a1c1;">.</span><span>Flags </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    IDXGISwapChain1 </span><span style="color:#81a1c1;">*</span><span>swap_chain</span><span style="color:#eceff4;">;</span><span>
+</span><span>    IDXGISwapChain1 </span><span style="color:#81a1c1;">*</span><span>SwapChain</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    IDXGIDevice2 </span><span style="color:#81a1c1;">*</span><span> dxgi_device</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">QueryInterface</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(IDXGIDevice2)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>dxgi_device)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    IDXGIDevice2 </span><span style="color:#81a1c1;">*</span><span>DxgiDevice</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">QueryInterface</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(IDXGIDevice2)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>DxgiDevice)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    IDXGIAdapter </span><span style="color:#81a1c1;">*</span><span> dxgi_adapter</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> dxgi_device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetAdapter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>dxgi_adapter)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    IDXGIAdapter </span><span style="color:#81a1c1;">*</span><span>DxgiAdapter</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> DxgiDevice</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetAdapter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>DxgiAdapter)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    DxgiDevice</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    dxgi_device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    IDXGIFactory2 </span><span style="color:#81a1c1;">*</span><span>DxgiFactory</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> DxgiAdapter</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetParent</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(IDXGIFactory2)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>DxgiFactory)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    DxgiAdapter</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    IDXGIFactory2 </span><span style="color:#81a1c1;">*</span><span> dxgi_factory</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> dxgi_adapter</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetParent</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(IDXGIFactory2)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>dxgi_factory)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    dxgi_adapter</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> DxgiFactory</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateSwapChainForHwnd</span><span>(Device</span><span style="color:#eceff4;">,</span><span> Window</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                                 </span><span style="color:#81a1c1;">&amp;</span><span>SwapChainDesc</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>SwapChain)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    DxgiFactory</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> dxgi_factory</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateSwapChainForHwnd</span><span>(device</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                                  window</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                                  </span><span style="color:#81a1c1;">&amp;</span><span>swap_chain_desc</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                                  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                                  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                                  </span><span style="color:#81a1c1;">&amp;</span><span>swap_chain</span><span>
-</span><span>                                                  )</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    dxgi_factory</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#616e88;">// Frame buffer</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// frame buffer view</span><span style="color:#616e88;">
+</span><span>    ID3D11Texture2D </span><span style="color:#81a1c1;">*</span><span>FrameBuffer</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> SwapChain</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBuffer</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(ID3D11Texture2D)</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>FrameBuffer)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11Texture2D </span><span style="color:#81a1c1;">*</span><span>frame_buffer</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> swap_chain</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBuffer</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                   </span><span style="font-weight:bold;color:#88c0d0;">__uuidof</span><span>(ID3D11Texture2D)</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                   (</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>frame_buffer</span><span>
-</span><span>                                   )</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11RenderTargetView </span><span style="color:#81a1c1;">*</span><span>FrameBufferView</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateRenderTargetView</span><span>(FrameBuffer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>FrameBufferView)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    FrameBuffer</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11RenderTargetView </span><span style="color:#81a1c1;">*</span><span>frame_buffer_view</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateRenderTargetView</span><span>(frame_buffer</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                            </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                            </span><span style="color:#81a1c1;">&amp;</span><span>frame_buffer_view</span><span>
-</span><span>                                            )</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    frame_buffer</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#616e88;">// Shaders</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// shaders</span><span style="color:#616e88;">
+</span><span>    ID3D10Blob </span><span style="color:#81a1c1;">*</span><span>VSBlob</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3DCompileFromFile</span><span>(</span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;shaders.hlsl&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;vs_main&quot;</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                </span><span style="color:#a3be8c;">&quot;vs_5_0&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>VSBlob</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D10Blob </span><span style="color:#81a1c1;">*</span><span>vs_blob</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3DCompileFromFile</span><span>(</span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;shaders.hlsl&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;vs_main&quot;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                </span><span style="color:#a3be8c;">&quot;vs_5_0&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>vs_blob</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    ID3D11VertexShader </span><span style="color:#81a1c1;">*</span><span>vertex_shader</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateVertexShader</span><span>(vs_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferPointer</span><span>()</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                        vs_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferSize</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>    ID3D11VertexShader </span><span style="color:#81a1c1;">*</span><span>VertexShader</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateVertexShader</span><span>(VSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferPointer</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                        VSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferSize</span><span>()</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                        </span><span style="color:#81a1c1;">&amp;</span><span>vertex_shader)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>                                        </span><span style="color:#81a1c1;">&amp;</span><span>VertexShader)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D10Blob </span><span style="color:#81a1c1;">*</span><span>ps_blob</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3DCompileFromFile</span><span>(</span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;shaders.hlsl&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;ps_main&quot;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                </span><span style="color:#a3be8c;">&quot;ps_5_0&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ps_blob</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D10Blob </span><span style="color:#81a1c1;">*</span><span>PSBlob</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3DCompileFromFile</span><span>(</span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;shaders.hlsl&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;ps_main&quot;</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                </span><span style="color:#a3be8c;">&quot;ps_5_0&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>PSBlob</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11PixelShader </span><span style="color:#81a1c1;">*</span><span>pixel_shader</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreatePixelShader</span><span>(ps_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferPointer</span><span>()</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       ps_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferSize</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>    ID3D11PixelShader </span><span style="color:#81a1c1;">*</span><span>PixelShader</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreatePixelShader</span><span>(PSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferPointer</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       PSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferSize</span><span>()</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                       </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>pixel_shader)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    ps_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>PixelShader)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    PSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// input layout</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Input layout</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    D3D11_INPUT_ELEMENT_DESC input_element_desc[] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
+</span><span>    D3D11_INPUT_ELEMENT_DESC InputElementDesc[] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
 </span><span>        {</span><span>
 </span><span>            </span><span style="color:#a3be8c;">&quot;POSITION&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span>
 </span><span>            DXGI_FORMAT_R32G32_FLOAT</span><span style="color:#eceff4;">, </span><span>
@@ -308,19 +258,19 @@
 </span><span>        }</span><span>
 </span><span>    }</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11InputLayout </span><span style="color:#81a1c1;">*</span><span>input_layout</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateInputLayout</span><span>(input_element_desc</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="font-weight:bold;color:#88c0d0;">ARRAYSIZE</span><span>(input_element_desc)</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       vs_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferPointer</span><span>()</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       vs_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferSize</span><span>()</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>input_layout</span><span>
+</span><span>    ID3D11InputLayout </span><span style="color:#81a1c1;">*</span><span>InputLayout</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateInputLayout</span><span>(InputElementDesc</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       </span><span style="font-weight:bold;color:#88c0d0;">ARRAYSIZE</span><span>(InputElementDesc)</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       VSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferPointer</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       VSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">GetBufferSize</span><span>()</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                       </span><span style="color:#81a1c1;">&amp;</span><span>InputLayout</span><span>
 </span><span>                                       )</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
-</span><span>    vs_blob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    VSBlob</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Release</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// vertex data, pos &amp; uv</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Vertex data, x,y position &amp; uv coords</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">float</span><span> vertex_data[] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
+</span><span>    </span><span style="color:#81a1c1;">float</span><span> VertexData[] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
 </span><span>        </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span>
 </span><span>        </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,</span><span>
@@ -329,147 +279,137 @@
 </span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span>
 </span><span>    }</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// vertex buffer</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Vertex buffer</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    D3D11_BUFFER_DESC vertex_data_desc </span><span style="color:#81a1c1;">= </span><span>{</span><span>
-</span><span>        </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(vertex_data)</span><span style="color:#eceff4;">,</span><span>
+</span><span>    D3D11_BUFFER_DESC VertexDataDesc </span><span style="color:#81a1c1;">= </span><span>{</span><span>
+</span><span>        </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(VertexData)</span><span style="color:#eceff4;">,</span><span>
 </span><span>        D3D11_USAGE_DEFAULT</span><span style="color:#eceff4;">,</span><span>
 </span><span>        D3D11_BIND_VERTEX_BUFFER</span><span style="color:#eceff4;">,</span><span>
 </span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>
 </span><span>    }</span><span style="color:#eceff4;">;</span><span>
-</span><span>    D3D11_SUBRESOURCE_DATA vertex_data_initial </span><span style="color:#81a1c1;">= </span><span>{ vertex_data }</span><span style="color:#eceff4;">;</span><span>
-</span><span>    ID3D11Buffer </span><span style="color:#81a1c1;">*</span><span>vertex_data_buffer</span><span style="color:#eceff4;">;</span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateBuffer</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>vertex_data_desc</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                  </span><span style="color:#81a1c1;">&amp;</span><span>vertex_data_initial</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                  </span><span style="color:#81a1c1;">&amp;</span><span>vertex_data_buffer)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    D3D11_SUBRESOURCE_DATA VertexDataInitial </span><span style="color:#81a1c1;">= </span><span>{ VertexData }</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11Buffer </span><span style="color:#81a1c1;">*</span><span>VertexDataBuffer</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateBuffer</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>VertexDataDesc</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                  </span><span style="color:#81a1c1;">&amp;</span><span>VertexDataInitial</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                  </span><span style="color:#81a1c1;">&amp;</span><span>VertexDataBuffer)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> stride </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">float</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> offset </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> num_vertices </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(vertex_data) </span><span style="color:#81a1c1;">/</span><span> stride</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> Stride </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">float</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> Offset </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> NumVertices </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(VertexData) </span><span style="color:#81a1c1;">/</span><span> Stride</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// load image</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Load image</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> image_width</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> image_height</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> image_channels</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> image_desired_channels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ImageWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ImageHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ImageChannels</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ImageDesiredChannels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>image_data </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">stbi_load</span><span>(</span><span style="color:#a3be8c;">&quot;image.jpg&quot;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                          </span><span style="color:#81a1c1;">&amp;</span><span>image_width</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                          </span><span style="color:#81a1c1;">&amp;</span><span>image_height</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                          </span><span style="color:#81a1c1;">&amp;</span><span>image_channels</span><span style="color:#eceff4;">,</span><span> image_desired_channels)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(image_data)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>ImageData </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">stbi_load</span><span>(</span><span style="color:#a3be8c;">&quot;image.jpg&quot;</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                         </span><span style="color:#81a1c1;">&amp;</span><span>ImageWidth</span><span style="color:#eceff4;">, </span><span>
+</span><span>                                         </span><span style="color:#81a1c1;">&amp;</span><span>ImageHeight</span><span style="color:#eceff4;">, </span><span>
+</span><span>                                         </span><span style="color:#81a1c1;">&amp;</span><span>ImageChannels</span><span style="color:#eceff4;">,</span><span> ImageDesiredChannels)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(ImageData)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> image_pitch </span><span style="color:#81a1c1;">=</span><span> image_width </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ImagePitch </span><span style="color:#81a1c1;">=</span><span> ImageWidth </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// texture</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Texture</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    D3D11_TEXTURE2D_DESC image_texture_desc </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    D3D11_TEXTURE2D_DESC ImageTextureDesc </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">=</span><span> image_width</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">=</span><span> image_height</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>MipLevels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>ArraySize </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>Format </span><span style="color:#81a1c1;">=</span><span> DXGI_FORMAT_R8G8B8A8_UNORM_SRGB</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Count </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Quality </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>Usage </span><span style="color:#81a1c1;">=</span><span> D3D11_USAGE_IMMUTABLE</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_texture_desc</span><span style="color:#81a1c1;">.</span><span>BindFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_BIND_SHADER_RESOURCE</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">=</span><span> ImageWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">=</span><span> ImageHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>MipLevels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>ArraySize </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>Format </span><span style="color:#81a1c1;">=</span><span> DXGI_FORMAT_R8G8B8A8_UNORM_SRGB</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Count </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Quality </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>Usage </span><span style="color:#81a1c1;">=</span><span> D3D11_USAGE_IMMUTABLE</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageTextureDesc</span><span style="color:#81a1c1;">.</span><span>BindFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_BIND_SHADER_RESOURCE</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    D3D11_SUBRESOURCE_DATA image_subresource_data </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    D3D11_SUBRESOURCE_DATA ImageSubresourceData </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    image_subresource_data</span><span style="color:#81a1c1;">.</span><span>pSysMem </span><span style="color:#81a1c1;">=</span><span> image_data</span><span style="color:#eceff4;">; </span><span>
-</span><span>    image_subresource_data</span><span style="color:#81a1c1;">.</span><span>SysMemPitch </span><span style="color:#81a1c1;">=</span><span> image_pitch</span><span style="color:#eceff4;">; </span><span>
+</span><span>    ImageSubresourceData</span><span style="color:#81a1c1;">.</span><span>pSysMem </span><span style="color:#81a1c1;">=</span><span> ImageData</span><span style="color:#eceff4;">; </span><span>
+</span><span>    ImageSubresourceData</span><span style="color:#81a1c1;">.</span><span>SysMemPitch </span><span style="color:#81a1c1;">=</span><span> ImagePitch</span><span style="color:#eceff4;">; </span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11Texture2D </span><span style="color:#81a1c1;">*</span><span>image_texture</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11Texture2D </span><span style="color:#81a1c1;">*</span><span>ImageTexture</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateTexture2D</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>image_texture_desc</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                     </span><span style="color:#81a1c1;">&amp;</span><span>image_subresource_data</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                     </span><span style="color:#81a1c1;">&amp;</span><span>image_texture</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateTexture2D</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>ImageTextureDesc</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                     </span><span style="color:#81a1c1;">&amp;</span><span>ImageSubresourceData</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                     </span><span style="color:#81a1c1;">&amp;</span><span>ImageTexture</span><span>
 </span><span>                                     )</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">free</span><span>(image_data)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">free</span><span>(ImageData)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// shader resource view</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Shader resource view</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    ID3D11ShaderResourceView </span><span style="color:#81a1c1;">*</span><span>image_shader_resource_view</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11ShaderResourceView </span><span style="color:#81a1c1;">*</span><span>ImageShaderResourceView</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateShaderResourceView</span><span>(image_texture</span><span style="color:#eceff4;">,</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateShaderResourceView</span><span>(ImageTexture</span><span style="color:#eceff4;">,</span><span>
 </span><span>                                              </span><span style="color:#81a1c1;">nullptr</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                              </span><span style="color:#81a1c1;">&amp;</span><span>image_shader_resource_view</span><span>
+</span><span>                                              </span><span style="color:#81a1c1;">&amp;</span><span>ImageShaderResourceView</span><span>
 </span><span>                                              )</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// sampler</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Sampler</span><span style="color:#616e88;">
 </span><span>    </span><span>
-</span><span>    D3D11_SAMPLER_DESC image_sampler_desc </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    D3D11_SAMPLER_DESC ImageSamplerDesc </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>Filter </span><span style="color:#81a1c1;">=</span><span> D3D11_FILTER_MIN_MAG_MIP_LINEAR</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>AddressU </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>AddressV </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>AddressW </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>MipLODBias </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>MaxAnisotropy </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>ComparisonFunc </span><span style="color:#81a1c1;">=</span><span> D3D11_COMPARISON_NEVER</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">0</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">1</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">2</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">3</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>MinLOD </span><span style="color:#81a1c1;">= -</span><span>FLT_MAX</span><span style="color:#eceff4;">;</span><span>
-</span><span>    image_sampler_desc</span><span style="color:#81a1c1;">.</span><span>MaxLOD </span><span style="color:#81a1c1;">=</span><span> FLT_MAX</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>Filter </span><span style="color:#81a1c1;">=</span><span> D3D11_FILTER_MIN_MAG_MIP_LINEAR</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>AddressU </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>AddressV </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>AddressW </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>MipLODBias </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>MaxAnisotropy </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>ComparisonFunc </span><span style="color:#81a1c1;">=</span><span> D3D11_COMPARISON_NEVER</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">0</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">1</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">2</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">3</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>MinLOD </span><span style="color:#81a1c1;">= -</span><span>FLT_MAX</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ImageSamplerDesc</span><span style="color:#81a1c1;">.</span><span>MaxLOD </span><span style="color:#81a1c1;">=</span><span> FLT_MAX</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    ID3D11SamplerState </span><span style="color:#81a1c1;">*</span><span>image_sampler_state</span><span style="color:#eceff4;">;</span><span>
+</span><span>    ID3D11SamplerState </span><span style="color:#81a1c1;">*</span><span>ImageSamplerState</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    result </span><span style="color:#81a1c1;">=</span><span> device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateSamplerState</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>image_sampler_desc</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                        </span><span style="color:#81a1c1;">&amp;</span><span>image_sampler_state)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Result </span><span style="color:#81a1c1;">=</span><span> Device</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">CreateSamplerState</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>ImageSamplerDesc</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                        </span><span style="color:#81a1c1;">&amp;</span><span>ImageSamplerState)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(result))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#88c0d0;">assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(Result))</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// loop</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#81a1c1;">bool</span><span> Running </span><span style="color:#81a1c1;">= true</span><span style="color:#eceff4;">;</span><span>
 </span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">bool</span><span> running </span><span style="color:#81a1c1;">= true</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">while</span><span>(running)</span><span>
-</span><span>    {</span><span>
-</span><span>        MSG msg</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nullptr</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE))</span><span>
-</span><span>        {</span><span>
-</span><span>            </span><span style="color:#81a1c1;">if</span><span>(msg</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) running </span><span style="color:#81a1c1;">= false</span><span style="color:#eceff4;">;</span><span>
-</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;</span><span>
-</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {</span><span>
+</span><span>        MSG Message</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nullptr</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {</span><span>
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(Message</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) Running </span><span style="color:#81a1c1;">= false</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        }</span><span>
 </span><span>        </span><span>
-</span><span>        </span><span style="color:#81a1c1;">float</span><span> color[</span><span style="color:#b48ead;">4</span><span>] </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">3</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">3</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">3</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">float</span><span> Color[</span><span style="color:#b48ead;">4</span><span>] </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">3</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">3</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">3</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">ClearRenderTargetView</span><span>(FrameBufferView</span><span style="color:#eceff4;">,</span><span> Color)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">ClearRenderTargetView</span><span>(frame_buffer_view</span><span style="color:#eceff4;">,</span><span> color)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">RSSetViewports</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Viewport)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">RSSetViewports</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>viewport)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">OMSetRenderTargets</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>FrameBufferView</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">IASetPrimitiveTopology</span><span>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">IASetInputLayout</span><span>(InputLayout)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">OMSetRenderTargets</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                    </span><span style="color:#81a1c1;">&amp;</span><span>frame_buffer_view</span><span style="color:#eceff4;">, </span><span>
-</span><span>                                    </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">IASetPrimitiveTopology</span><span>(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">IASetInputLayout</span><span>(input_layout)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">VSSetShader</span><span>(VertexShader</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">PSSetShader</span><span>(PixelShader</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">VSSetShader</span><span>(vertex_shader</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">PSSetShader</span><span>(pixel_shader</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">PSSetShaderResources</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ImageShaderResourceView)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">PSSetSamplers</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ImageSamplerState)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">PSSetShaderResources</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>image_shader_resource_view)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">PSSetSamplers</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>image_sampler_state)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">IASetVertexBuffers</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>VertexDataBuffer</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Stride</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Offset)</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span>        Context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Draw</span><span>(NumVertices</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">IASetVertexBuffers</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                    </span><span style="color:#81a1c1;">&amp;</span><span>vertex_data_buffer</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                    </span><span style="color:#81a1c1;">&amp;</span><span>stride</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                    </span><span style="color:#81a1c1;">&amp;</span><span>offset</span><span>
-</span><span>                                    )</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span>
-</span><span>        context</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Draw</span><span>(num_vertices</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span>
-</span><span>        swap_chain</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Present</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        SwapChain</span><span style="color:#81a1c1;">-&gt;</span><span style="font-weight:bold;color:#88c0d0;">Present</span><span>(</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
 </span><span>    }</span><span>
 </span><span>    </span><span>
 </span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
@@ -504,7 +444,10 @@
 </span><span>	</span><span style="color:#81a1c1;">return</span><span> my_texture</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Sample</span><span>(my_sampler</span><span style="color:#eceff4;">,</span><span> input</span><span style="color:#81a1c1;">.</span><span>uv)</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span style="color:#eceff4;">;</span><span>
 </span></code></pre>
-<h2 id="build-bat">build.bat</h2>
+<h2 id="build">Build</h2>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.cpp /link user32.lib d3d11.lib d3dcompiler.lib</span><span>
+</span></code></pre>
+<p>You might want to create a build script (such as <em>build.bat</em>) and add something like this to it:</p>
 <pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off</span><span>
 </span><span>
 </span><span>set COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/W4 /wd4100 /Oi /nologo /Fegame.exe</span><span>
@@ -516,7 +459,7 @@
 </span><span>REM</span><span style="color:#616e88;"> set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %RELEASE_FLAGS%</span><span style="color:#616e88;">
 </span><span>
 </span><span>set LINKER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/INCREMENTAL:NO /OPT:REF</span><span>
-</span><span>set LIBS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">user32.lib D3D11.lib D3Dcompiler.lib</span><span>
+</span><span>set LIBS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">user32.lib d3d11.lib d3dcompiler.lib</span><span>
 </span><span>
 </span><span>cl </span><span style="color:#81a1c1;">%</span><span>COMPILER_FLAGS</span><span style="color:#81a1c1;">%</span><span> main.cpp /link </span><span style="color:#81a1c1;">%</span><span>LINKER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>LIBS</span><span style="color:#81a1c1;">%</span><span>
 </span></code></pre>
