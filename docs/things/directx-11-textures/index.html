@@ -60,7 +60,7 @@
 
 <div class="blog-content"><ul>
 <li>Download <code>stb_image.h</code> from here: <a href="https://github.com/nothings/stb/blob/master/stb_image.h">https://github.com/nothings/stb/blob/master/stb_image.h</a> and put it in the project root.</li>
-<li>Put some <code>image.jpg</code> in the root.</li>
+<li>Put some <a href="/images/things/directx-11-textures/image.jpg">image.jpg</a> in the project root.</li>
 </ul>
 <h2 id="main-cpp">main.cpp</h2>
 <pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN</span><span>
@@ -447,7 +447,7 @@
 <h2 id="build">Build</h2>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.cpp /link user32.lib d3d11.lib d3dcompiler.lib</span><span>
 </span></code></pre>
-<p>You might want to create a build script (such as <em>build.bat</em>) and add something like this to it:</p>
+<h2 id="build-bat">build.bat</h2>
 <pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off</span><span>
 </span><span>
 </span><span>set COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/W4 /wd4100 /Oi /nologo /Fegame.exe</span><span>
@@ -463,10 +463,13 @@
 </span><span>
 </span><span>cl </span><span style="color:#81a1c1;">%</span><span>COMPILER_FLAGS</span><span style="color:#81a1c1;">%</span><span> main.cpp /link </span><span style="color:#81a1c1;">%</span><span>LINKER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>LIBS</span><span style="color:#81a1c1;">%</span><span>
 </span></code></pre>
+<h2 id="result">Result</h2>
+<p><img src="/images/things/directx-11-textures/image.png" alt="" /></p>
 </div>
 
 
 
+<h2>Video</h2>
 <div class="blog-video">
     <iframe class="blog-video-iframe" height="315" 
     src="https://www.youtube.com/embed/IiHgol7wzeQ/" 
