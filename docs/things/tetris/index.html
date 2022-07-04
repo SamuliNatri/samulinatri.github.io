@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="How to program Tetris.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+		
+    <title>Tetris With C&#x2F;C++ (Win32, Software Rendering) |  Samuli Natri. Software developer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+    
+    </script>
+    
+
+</head>
+<body>
+<div class="main ">
+
+    
+
+    
+
+<div class="blog">
+    
+    <div class="blog-dates">
+        <span itemprop="dateModified" 
+        content="Jul  5, 2022" 
+        class="blog-updated">Updated <strong>Jul  5, 2022</strong> 
+    </span>
+    
+    <span itemprop="datePublished" 
+    content="Jul  5, 2022" 
+    class="blog-updated">(Posted Jul  5, 2022)
+</span>
+</div>
+
+<h1 class="blog-title">Tetris With C&#x2F;C++ (Win32, Software Rendering)</h1>
+<div class="blog-description">How to program Tetris.</div>
+
+<div class="blog-content"><h2 id="main-cpp">main.cpp</h2>
+<pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN</span><span>
+</span><span style="color:#81a1c1;">#define UNICODE</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdlib.h&gt;</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;time.h&gt;</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;</span><span>
+</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">Window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">Message</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">WParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">LParam</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&quot;engine.h&quot;</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&quot;game.h&quot;</span><span>
+</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">Window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">Message</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">WParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">LParam</span><span>) {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(Message) {</span><span>
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{</span><span>
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(WParam) { </span><span>
+</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(Window)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> VK_UP</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">Rotate</span><span>()</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> VK_LEFT</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">Move</span><span>(LEFT)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> VK_DOWN</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">Move</span><span>(DOWN)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> VK_RIGHT</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">Move</span><span>(RIGHT)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> VK_SPACE</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">Drop</span><span>()</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>            }</span><span>
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{ </span><span>
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProc</span><span>(Window</span><span style="color:#eceff4;">,</span><span> Message</span><span style="color:#eceff4;">,</span><span> WParam</span><span style="color:#eceff4;">,</span><span>  LParam)</span><span style="color:#eceff4;">; </span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">Instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">PrevInstance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">PWSTR </span><span style="font-weight:bold;color:#d8dee9;">CmdLine</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">CmdShow</span><span>) {</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#88c0d0;">srand</span><span>((</span><span style="color:#81a1c1;">unsigned int</span><span>)</span><span style="color:#88c0d0;">time</span><span>(</span><span style="color:#81a1c1;">NULL</span><span>))</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    window Window </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">.</span><span>ClientWidth </span><span style="color:#81a1c1;">=</span><span> TILE_SIZE </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">.</span><span>ClientHeight </span><span style="color:#81a1c1;">=</span><span> TILE_SIZE </span><span style="color:#81a1c1;">*</span><span> BOARD_Y_TILES</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">.</span><span>Center </span><span style="color:#81a1c1;">= true</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">DWORD</span><span> Error </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">InitWindow</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Window</span><span style="color:#eceff4;">,</span><span> Instance)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Error) { </span><span style="color:#81a1c1;">return</span><span> Error</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>    </span><span>
+</span><span>    bitmap Bitmap </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Error </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">InitBitmap</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Bitmap</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Window)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Error) { </span><span style="color:#81a1c1;">return</span><span> Error</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>    </span><span>
+</span><span>    timer Timer </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Error </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">InitTimer</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Timer)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Error) { </span><span style="color:#81a1c1;">return</span><span> Error</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>    </span><span>
+</span><span>    CurrentBlock </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetRandomBlock</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">bool</span><span> Running </span><span style="color:#81a1c1;">= true</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {</span><span>
+</span><span>        MSG Message</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nullptr</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {</span><span>
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(Message</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) Running </span><span style="color:#81a1c1;">= false</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        }</span><span>
+</span><span>        </span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">UpdateTimer</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Timer)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span>
+</span><span>        </span><span style="color:#81a1c1;">if</span><span>(Timer</span><span style="color:#81a1c1;">.</span><span>ElapsedMilliSeconds </span><span style="color:#81a1c1;">&gt; </span><span style="color:#b48ead;">500</span><span>) {</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">Update</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">StartTimer</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Timer)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        }</span><span>
+</span><span>        </span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ClearScreen</span><span>(</span><span style="color:#b48ead;">0x333333</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Bitmap)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">DrawStack</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Bitmap)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">DrawBlock</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>CurrentBlock</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Bitmap)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">Blit</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Bitmap</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Window)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h2 id="game-h">game.h</h2>
+<pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define SHAPES </span><span style="color:#b48ead;">7</span><span>
+</span><span style="color:#81a1c1;">#define ROTATIONS </span><span style="color:#b48ead;">4</span><span>
+</span><span style="color:#81a1c1;">#define TILE_SIZE </span><span style="color:#b48ead;">32</span><span>
+</span><span style="color:#81a1c1;">#define BOARD_X_TILES </span><span style="color:#b48ead;">10</span><span>
+</span><span style="color:#81a1c1;">#define BOARD_Y_TILES </span><span style="color:#b48ead;">16</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">typedef enum </span><span>{ LEFT</span><span style="color:#eceff4;">,</span><span> RIGHT</span><span style="color:#eceff4;">,</span><span> UP</span><span style="color:#eceff4;">,</span><span> DOWN } </span><span style="color:#81a1c1;">direction</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> X</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> Y</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> Shape</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> Rotation</span><span style="color:#eceff4;">;</span><span>
+</span><span>	u32 Color</span><span style="color:#eceff4;">;</span><span>
+</span><span>} </span><span style="color:#81a1c1;">block</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#616e88;">// Globals</span><span style="color:#616e88;">
+</span><span>
+</span><span>u32 StackColors[BOARD_X_TILES </span><span style="color:#81a1c1;">*</span><span> BOARD_Y_TILES]</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span>u32 BlockColors[SHAPES] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
+</span><span>	</span><span style="color:#b48ead;">0x20B2AA</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4169E1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xffa500</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xFFFF33</span><span style="color:#eceff4;">,</span><span>
+</span><span>	</span><span style="color:#b48ead;">0x32CD32</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xBA55D3</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xff0000</span><span>
+</span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span>u16 Shapes[SHAPES][ROTATIONS] </span><span style="color:#81a1c1;">= </span><span>{</span><span>
+</span><span>    {</span><span style="color:#b48ead;">0x0f00</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x2222</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x00f0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4444</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// I</span><span style="color:#616e88;">
+</span><span>    {</span><span style="color:#b48ead;">0x8e00</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x6440</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x0e20</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x44c0</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// J</span><span style="color:#616e88;">
+</span><span>    {</span><span style="color:#b48ead;">0x2e00</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4460</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x0e80</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xc440</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// L</span><span style="color:#616e88;">
+</span><span>    {</span><span style="color:#b48ead;">0x6600</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x6600</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x6600</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x6600</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// O</span><span style="color:#616e88;">
+</span><span>    {</span><span style="color:#b48ead;">0x6c00</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4620</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x06c0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x8c40</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// S</span><span style="color:#616e88;">
+</span><span>    {</span><span style="color:#b48ead;">0x4e00</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x0e40</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4c40</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// T</span><span style="color:#616e88;">
+</span><span>    {</span><span style="color:#b48ead;">0xc600</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x2640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x0c60</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x4c80</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// Z</span><span style="color:#616e88;">
+</span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">int</span><span> WallKickOffsetsCommon[</span><span style="color:#b48ead;">8</span><span>][</span><span style="color:#b48ead;">10</span><span>] </span><span style="color:#81a1c1;">= </span><span>{    </span><span style="color:#616e88;">// all except I</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 0-&gt;R</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// R-&gt;0</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// R-&gt;2</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 2-&gt;R</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 2-&gt;L</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// L-&gt;2</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// L-&gt;0</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 0-&gt;L</span><span style="color:#616e88;">
+</span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">int</span><span> WallKickOffsetsI[</span><span style="color:#b48ead;">8</span><span>][</span><span style="color:#b48ead;">10</span><span>] </span><span style="color:#81a1c1;">= </span><span>{         </span><span style="color:#616e88;">// I</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 0-&gt;R</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// R-&gt;0</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// R-&gt;2</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 2-&gt;R</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 2-&gt;L</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// L-&gt;2</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,   </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// L-&gt;0</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,  </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,  </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,  </span><span style="color:#616e88;">// 0-&gt;L</span><span style="color:#616e88;">
+</span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span>block CurrentBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#616e88;">// Declarations</span><span style="color:#616e88;">
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Rotate</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(block </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Block</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">WithinBounds</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">X</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Y</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Move</span><span>(direction </span><span style="font-weight:bold;color:#d8dee9;">Direction</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Drop</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>block </span><span style="font-weight:bold;color:#88c0d0;">GetRandomBlock</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Drop</span><span>() {</span><span>
+</span><span>	block TempBlock </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">while</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>TempBlock)) {</span><span>
+</span><span>		TempBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">+=</span><span> TILE_SIZE</span><span style="color:#eceff4;">;</span><span>
+</span><span>	}</span><span>
+</span><span>	CurrentBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">=</span><span> TempBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">-</span><span> TILE_SIZE</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">WallKick</span><span>(block </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">TempBlock</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int *</span><span>Offsets </span><span style="color:#81a1c1;">= NULL</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(TempBlock</span><span style="color:#81a1c1;">-&gt;</span><span>Shape </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) {</span><span>
+</span><span>		Offsets </span><span style="color:#81a1c1;">= &amp;</span><span>WallKickOffsetsI[</span><span style="color:#b48ead;">0</span><span>][</span><span style="color:#b48ead;">0</span><span>]</span><span style="color:#eceff4;">;</span><span>
+</span><span>	} </span><span style="color:#81a1c1;">else </span><span>{</span><span>
+</span><span>		Offsets </span><span style="color:#81a1c1;">= &amp;</span><span>WallKickOffsetsCommon[</span><span style="color:#b48ead;">0</span><span>][</span><span style="color:#b48ead;">0</span><span>]</span><span style="color:#eceff4;">;</span><span>
+</span><span>	}</span><span>
+</span><span>    </span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> OffsetRow </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> R1 </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#81a1c1;">.</span><span>Rotation</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> R2 </span><span style="color:#81a1c1;">=</span><span> TempBlock</span><span style="color:#81a1c1;">-&gt;</span><span>Rotation</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(R1 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0 </span><span style="color:#81a1c1;">&amp;&amp;</span><span> R2 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">1</span><span>) { OffsetRow </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">else if</span><span>(R1 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">1 </span><span style="color:#81a1c1;">&amp;&amp;</span><span> R2 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">2</span><span>) { OffsetRow </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">else if</span><span>(R1 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">2 </span><span style="color:#81a1c1;">&amp;&amp;</span><span> R2 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">3</span><span>) { OffsetRow </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">else if</span><span>(R1 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">3 </span><span style="color:#81a1c1;">&amp;&amp;</span><span> R2 </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) { OffsetRow </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">6</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>    </span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> I </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> I </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">10</span><span style="color:#eceff4;">;</span><span> I </span><span style="color:#81a1c1;">+= </span><span style="color:#b48ead;">2</span><span>) {</span><span>
+</span><span>		TempBlock</span><span style="color:#81a1c1;">-&gt;</span><span>X </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#81a1c1;">.</span><span>X </span><span style="color:#81a1c1;">+</span><span>
+</span><span>			</span><span style="color:#81a1c1;">*</span><span>(Offsets </span><span style="color:#81a1c1;">+</span><span> OffsetRow </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">10 </span><span style="color:#81a1c1;">+</span><span> I </span><span style="color:#81a1c1;">+ </span><span style="color:#b48ead;">0</span><span>) </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE</span><span style="color:#eceff4;">;</span><span>
+</span><span>		TempBlock</span><span style="color:#81a1c1;">-&gt;</span><span>Y </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">+</span><span>
+</span><span>			</span><span style="color:#81a1c1;">*</span><span>(Offsets </span><span style="color:#81a1c1;">+</span><span> OffsetRow </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">10 </span><span style="color:#81a1c1;">+</span><span> I </span><span style="color:#81a1c1;">+ </span><span style="color:#b48ead;">1</span><span>) </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE</span><span style="color:#eceff4;">;</span><span>
+</span><span>		</span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(TempBlock)) {</span><span>
+</span><span>			CurrentBlock </span><span style="color:#81a1c1;">= *</span><span>TempBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>			</span><span style="color:#81a1c1;">return</span><span style="color:#eceff4;">;</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Rotate</span><span>() {</span><span>
+</span><span>	block TempBlock </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">++</span><span>TempBlock</span><span style="color:#81a1c1;">.</span><span>Rotation</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(TempBlock</span><span style="color:#81a1c1;">.</span><span>Rotation </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">4</span><span>) { TempBlock</span><span style="color:#81a1c1;">.</span><span>Rotation </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">WallKick</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>TempBlock)</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>TempBlock)) { </span><span style="color:#81a1c1;">return</span><span style="color:#eceff4;">; </span><span>}</span><span style="color:#eceff4;">;  </span><span>
+</span><span>	CurrentBlock </span><span style="color:#81a1c1;">=</span><span> TempBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Move</span><span>(direction </span><span style="font-weight:bold;color:#d8dee9;">Direction</span><span>) {</span><span>
+</span><span>	block TempBlock </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">switch</span><span>(Direction) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">case</span><span> LEFT</span><span style="color:#eceff4;">: </span><span>{ TempBlock</span><span style="color:#81a1c1;">.</span><span>X </span><span style="color:#81a1c1;">-=</span><span> TILE_SIZE</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>		</span><span style="color:#81a1c1;">case</span><span> RIGHT</span><span style="color:#eceff4;">: </span><span>{ TempBlock</span><span style="color:#81a1c1;">.</span><span>X </span><span style="color:#81a1c1;">+=</span><span> TILE_SIZE</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>		</span><span style="color:#81a1c1;">case</span><span> DOWN</span><span style="color:#eceff4;">: </span><span>{ TempBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">+=</span><span> TILE_SIZE</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
+</span><span>	}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>TempBlock)) { </span><span style="color:#81a1c1;">return</span><span style="color:#eceff4;">; </span><span>}</span><span style="color:#eceff4;">;</span><span>
+</span><span>	CurrentBlock </span><span style="color:#81a1c1;">=</span><span> TempBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">IsBlockTile</span><span>(block </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Block</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">X</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Y</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>((</span><span style="color:#b48ead;">0x8000 </span><span style="color:#81a1c1;">&gt;&gt; </span><span>(Y </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">4 </span><span style="color:#81a1c1;">+</span><span> X)) </span><span style="color:#81a1c1;">&amp;</span><span>
+</span><span>       Shapes[Block</span><span style="color:#81a1c1;">-&gt;</span><span>Shape][Block</span><span style="color:#81a1c1;">-&gt;</span><span>Rotation]) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>	}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawStack</span><span>(bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt;</span><span> BOARD_Y_TILES</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> X </span><span style="color:#81a1c1;">&lt;</span><span> BOARD_X_TILES</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>X) {</span><span>
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(StackColors[Y </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span> X] </span><span style="color:#81a1c1;">!= </span><span style="color:#b48ead;">0</span><span>) {</span><span>
+</span><span>				</span><span style="font-weight:bold;color:#88c0d0;">DrawRectangleBordered</span><span>(</span><span>
+</span><span>                                      X </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      Y </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      TILE_SIZE</span><span style="color:#eceff4;">,</span><span> TILE_SIZE</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      StackColors[Y </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span> X]</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x000000</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      Bitmap)</span><span style="color:#eceff4;">;</span><span>
+</span><span>			}</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawBlock</span><span>(block </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Block</span><span style="color:#eceff4;">,</span><span> bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> X </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>X) {</span><span>
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">IsBlockTile</span><span>(Block</span><span style="color:#eceff4;">,</span><span> X</span><span style="color:#eceff4;">,</span><span> Y)) {</span><span>
+</span><span>				</span><span style="font-weight:bold;color:#88c0d0;">DrawRectangleBordered</span><span>(</span><span>
+</span><span>                                      Block</span><span style="color:#81a1c1;">-&gt;</span><span>X </span><span style="color:#81a1c1;">+ </span><span>(X </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE)</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      Block</span><span style="color:#81a1c1;">-&gt;</span><span>Y </span><span style="color:#81a1c1;">+ </span><span>(Y </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE)</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      TILE_SIZE</span><span style="color:#eceff4;">,</span><span> TILE_SIZE</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      Block</span><span style="color:#81a1c1;">-&gt;</span><span>Color</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0x000000</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                      Bitmap</span><span>
+</span><span>                                      )</span><span style="color:#eceff4;">;</span><span>
+</span><span>			}</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span>block </span><span style="font-weight:bold;color:#88c0d0;">GetRandomBlock</span><span>() {</span><span>
+</span><span>    block Block </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Block</span><span style="color:#81a1c1;">.</span><span>X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4 </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Block</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Block</span><span style="color:#81a1c1;">.</span><span>Shape </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">rand</span><span>() </span><span style="color:#81a1c1;">%</span><span> SHAPES</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Block</span><span style="color:#81a1c1;">.</span><span>Rotation </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">rand</span><span>() </span><span style="color:#81a1c1;">%</span><span> ROTATIONS</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Block</span><span style="color:#81a1c1;">.</span><span>Color </span><span style="color:#81a1c1;">=</span><span> BlockColors[Block</span><span style="color:#81a1c1;">.</span><span>Shape]</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return</span><span> Block</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DeleteStackRow</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Row</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">=</span><span> Row</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&gt; </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">--</span><span>Y) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> X </span><span style="color:#81a1c1;">&lt;</span><span> BOARD_X_TILES</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>X) {</span><span>
+</span><span>			StackColors[Y </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span> X] </span><span style="color:#81a1c1;">=</span><span>
+</span><span>				StackColors[(Y</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span>) </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span> X]</span><span style="color:#eceff4;">;</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">UpdateStackRows</span><span>() {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt;</span><span> BOARD_Y_TILES</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">int</span><span> LineCounter </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> X </span><span style="color:#81a1c1;">&lt;</span><span> BOARD_X_TILES</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>X) {</span><span>
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(StackColors[Y </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span> X] </span><span style="color:#81a1c1;">!= </span><span style="color:#b48ead;">0</span><span>) {</span><span>
+</span><span>				</span><span style="color:#81a1c1;">++</span><span>LineCounter</span><span style="color:#eceff4;">;</span><span>
+</span><span>			}</span><span>
+</span><span>		}</span><span>
+</span><span>		</span><span style="color:#81a1c1;">if</span><span>(LineCounter </span><span style="color:#81a1c1;">==</span><span> BOARD_X_TILES) {</span><span>
+</span><span>			</span><span style="font-weight:bold;color:#88c0d0;">DeleteStackRow</span><span>(Y)</span><span style="color:#eceff4;">;</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">AddStack</span><span>(block </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Block</span><span>) {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> X </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>X) {</span><span>
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">IsBlockTile</span><span>(Block</span><span style="color:#eceff4;">,</span><span> X</span><span style="color:#eceff4;">,</span><span> Y)) {  </span><span>
+</span><span>				StackColors[</span><span>
+</span><span>                            (Block</span><span style="color:#81a1c1;">-&gt;</span><span>Y </span><span style="color:#81a1c1;">/</span><span> TILE_SIZE </span><span style="color:#81a1c1;">+</span><span> Y) </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span>
+</span><span>                            Block</span><span style="color:#81a1c1;">-&gt;</span><span>X </span><span style="color:#81a1c1;">/</span><span> TILE_SIZE </span><span style="color:#81a1c1;">+</span><span> X] </span><span style="color:#81a1c1;">=</span><span> Block</span><span style="color:#81a1c1;">-&gt;</span><span>Color</span><span style="color:#eceff4;">;</span><span>
+</span><span>			}</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">UpdateStackRows</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    CurrentBlock </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetRandomBlock</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(block </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Block</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
+</span><span>		</span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> X </span><span style="color:#81a1c1;">&lt; </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>X) {</span><span>
+</span><span>			</span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">IsBlockTile</span><span>(Block</span><span style="color:#eceff4;">,</span><span> X</span><span style="color:#eceff4;">,</span><span> Y)) {  </span><span>
+</span><span>				</span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">WithinBounds</span><span>(Block</span><span style="color:#81a1c1;">-&gt;</span><span>X </span><span style="color:#81a1c1;">+</span><span> X </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE</span><span style="color:#eceff4;">,</span><span> Block</span><span style="color:#81a1c1;">-&gt;</span><span>Y </span><span style="color:#81a1c1;">+</span><span> Y </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE)) {</span><span>
+</span><span>					</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>				}</span><span>
+</span><span>				</span><span style="color:#81a1c1;">if</span><span>(StackColors[(Block</span><span style="color:#81a1c1;">-&gt;</span><span>Y </span><span style="color:#81a1c1;">/</span><span> TILE_SIZE </span><span style="color:#81a1c1;">+</span><span> Y) </span><span style="color:#81a1c1;">*</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">+</span><span> Block</span><span style="color:#81a1c1;">-&gt;</span><span>X </span><span style="color:#81a1c1;">/</span><span> TILE_SIZE </span><span style="color:#81a1c1;">+</span><span> X] </span><span style="color:#81a1c1;">!= </span><span style="color:#b48ead;">0</span><span>) {</span><span>
+</span><span>					</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>				}</span><span>
+</span><span>			}</span><span>
+</span><span>		}</span><span>
+</span><span>	}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">WithinBounds</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">X</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Y</span><span>) {</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(Y &lt; </span><span style="color:#b48ead;">0 </span><span style="color:#81a1c1;">||</span><span> Y &gt;</span><span style="color:#81a1c1;">=</span><span> BOARD_Y_TILES </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE) { </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(X &lt; </span><span style="color:#b48ead;">0 </span><span style="color:#81a1c1;">||</span><span> X &gt;</span><span style="color:#81a1c1;">=</span><span> BOARD_X_TILES </span><span style="color:#81a1c1;">*</span><span> TILE_SIZE) { </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Update</span><span>() {</span><span>
+</span><span>	block TempBlock </span><span style="color:#81a1c1;">=</span><span> CurrentBlock</span><span style="color:#eceff4;">;</span><span>
+</span><span>	TempBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">+=</span><span> TILE_SIZE</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">Collides</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>TempBlock)) {</span><span>
+</span><span>		CurrentBlock</span><span style="color:#81a1c1;">.</span><span>X </span><span style="color:#81a1c1;">=</span><span> TempBlock</span><span style="color:#81a1c1;">.</span><span>X</span><span style="color:#eceff4;">;</span><span>
+</span><span>		CurrentBlock</span><span style="color:#81a1c1;">.</span><span>Y </span><span style="color:#81a1c1;">=</span><span> TempBlock</span><span style="color:#81a1c1;">.</span><span>Y</span><span style="color:#eceff4;">;</span><span>
+</span><span>	} </span><span style="color:#81a1c1;">else </span><span>{</span><span>
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">AddStack</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>CurrentBlock)</span><span style="color:#eceff4;">;</span><span>
+</span><span>	}</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h2 id="engine-h">engine.h</h2>
+<pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">uint16_t </span><span style="color:#81a1c1;">u16</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">uint32_t </span><span style="color:#81a1c1;">u32</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">HWND Handle</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">HDC</span><span> DeviceContext</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ClientWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> ClientHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">bool</span><span> Center</span><span style="color:#eceff4;">;</span><span>
+</span><span>} </span><span style="color:#81a1c1;">window</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{</span><span>
+</span><span>    </span><span style="color:#81a1c1;">void*</span><span> Memory</span><span style="color:#eceff4;">;</span><span>
+</span><span>    BITMAPINFO Info</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> Width</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> Height</span><span style="color:#eceff4;">;</span><span>
+</span><span>} </span><span style="color:#81a1c1;">bitmap</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{</span><span>
+</span><span>    LARGE_INTEGER StartingCount</span><span style="color:#eceff4;">;</span><span>
+</span><span>    LARGE_INTEGER EndingCount</span><span style="color:#eceff4;">;</span><span>
+</span><span>    LARGE_INTEGER TotalCount</span><span style="color:#eceff4;">;</span><span>
+</span><span>    LARGE_INTEGER CountsPerSecond</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">double</span><span> ElapsedMilliSeconds</span><span style="color:#eceff4;">;</span><span>
+</span><span>} </span><span style="color:#81a1c1;">timer</span><span style="color:#eceff4;">;</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawPixel</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">X</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Y</span><span style="color:#eceff4;">,</span><span> u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span style="color:#eceff4;">,</span><span> bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span>) {</span><span>
+</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Memory</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Pixel </span><span style="color:#81a1c1;">+=</span><span> Y </span><span style="color:#81a1c1;">*</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width </span><span style="color:#81a1c1;">+</span><span> X</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">=</span><span> Color</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">ClearScreen</span><span>(u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span style="color:#eceff4;">,</span><span> bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span>) {</span><span>
+</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Memory</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Index </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>
+</span><span>        Index </span><span style="color:#81a1c1;">&lt;</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width </span><span style="color:#81a1c1;">*</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Height</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">++</span><span>Index) { </span><span style="color:#81a1c1;">*</span><span>Pixel</span><span style="color:#81a1c1;">++ =</span><span> Color</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleX</span><span style="color:#eceff4;">,</span><span>
+</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleY</span><span style="color:#eceff4;">,</span><span>
+</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleWidth</span><span style="color:#eceff4;">,</span><span>
+</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleHeight</span><span style="color:#eceff4;">,</span><span>
+</span><span>                   u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span style="color:#eceff4;">,</span><span>
+</span><span>                   bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span>) {</span><span>
+</span><span>    </span><span>
+</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Memory</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Pixel </span><span style="color:#81a1c1;">+=</span><span> RectangleY </span><span style="color:#81a1c1;">*</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width </span><span style="color:#81a1c1;">+</span><span> RectangleX</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt;</span><span> RectangleHeight</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
+</span><span>        </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>            X </span><span style="color:#81a1c1;">&lt;</span><span> RectangleWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>            </span><span style="color:#81a1c1;">++</span><span>X) { </span><span style="color:#81a1c1;">*</span><span>Pixel</span><span style="color:#81a1c1;">++ =</span><span> Color</span><span style="color:#eceff4;">; </span><span>}</span><span>
+</span><span>        Pixel </span><span style="color:#81a1c1;">+=</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width </span><span style="color:#81a1c1;">-</span><span> RectangleWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawRectangleBordered</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleX</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleY</span><span style="color:#eceff4;">,</span><span>
+</span><span>                           </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleWidth</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleHeight</span><span style="color:#eceff4;">, </span><span>
+</span><span>                           u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span style="color:#eceff4;">,</span><span>
+</span><span>                           </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">BorderSize</span><span style="color:#eceff4;">,</span><span> u32 </span><span style="font-weight:bold;color:#d8dee9;">BorderColor</span><span style="color:#eceff4;">,</span><span>
+</span><span>                           bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span>) {</span><span>
+</span><span>    </span><span>
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(RectangleX</span><span style="color:#eceff4;">,</span><span> RectangleY</span><span style="color:#eceff4;">,</span><span> RectangleWidth</span><span style="color:#eceff4;">,</span><span> RectangleHeight</span><span style="color:#eceff4;">,</span><span> BorderColor</span><span style="color:#eceff4;">,</span><span> Bitmap)</span><span style="color:#eceff4;">;</span><span>
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(RectangleX </span><span style="color:#81a1c1;">+</span><span> BorderSize</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  RectangleY </span><span style="color:#81a1c1;">+</span><span> BorderSize</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  RectangleWidth </span><span style="color:#81a1c1;">-</span><span> BorderSize </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  RectangleHeight </span><span style="color:#81a1c1;">-</span><span> BorderSize </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  Color</span><span style="color:#eceff4;">,</span><span> Bitmap)</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Blit</span><span>(bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span style="color:#eceff4;">,</span><span> window </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Window</span><span>) {</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">StretchDIBits</span><span>(Window</span><span style="color:#81a1c1;">-&gt;</span><span>DeviceContext</span><span style="color:#eceff4;">, </span><span>
+</span><span>                  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width</span><span style="color:#eceff4;">,</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Height</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientWidth</span><span style="color:#eceff4;">,</span><span> Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientHeight</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Memory</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#eceff4;">,</span><span>
+</span><span>                  DIB_RGB_COLORS</span><span style="color:#eceff4;">,</span><span> SRCCOPY)</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#8fbcbb;">DWORD </span><span style="font-weight:bold;color:#88c0d0;">InitWindow</span><span>(window </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">Instance</span><span>) {</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// WindowClass</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    WNDCLASS WindowClass </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">const wchar_t</span><span> ClassName[] </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> Instance</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">=</span><span> ClassName</span><span style="color:#eceff4;">;</span><span>
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>WindowClass)) {</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;RegisterClass failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// Window dimensions</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> WindowWidth </span><span style="color:#81a1c1;">=</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> WindowHeight </span><span style="color:#81a1c1;">=</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// Adjust window dimensions to given client area</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Window dimensions will be client area dimensions + some units for the borders and title bar</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientWidth </span><span style="color:#81a1c1;">&gt; </span><span style="color:#b48ead;">0 </span><span style="color:#81a1c1;">&amp;&amp; </span><span>
+</span><span>       Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientHeight </span><span style="color:#81a1c1;">&gt; </span><span style="color:#b48ead;">0</span><span>) {</span><span>
+</span><span>        </span><span>
+</span><span>        RECT WindowRect</span><span style="color:#eceff4;">;</span><span>
+</span><span>        WindowRect</span><span style="color:#81a1c1;">.</span><span>left </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>        WindowRect</span><span style="color:#81a1c1;">.</span><span>top </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>        WindowRect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">=</span><span> Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>        WindowRect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">=</span><span> Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">AdjustWindowRectEx</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>WindowRect</span><span style="color:#eceff4;">, </span><span>
+</span><span>                           WS_OVERLAPPEDWINDOW</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span>
+</span><span>        WindowWidth </span><span style="color:#81a1c1;">= </span><span>
+</span><span>            WindowRect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> WindowRect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;</span><span>
+</span><span>        WindowHeight </span><span style="color:#81a1c1;">= </span><span>
+</span><span>            WindowRect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> WindowRect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// Window position</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> WindowXPos </span><span style="color:#81a1c1;">=</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> WindowYPos </span><span style="color:#81a1c1;">=</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Window</span><span style="color:#81a1c1;">-&gt;</span><span>Center) {</span><span>
+</span><span>        </span><span style="color:#81a1c1;">int</span><span> ScreenWidth </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetSystemMetrics</span><span>(SM_CXSCREEN)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">int</span><span> ScreenHeight </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetSystemMetrics</span><span>(SM_CYSCREEN)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span>
+</span><span>        WindowXPos </span><span style="color:#81a1c1;">= </span><span>(ScreenWidth </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">- </span><span>(WindowWidth </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        WindowYPos </span><span style="color:#81a1c1;">= </span><span>(ScreenHeight </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">- </span><span>(WindowHeight </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">-&gt;</span><span>Handle </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> ClassName</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Program&quot;</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                    WS_OVERLAPPEDWINDOW</span><span style="color:#81a1c1;">|</span><span>WS_VISIBLE</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                    WindowXPos</span><span style="color:#eceff4;">, </span><span>
+</span><span>                                    WindowYPos</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                    WindowWidth</span><span style="color:#eceff4;">,</span><span> WindowHeight</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> Instance</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span>Window</span><span style="color:#81a1c1;">-&gt;</span><span>Handle) {</span><span>
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;CreateWindowEx failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// For StretchDIBits</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">-&gt;</span><span>DeviceContext </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetDC</span><span>(Window</span><span style="color:#81a1c1;">-&gt;</span><span>Handle)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#8fbcbb;">DWORD </span><span style="font-weight:bold;color:#88c0d0;">InitBitmap</span><span>(bitmap </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Bitmap</span><span style="color:#eceff4;">,</span><span> window </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Window</span><span>) {</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// Get client area dimensions </span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    RECT ClientRect</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">GetClientRect</span><span>(Window</span><span style="color:#81a1c1;">-&gt;</span><span>Handle</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ClientRect)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientWidth </span><span style="color:#81a1c1;">=</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientHeight </span><span style="color:#81a1c1;">=</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width </span><span style="color:#81a1c1;">=</span><span> Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientWidth</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Height </span><span style="color:#81a1c1;">=</span><span> Window</span><span style="color:#81a1c1;">-&gt;</span><span>ClientHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// Allocate memory for the bitmap</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> BytesPerPixel </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Memory </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">VirtualAlloc</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                  Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width </span><span style="color:#81a1c1;">*</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Height </span><span style="color:#81a1c1;">*</span><span> BytesPerPixel</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                  MEM_RESERVE</span><span style="color:#81a1c1;">|</span><span>MEM_COMMIT</span><span style="color:#eceff4;">,</span><span>
+</span><span>                                  PAGE_READWRITE</span><span>
+</span><span>                                  )</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#616e88;">// BitmapInfo struct for StretchDIBits</span><span style="color:#616e88;">
+</span><span>    </span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biSize </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biWidth </span><span style="color:#81a1c1;">=</span><span> Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Width</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#616e88;">// Negative height makes top left as the coordinate system origin for the DrawPixel function, otherwise its bottom left</span><span style="color:#616e88;">
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biHeight </span><span style="color:#81a1c1;">= -</span><span>Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Height</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biPlanes </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biBitCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">32</span><span style="color:#eceff4;">;</span><span>
+</span><span>    Bitmap</span><span style="color:#81a1c1;">-&gt;</span><span>Info</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biCompression </span><span style="color:#81a1c1;">=</span><span> BI_RGB</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">StartTimer</span><span>(timer </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Timer</span><span>) {</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Timer</span><span style="color:#81a1c1;">-&gt;</span><span>StartingCount)</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">UpdateTimer</span><span>(timer </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Timer</span><span>) {</span><span>
+</span><span>    </span><span style="color:#616e88;">// get current tick</span><span style="color:#616e88;">
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceCounter</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Timer</span><span style="color:#81a1c1;">-&gt;</span><span>EndingCount)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#616e88;">// get tick count</span><span style="color:#616e88;">
+</span><span>    Timer</span><span style="color:#81a1c1;">-&gt;</span><span>TotalCount</span><span style="color:#81a1c1;">.</span><span>QuadPart </span><span style="color:#81a1c1;">=</span><span> Timer</span><span style="color:#81a1c1;">-&gt;</span><span>EndingCount</span><span style="color:#81a1c1;">.</span><span>QuadPart </span><span style="color:#81a1c1;">-</span><span> Timer</span><span style="color:#81a1c1;">-&gt;</span><span>StartingCount</span><span style="color:#81a1c1;">.</span><span>QuadPart</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#616e88;">// for precision</span><span style="color:#616e88;">
+</span><span>    Timer</span><span style="color:#81a1c1;">-&gt;</span><span>TotalCount</span><span style="color:#81a1c1;">.</span><span>QuadPart </span><span style="color:#81a1c1;">*= </span><span style="color:#b48ead;">1000000</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#616e88;">// calculate elapsed milliseconds</span><span style="color:#616e88;">
+</span><span>    Timer</span><span style="color:#81a1c1;">-&gt;</span><span>ElapsedMilliSeconds </span><span style="color:#81a1c1;">= </span><span>(</span><span style="color:#81a1c1;">double</span><span>)(Timer</span><span style="color:#81a1c1;">-&gt;</span><span>TotalCount</span><span style="color:#81a1c1;">.</span><span>QuadPart </span><span style="color:#81a1c1;">/</span><span> Timer</span><span style="color:#81a1c1;">-&gt;</span><span>CountsPerSecond</span><span style="color:#81a1c1;">.</span><span>QuadPart) </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">1000</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#8fbcbb;">DWORD </span><span style="font-weight:bold;color:#88c0d0;">InitTimer</span><span>(timer </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">Timer</span><span>) {</span><span>
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">QueryPerformanceFrequency</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Timer</span><span style="color:#81a1c1;">-&gt;</span><span>CountsPerSecond)) {</span><span>
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">StartTimer</span><span>(Timer)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">Debugd</span><span>(</span><span style="color:#81a1c1;">const wchar_t *</span><span style="font-weight:bold;color:#d8dee9;">Str</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">double </span><span style="font-weight:bold;color:#d8dee9;">Value</span><span>) {</span><span>
+</span><span>    </span><span style="color:#616e88;">// usage: </span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#616e88;">// Debugd(L&quot;Elapsedms: %f\n&quot;, Timer.ElapsedMilliSeconds);</span><span style="color:#616e88;">
+</span><span>    </span><span style="color:#81a1c1;">wchar_t</span><span> Output[</span><span style="color:#b48ead;">100</span><span>]</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">swprintf_s</span><span>(Output</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">,</span><span> Str</span><span style="color:#eceff4;">,</span><span> Value)</span><span style="color:#eceff4;">;</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">OutputDebugString</span><span>(Output)</span><span style="color:#eceff4;">;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h2 id="build">Build</h2>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.cpp /link user32.lib gdi32.lib</span><span>
+</span></code></pre>
+<h2 id="build-bat">build.bat</h2>
+<pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off</span><span>
+</span><span>
+</span><span>set COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/W4 /wd4100 /Oi /nologo /Fea.exe</span><span>
+</span><span>
+</span><span>set DEBUG_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/Zi /MTd</span><span>
+</span><span>set RELEASE_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/O2</span><span>
+</span><span>
+</span><span>set COMPILER_FLAGS</span><span style="color:#81a1c1;">=%</span><span>COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>DEBUG_FLAGS</span><span style="color:#81a1c1;">%</span><span>
+</span><span>REM</span><span style="color:#616e88;"> set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %RELEASE_FLAGS%</span><span style="color:#616e88;">
+</span><span>
+</span><span>set LINKER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/INCREMENTAL:NO /OPT:REF</span><span>
+</span><span>set LIBS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">user32.lib gdi32.lib</span><span>
+</span><span>
+</span><span>cl </span><span style="color:#81a1c1;">%</span><span>COMPILER_FLAGS</span><span style="color:#81a1c1;">%</span><span> main.cpp /link </span><span style="color:#81a1c1;">%</span><span>LINKER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>LIBS</span><span style="color:#81a1c1;">%</span><span>
+</span></code></pre>
+<h2 id="result">Result</h2>
+<p><img src="/images/things/tetris/image.png" alt="" /></p>
+</div>
+
+
+
+<h2>Video</h2>
+<div class="blog-video">
+    <iframe class="blog-video-iframe" height="315" 
+    src="https://www.youtube.com/embed/ka7UsI-XeEk/" 
+    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+
+
+</div>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(()=> {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
+
+
+
+
+    <div class="clear"></div>
+
+    
+
+    <div class="footer">
+        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
+        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
+        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
+        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        
+        <br>
+        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
+    </div>
+    
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+    
+
+</body>
+</html>
+
