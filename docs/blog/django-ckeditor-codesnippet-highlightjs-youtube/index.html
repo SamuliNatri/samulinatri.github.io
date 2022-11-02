@@ -7,13 +7,14 @@
     <meta name="description" content="How to use CKEditor with Django forms and add syntax highlighted code snippets.">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+    <!-- 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
     <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff"> -->
 		
     <title>Django - CKEditor Tutorial |  Samuli Natri. Software developer.</title>
 
@@ -37,28 +38,40 @@
 <body>
 <div class="main ">
 
-    
+    <p style="text-align: center;" class="menu">
+        <a class="menu-link " href="/">Home</a> &#x2219
+        <a class="menu-link" id="menu-link-shop" href="/shop/a-beginners-guide-to-django/">Shop</a> &#x2219
+        <!-- <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">Blog</a> &#x2219 -->
+        <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+        <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+        <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+    </p>
+
+    <p style="text-align: center;" class="intro">
+        Hello. My name is <span class="intro-name">Samuli Natri</span>. I'm a software developer.
+    </p>
 
     
 
 <div class="blog">
-    
+
+    <div class="line"></div>
+
     <div class="blog-dates">
-        <span itemprop="dateModified" 
-        content="Jun 18, 2020" 
-        class="blog-updated">Updated <strong>Jun 18, 2020</strong> 
-    </span>
+        <span itemprop="dateModified" content=" Jun 18, 2020"
+            class="blog-updated">Updated <strong>Jun 18, 2020</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">Django - CKEditor Tutorial</h1>
+
+    <div class="blog-description">How to use CKEditor with Django forms and add syntax highlighted code snippets.</div>
+
     
-</span>
-</div>
 
-<h1 class="blog-title">Django - CKEditor Tutorial</h1>
-<div class="blog-description">How to use CKEditor with Django forms and add syntax highlighted code snippets.</div>
-
-<div class="blog-content"><p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/00.png" alt="" /></p>
-<h2 id="introduction">Introduction</h2>
-<p>CKEditor is a rich text WYSIWYG editor. This tutorial shows how to add a RichTextUploading field to a model that enables all basic CKEditor features plus allows users to upload images and insert code snippets.</p>
-<h2 id="quickstart">Quickstart</h2>
+    <div class="blog-content"><h2 id="quickstart">Quickstart</h2>
 <h3 id="mysite-settings-py">mysite/settings.py</h3>
 <p>Add these lines to the project settings file:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[</span><span>
@@ -110,6 +123,8 @@
 </span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
 </span></code></pre>
 <h2 id="full-tutorial">Full tutorial</h2>
+<p>CKEditor is a rich text WYSIWYG editor. This tutorial shows how to add a RichTextUploading field to a model that enables all basic CKEditor features plus allows users to upload images and insert code snippets.</p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/00.png" alt="" /></p>
 <h3 id="setup">Setup</h3>
 <p>Run these commands to setup a project:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite</span><span>
@@ -240,17 +255,17 @@
 </span></code></pre>
 <p>This allows us to manage <code>Post</code> objects in the admin. </p>
 <p>Visit admin and add a blog post with an image:</p>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/01.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/01.png" alt="" /></p>
 <ul>
 <li>Click the <em>Upload</em> tab.</li>
 <li>Choose a file.</li>
 <li>Cick the <em>Send it to the server</em> button.</li>
 </ul>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/02.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/02.png" alt="" /></p>
 <p>The interface allows you to change some image <em>properties</em>. The <em>width</em> and <em>height</em> settings just sets the element <em>inline</em> style: <code>style=&quot;height:225px; width:300px&quot;</code>. Keep this in mind if you upload large images:</p>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/03.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/03.png" alt="" /></p>
 <p>Visit the blog detail page in <code>mysite.com/blog/1/</code> and you should see the formatted output:</p>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/05.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/05.png" alt="" /></p>
 <h3 id="custom-forms">Custom Forms</h3>
 <p>CKEditor also works outside the admin. Add the following path to the <em>blog</em> app <code>urls.py</code> file:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path</span><span>
@@ -313,7 +328,7 @@
 </span><span>}}</span><span>
 </span></code></pre>
 <p>Now the toolbar has only these options:</p>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/06.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/06.png" alt="" /></p>
 <p>You can define multiple configurations like this:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">CKEDITOR_CONFIGS = </span><span>{</span><span>
 </span><span>    </span><span style="color:#a3be8c;">&#39;default&#39;</span><span style="color:#eceff4;">:</span><span>
@@ -359,7 +374,7 @@
 </span><span>}</span><span>
 </span></code></pre>
 <p>Edit a post and add some code to it using the widget:</p>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/07.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/07.png" alt="" /></p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">make_pizza</span><span>():</span><span>
 </span><span>    </span><span style="font-weight:bold;color:#88c0d0;">add_ingredients</span><span>([</span><span style="color:#a3be8c;">&#39;Tomatoes&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Mozzarella&#39;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;Basil&#39;</span><span>])</span><span>
 </span><span>    </span><span style="font-weight:bold;color:#88c0d0;">cook</span><span>()</span><span>
@@ -384,58 +399,49 @@
 </span><span style="color:#81a1c1;">&lt;/html&gt;</span><span>
 </span></code></pre>
 <p>Refresh the blog detail page and you should see the code snippet highlighted:</p>
-<p><img src="/static/images/blog/django-ckeditor-codesnippet-hightlightjs-youtube/08.png" alt="" /></p>
+<p><img src="/images/blog/django-ckeditor-codesnippet-highlightjs-youtube/08.png" alt="" /></p>
 </div>
 
-
-
-
-
-</div>
-
-<script>
-    const copyButtonLabel = "Copy";
-    let blocks = document.querySelectorAll("pre");
-    blocks.forEach((block) => {
-        if (navigator.clipboard) {
-            let button = document.createElement("button");
-            button.innerText = copyButtonLabel;
-            button.addEventListener("click", copyCode);
-            block.appendChild(button);
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
         }
-    });
-    async function copyCode(event) {
-        const button = event.srcElement;
-        const pre = button.parentElement;
-        let code = pre.querySelector("code");
-        let text = code.innerText;
-        await navigator.clipboard.writeText(text);
-        button.innerText = "Copied";
-        setTimeout(()=> {
-            button.innerText = copyButtonLabel;
-        }, 500)
-    }
-</script>
-
-
-
-
-    <div class="clear"></div>
+    </script>
 
     
 
-    <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
-        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
-        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
-        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
-        
-        <br>
-        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
-    </div>
+    <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
+    <script type="text/javascript">
+        let section = document.URL.split('/')[3];
+        if(section) {
+            document.getElementById("menu-link-" + section).classList.add("menu-link-active");   
+        }
+    </script>
+
+    </div>
 
 </body>
 </html>

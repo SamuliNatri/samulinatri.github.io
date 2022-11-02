@@ -7,13 +7,14 @@
     <meta name="description" content="Basic tic-tac-toe functionality.">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+    <!-- 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
     <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff"> -->
 		
     <title>Tic-tac-toe with C (OpenGL&#x2F;SDL) |  Samuli Natri. Software developer.</title>
 
@@ -37,25 +38,40 @@
 <body>
 <div class="main ">
 
-    
+    <p style="text-align: center;" class="menu">
+        <a class="menu-link " href="/">Home</a> &#x2219
+        <a class="menu-link" id="menu-link-shop" href="/shop/a-beginners-guide-to-django/">Shop</a> &#x2219
+        <!-- <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">Blog</a> &#x2219 -->
+        <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+        <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+        <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+    </p>
+
+    <p style="text-align: center;" class="intro">
+        Hello. My name is <span class="intro-name">Samuli Natri</span>. I'm a software developer.
+    </p>
 
     
 
 <div class="blog">
-    
+
+    <div class="line"></div>
+
     <div class="blog-dates">
-        <span itemprop="dateModified" 
-        content="Feb  3, 2022" 
-        class="blog-updated">Updated <strong>Feb  3, 2022</strong> 
-    </span>
+        <span itemprop="dateModified" content=" Feb  3, 2022"
+            class="blog-updated">Updated <strong>Feb  3, 2022</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">Tic-tac-toe with C (OpenGL&#x2F;SDL)</h1>
+
+    <div class="blog-description">Basic tic-tac-toe functionality.</div>
+
     
-</span>
-</div>
 
-<h1 class="blog-title">Tic-tac-toe with C (OpenGL&#x2F;SDL)</h1>
-<div class="blog-description">Basic tic-tac-toe functionality.</div>
-
-<div class="blog-content"><h2 id="main-c">main.c</h2>
+    <div class="blog-content"><h2 id="main-c">main.c</h2>
 <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">/*</span><span style="color:#616e88;">
 </span><span style="color:#616e88;">INSTALLATION:</span><span style="color:#616e88;">
 </span><span style="color:#616e88;">
@@ -222,7 +238,7 @@
 </span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">draw_rectangle</span><span>(u32 </span><span style="font-weight:bold;color:#d8dee9;">x</span><span style="color:#eceff4;">,</span><span> u32 </span><span style="font-weight:bold;color:#d8dee9;">y</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">float </span><span style="font-weight:bold;color:#d8dee9;">color</span><span>[]) {</span><span>
 </span><span>
 </span><span>	</span><span style="color:#616e88;">// x and y: rectangle left top corner in pixels</span><span style="color:#616e88;">
-</span><span>  </span><span style="color:#616e88;">// client area left top corner is (0,0)</span><span style="color:#616e88;">
+</span><span>  	</span><span style="color:#616e88;">// client area left top corner is (0,0)</span><span style="color:#616e88;">
 </span><span>
 </span><span>	</span><span style="font-weight:bold;color:#88c0d0;">glUseProgram</span><span>(shader_program)</span><span style="color:#eceff4;">;</span><span>
 </span><span>	</span><span>
@@ -232,7 +248,7 @@
 </span><span>	</span><span style="color:#616e88;">// 1. with identity matrix the rectangle center is in the center of the client area</span><span style="color:#616e88;">
 </span><span>	</span><span style="color:#616e88;">// 2. -1.0f moves the rectangle center to the left edge of the client area</span><span style="color:#616e88;">
 </span><span>	</span><span style="color:#616e88;">// 3. (tile_size / 2) * ratio_x moves the rectangle to the right, so that its left edge aligns with the left side of the client area </span><span style="color:#616e88;">
-</span><span>  </span><span style="color:#616e88;">// 4. (float)x * ratio_x moves the rectangle x pixels to the right, to its x position  </span><span style="color:#616e88;">
+</span><span>  	</span><span style="color:#616e88;">// 4. (float)x * ratio_x moves the rectangle x pixels to the right, to its x position  </span><span style="color:#616e88;">
 </span><span>	matrix[</span><span style="color:#b48ead;">12</span><span>] </span><span style="color:#81a1c1;">=</span><span>
 </span><span>		</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f + </span><span>(tile_size </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span>) </span><span style="color:#81a1c1;">*</span><span> ratio_x </span><span style="color:#81a1c1;">+ </span><span>(</span><span style="color:#81a1c1;">float</span><span>)x </span><span style="color:#81a1c1;">*</span><span> ratio_x</span><span style="color:#eceff4;">;</span><span>
 </span><span>	matrix[</span><span style="color:#b48ead;">13</span><span>] </span><span style="color:#81a1c1;">=</span><span>
@@ -386,7 +402,7 @@
 </span><span>
 </span><span>		</span><span style="color:#81a1c1;">if</span><span>(turn </span><span style="color:#81a1c1;">==</span><span> TURN_COMPUTER) </span><span style="font-weight:bold;color:#88c0d0;">update</span><span>()</span><span style="color:#eceff4;">;</span><span>
 </span><span>		</span><span>
-</span><span>		</span><span style="color:#616e88;">//draw_rectangle(64, 64, (float[]){1.0f, 0.0f, 0.0f});</span><span style="color:#616e88;">
+</span><span>		</span><span style="color:#616e88;">// draw_rectangle(64, 64, (float[]){1.0f, 0.0f, 0.0f});</span><span style="color:#616e88;">
 </span><span>
 </span><span>		</span><span style="font-weight:bold;color:#88c0d0;">SDL_GL_SwapWindow</span><span>(window)</span><span style="color:#eceff4;">;</span><span>
 </span><span>        </span><span>
@@ -397,70 +413,52 @@
 </span><span>	</span><span style="color:#616e88;">// apparently, with some platforms, in some circumstances, the original resolution of the display is not restored if you don&#39;t call SDL_Quit(): https://discourse.libsdl.org/t/does-sdl2-sdl-quit-require-ttf-quit-sdl-destroywindow-etc/25182/3</span><span style="color:#616e88;">
 </span><span>	</span><span>
 </span><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_Quit</span><span>()</span><span style="color:#eceff4;">;</span><span>
-</span><span>
-</span><span>  </span><span style="color:#616e88;">// other than that, program termination frees all allocated memory</span><span style="color:#616e88;">
 </span><span>	</span><span>
 </span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
 </span><span>}</span><span>
 </span></code></pre>
 </div>
 
-
-
-<h2>Video</h2>
-<div class="blog-video">
-    <iframe class="blog-video-iframe" height="315" 
-    src="https://www.youtube.com/embed/cWw3KKrZlMM/" 
-    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-
-
-
-</div>
-
-<script>
-    const copyButtonLabel = "Copy";
-    let blocks = document.querySelectorAll("pre");
-    blocks.forEach((block) => {
-        if (navigator.clipboard) {
-            let button = document.createElement("button");
-            button.innerText = copyButtonLabel;
-            button.addEventListener("click", copyCode);
-            block.appendChild(button);
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
         }
-    });
-    async function copyCode(event) {
-        const button = event.srcElement;
-        const pre = button.parentElement;
-        let code = pre.querySelector("code");
-        let text = code.innerText;
-        await navigator.clipboard.writeText(text);
-        button.innerText = "Copied";
-        setTimeout(()=> {
-            button.innerText = copyButtonLabel;
-        }, 500)
-    }
-</script>
-
-
-
-
-    <div class="clear"></div>
+    </script>
 
     
 
-    <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
-        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
-        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
-        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
-        
-        <br>
-        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
-    </div>
+    <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
+    <script type="text/javascript">
+        let section = document.URL.split('/')[3];
+        if(section) {
+            document.getElementById("menu-link-" + section).classList.add("menu-link-active");   
+        }
+    </script>
+
+    </div>
 
 </body>
 </html>

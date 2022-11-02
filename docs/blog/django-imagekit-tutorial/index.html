@@ -4,16 +4,17 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="How to create thumbnails using the django-imagekit package.">
+    <meta name="description" content="How to create thumbnails using django-imagekit.">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+    <!-- 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
     <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff"> -->
 		
     <title>Django - ImageKit Tutorial |  Samuli Natri. Software developer.</title>
 
@@ -37,28 +38,40 @@
 <body>
 <div class="main ">
 
-    
+    <p style="text-align: center;" class="menu">
+        <a class="menu-link " href="/">Home</a> &#x2219
+        <a class="menu-link" id="menu-link-shop" href="/shop/a-beginners-guide-to-django/">Shop</a> &#x2219
+        <!-- <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">Blog</a> &#x2219 -->
+        <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+        <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+        <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+    </p>
+
+    <p style="text-align: center;" class="intro">
+        Hello. My name is <span class="intro-name">Samuli Natri</span>. I'm a software developer.
+    </p>
 
     
 
 <div class="blog">
-    
+
+    <div class="line"></div>
+
     <div class="blog-dates">
-        <span itemprop="dateModified" 
-        content="Jun 29, 2020" 
-        class="blog-updated">Updated <strong>Jun 29, 2020</strong> 
-    </span>
+        <span itemprop="dateModified" content=" Jun 29, 2020"
+            class="blog-updated">Updated <strong>Jun 29, 2020</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">Django - ImageKit Tutorial</h1>
+
+    <div class="blog-description">How to create thumbnails using django-imagekit.</div>
+
     
-</span>
-</div>
 
-<h1 class="blog-title">Django - ImageKit Tutorial</h1>
-<div class="blog-description">How to create thumbnails using the django-imagekit package.</div>
-
-<div class="blog-content"><p><img src="/static/images/blog/django-imagekit-tutorial/01.png" alt="" /></p>
-<h2 id="introduction">Introduction</h2>
-<p>We use the ImageSpecField to generate an image thumbnail on the fly when a page where the image is used is accessed for the first time.</p>
-<h2 id="quickstart">Quickstart</h2>
+    <div class="blog-content"><h2 id="quickstart">Quickstart</h2>
 <p>Install these packages:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install pillow django-imagekit</span><span>
 </span></code></pre>
@@ -100,7 +113,8 @@
 </span><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image_small.url }}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
 </span><span style="color:#81a1c1;">&lt;img </span><span style="color:#8fbcbb;">src</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.image.url }}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
 </span></code></pre>
-<h2 id="setup">Setup</h2>
+<p><img src="/images/blog/django-imagekit-tutorial/01.png" alt="" /></p>
+<h2 id="full-tutorial">Full Tutorial</h2>
 <p>Run these commands to setup a new project:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
 </span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
@@ -211,9 +225,9 @@
 <li>The thumbnails are generated when you first visit the detail page.</li>
 </ul>
 <p>Visit <code>/admin/</code> to create a new blog post:</p>
-<p><img src="/static/images/blog/django-imagekit-tutorial/02.png" alt="" /></p>
+<p><img src="/images/blog/django-imagekit-tutorial/02.png" alt="" /></p>
 <p>Visit <code>/blog/django-tutorial/</code> and you should see something like this:</p>
-<p><img src="/static/images/blog/django-imagekit-tutorial/01.png" alt="" /></p>
+<p><img src="/images/blog/django-imagekit-tutorial/01.png" alt="" /></p>
 <p>You can access the original image with <code>{{ post.image.url }}</code>. </p>
 <p>Images are served from the <code>media</code> folder:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">media/static/images/05.jpg</span><span>
@@ -223,55 +237,46 @@
 </span></code></pre>
 </div>
 
-
-
-
-
-</div>
-
-<script>
-    const copyButtonLabel = "Copy";
-    let blocks = document.querySelectorAll("pre");
-    blocks.forEach((block) => {
-        if (navigator.clipboard) {
-            let button = document.createElement("button");
-            button.innerText = copyButtonLabel;
-            button.addEventListener("click", copyCode);
-            block.appendChild(button);
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
         }
-    });
-    async function copyCode(event) {
-        const button = event.srcElement;
-        const pre = button.parentElement;
-        let code = pre.querySelector("code");
-        let text = code.innerText;
-        await navigator.clipboard.writeText(text);
-        button.innerText = "Copied";
-        setTimeout(()=> {
-            button.innerText = copyButtonLabel;
-        }, 500)
-    }
-</script>
-
-
-
-
-    <div class="clear"></div>
+    </script>
 
     
 
-    <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
-        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
-        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
-        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
-        
-        <br>
-        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
-    </div>
+    <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
+    <script type="text/javascript">
+        let section = document.URL.split('/')[3];
+        if(section) {
+            document.getElementById("menu-link-" + section).classList.add("menu-link-active");   
+        }
+    </script>
+
+    </div>
 
 </body>
 </html>

@@ -7,13 +7,14 @@
     <meta name="description" content="How to load an image and map it on a surface.">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://samulinatri.com/styles.css?v=14">
+    <!-- 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
     <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff"> -->
 		
     <title>DirectX 11 - Textures (C&#x2F;C++ &amp; Win32)  |  Samuli Natri. Software developer.</title>
 
@@ -37,25 +38,40 @@
 <body>
 <div class="main ">
 
-    
+    <p style="text-align: center;" class="menu">
+        <a class="menu-link " href="/">Home</a> &#x2219
+        <a class="menu-link" id="menu-link-shop" href="/shop/a-beginners-guide-to-django/">Shop</a> &#x2219
+        <!-- <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">Blog</a> &#x2219 -->
+        <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+        <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+        <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+    </p>
+
+    <p style="text-align: center;" class="intro">
+        Hello. My name is <span class="intro-name">Samuli Natri</span>. I'm a software developer.
+    </p>
 
     
 
 <div class="blog">
-    
+
+    <div class="line"></div>
+
     <div class="blog-dates">
-        <span itemprop="dateModified" 
-        content="Jun 26, 2022" 
-        class="blog-updated">Updated <strong>Jun 26, 2022</strong> 
-    </span>
+        <span itemprop="dateModified" content=" Jun 26, 2022"
+            class="blog-updated">Updated <strong>Jun 26, 2022</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">DirectX 11 - Textures (C&#x2F;C++ &amp; Win32) </h1>
+
+    <div class="blog-description">How to load an image and map it on a surface.</div>
+
     
-</span>
-</div>
 
-<h1 class="blog-title">DirectX 11 - Textures (C&#x2F;C++ &amp; Win32) </h1>
-<div class="blog-description">How to load an image and map it on a surface.</div>
-
-<div class="blog-content"><ul>
+    <div class="blog-content"><ul>
 <li>Download <code>stb_image.h</code> from here: <a href="https://github.com/nothings/stb/blob/master/stb_image.h">https://github.com/nothings/stb/blob/master/stb_image.h</a> and put it in the project root.</li>
 <li>Put some <a href="/images/things/directx-11-textures/image.jpg">image.jpg</a> in the project root.</li>
 </ul>
@@ -464,62 +480,46 @@
 <p><img src="/images/things/directx-11-textures/image.png" alt="" /></p>
 </div>
 
-
-
-<h2>Video</h2>
-<div class="blog-video">
-    <iframe class="blog-video-iframe" height="315" 
-    src="https://www.youtube.com/embed/IiHgol7wzeQ/" 
-    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
-
-
-
-</div>
-
-<script>
-    const copyButtonLabel = "Copy";
-    let blocks = document.querySelectorAll("pre");
-    blocks.forEach((block) => {
-        if (navigator.clipboard) {
-            let button = document.createElement("button");
-            button.innerText = copyButtonLabel;
-            button.addEventListener("click", copyCode);
-            block.appendChild(button);
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
         }
-    });
-    async function copyCode(event) {
-        const button = event.srcElement;
-        const pre = button.parentElement;
-        let code = pre.querySelector("code");
-        let text = code.innerText;
-        await navigator.clipboard.writeText(text);
-        button.innerText = "Copied";
-        setTimeout(()=> {
-            button.innerText = copyButtonLabel;
-        }, 500)
-    }
-</script>
-
-
-
-
-    <div class="clear"></div>
+    </script>
 
     
 
-    <div class="footer">
-        <a class="footer-link navbar-link-author" href="https://samulinatri.com/">Home</a>
-        <a class="footer-link bold" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a>
-        <a class="footer-link" target="_blank" href="https://github.com/SamuliNatri">GitHub</a>
-        <a class="footer-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
-        
-        <br>
-        <br class="footer-br">&copy 2022 Samuli Natri. All rights reserved. 
-    </div>
+    <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
     
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
     
+
+    <script type="text/javascript">
+        let section = document.URL.split('/')[3];
+        if(section) {
+            document.getElementById("menu-link-" + section).classList.add("menu-link-active");   
+        }
+    </script>
+
+    </div>
 
 </body>
 </html>
