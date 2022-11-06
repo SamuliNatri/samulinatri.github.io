@@ -71,123 +71,124 @@
 
     
 
-    <div class="blog-content"><h2 id="quickstart">Quickstart</h2>
+    <div class="blog-content">
+        <h2 id="quickstart">Quickstart</h2>
 <h3 id="blog-forms-py">blog/forms.py</h3>
 <p>Create a file called <code>forms.py</code> in the <em>blog</em> app directory and add these lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>forms </span><span style="color:#81a1c1;">import </span><span>ModelForm</span><span>
-</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>forms </span><span style="color:#81a1c1;">import </span><span>ModelForm
+</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
 </span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:</span><span>
-</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post</span><span>
-</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>]</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:
+</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>]
 </span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDeleteForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:</span><span>
-</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post</span><span>
-</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[]</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDeleteForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:
+</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[]
 </span></code></pre>
 <h3 id="mysite-urls-py">mysite/urls.py</h3>
 <p>Edit the main <code>urls.py</code> file and add these lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin</span><span>
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path</span><span>
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span style="color:#eceff4;">, </span><span>post_edit</span><span style="color:#eceff4;">, </span><span>post_delete</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span style="color:#eceff4;">, </span><span>post_edit</span><span style="color:#eceff4;">, </span><span>post_delete
 </span><span>
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, </span><span>post_create</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/edit/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>post_edit</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_edit&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/delete/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>post_delete</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_delete&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>]</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, </span><span>post_create</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/edit/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>post_edit</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_edit&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/delete/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>post_delete</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_delete&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>]
 </span></code></pre>
 <h3 id="blog-views-py">blog/views.py</h3>
 <p>Edit the <code>views.py</code> file and add these function to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>get_object_or_404</span><span style="color:#eceff4;">, </span><span>redirect</span><span style="color:#eceff4;">, </span><span>render</span><span>
-</span><span style="color:#81a1c1;">from .</span><span>forms </span><span style="color:#81a1c1;">import </span><span>PostForm</span><span style="color:#eceff4;">, </span><span>PostDeleteForm</span><span>
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>get_object_or_404</span><span style="color:#eceff4;">, </span><span>redirect</span><span style="color:#eceff4;">, </span><span>render
+</span><span style="color:#81a1c1;">from .</span><span>forms </span><span style="color:#81a1c1;">import </span><span>PostForm</span><span style="color:#eceff4;">, </span><span>PostDeleteForm
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
 </span><span>
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_create</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&#39;POST&#39;</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span>)</span><span>
-</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():</span><span>
-</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">else</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>()</span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_create.html&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  {</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span>
-</span><span>                  })</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_create</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&#39;POST&#39;</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span>)
+</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():
+</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)
+</span><span>    </span><span style="color:#81a1c1;">else</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>()
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,
+</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_create.html&#39;</span><span style="color:#eceff4;">,
+</span><span>                  {
+</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form
+</span><span>                  })
 </span><span>
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_edit</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):</span><span>
-</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,</span><span>
-</span><span>                        </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
-</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():</span><span>
-</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">else</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_edit</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):
+</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)
+</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,
+</span><span>                        </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
+</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():
+</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)
+</span><span>    </span><span style="color:#81a1c1;">else</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_edit.html&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  {</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post</span><span>
-</span><span>                  })</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,
+</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_edit.html&#39;</span><span style="color:#eceff4;">,
+</span><span>                  {
+</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,
+</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post
+</span><span>                  })
 </span><span>
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_delete</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):</span><span>
-</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,</span><span>
-</span><span>                              </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
-</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():</span><span>
-</span><span>            post</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">delete</span><span>()</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">else</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_delete</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):
+</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)
+</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,
+</span><span>                              </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
+</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():
+</span><span>            post</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">delete</span><span>()
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)
+</span><span>    </span><span style="color:#81a1c1;">else</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;blog/post_delete.html&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  {</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  })</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;blog/post_delete.html&#39;</span><span style="color:#eceff4;">,
+</span><span>                  {
+</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,
+</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post</span><span style="color:#eceff4;">,
+</span><span>                  })
 </span></code></pre>
 <h3 id="templates">Templates</h3>
 <p>Add these files in the <code>blog/templates/blog</code> directory:</p>
 <h4 id="post-create-html">post_create.html</h4>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Add new post</span><span style="color:#81a1c1;">&lt;/h1&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;</span><span>
-</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
-</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}</span><span>
-</span><span>      {{ form.as_p }}</span><span>
-</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Create</span><span style="color:#81a1c1;">&lt;/button&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Add new post</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;
+</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>      {{ form.as_p }}
+</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Create</span><span style="color:#81a1c1;">&lt;/button&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
 </span></code></pre>
 <h4 id="post-edit-html">post_edit.html</h4>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Edit post</span><span style="color:#81a1c1;">&lt;/h1&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_edit&#39; post.pk %}&quot;</span><span>
-</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
-</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}</span><span>
-</span><span>      {{ form.as_p }}</span><span>
-</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Update</span><span style="color:#81a1c1;">&lt;/button&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Edit post</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_edit&#39; post.pk %}&quot;
+</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>      {{ form.as_p }}
+</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Update</span><span style="color:#81a1c1;">&lt;/button&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
 </span></code></pre>
 <h4 id="post-delete-html">post_delete.html</h4>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Delete post</span><span style="color:#81a1c1;">&lt;/h1&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_delete&#39; post.pk %}&quot; </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
-</span><span>    {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}</span><span>
-</span><span>    {{ form }}</span><span>
-</span><span>    Are you sure you want to delete the following post?</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;</span><span>
-</span><span>    {{ post.title }}</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Delete</span><span style="color:#81a1c1;">&lt;/button&gt;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">&lt;a </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Cancel</span><span style="color:#81a1c1;">&lt;/a&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Delete post</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_delete&#39; post.pk %}&quot; </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>    {{ form }}
+</span><span>    Are you sure you want to delete the following post?</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;
+</span><span>    {{ post.title }}</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Delete</span><span style="color:#81a1c1;">&lt;/button&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;a </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Cancel</span><span style="color:#81a1c1;">&lt;/a&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
 </span></code></pre>
 <h2 id="full-tutorial">Full Tutorial</h2>
 <p>This tutorial shows how to use function-based views to create, edit and delete objects.</p>
@@ -196,83 +197,83 @@
 </div>
 <h3 id="setup">Setup</h3>
 <p>Run these commands to setup a project:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite</span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv</span><span>
-</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django</span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite .</span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite
+</span><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv
+</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate 
+</span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite .
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog
 </span></code></pre>
 <p>Edit the project <code>settings.py</code> file and add the <em>blog</em> app configuration class to the <code>INSTALLED_APPS</code> list:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[</span><span>
-</span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>]</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>]
 </span></code></pre>
 <p>Add a class called <code>Post</code> to the <em>blog</em> app <code>models.py</code> file:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
 </span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):</span><span>
-</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">,</span><span>
-</span><span>                             </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span>)</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">,
+</span><span>                             </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span>)
 </span></code></pre>
 <p>Run migrations:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">\</span><span>
-</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; \
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate
 </span></code></pre>
 <h3 id="create-form">Create form</h3>
 <p>Create a file called <code>forms.py</code> in the <em>blog</em> app directory and add these lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>forms </span><span style="color:#81a1c1;">import </span><span>ModelForm</span><span>
-</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>forms </span><span style="color:#81a1c1;">import </span><span>ModelForm
+</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
 </span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:</span><span>
-</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post</span><span>
-</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>]</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:
+</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>]
 </span></code></pre>
 <ul>
 <li><code>ModelForm</code> is a helper class that allows us to create forms using existing models.</li>
 <li>Use the <code>fields</code> attribute to define what fields the form should have.</li>
 </ul>
 <p>Edit the main <code>urls.py</code> file and add these lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin</span><span>
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
 </span><span>
-</span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span>
+</span><span style="color:#616e88;"># HERE
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create
 </span><span>
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         post_create</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>]</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         post_create</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>]
 </span></code></pre>
 <p>Edit the <em>blog</em> app <code>views.py</code> file and add a function called <code>post_create</code> to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>render</span><span style="color:#eceff4;">, </span><span>redirect</span><span>
-</span><span style="color:#81a1c1;">from .</span><span>forms </span><span style="color:#81a1c1;">import </span><span>PostForm</span><span>
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>render</span><span style="color:#eceff4;">, </span><span>redirect
+</span><span style="color:#81a1c1;">from .</span><span>forms </span><span style="color:#81a1c1;">import </span><span>PostForm
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_create</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&#39;POST&#39;</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span>)</span><span>
-</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():</span><span>
-</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">else</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>()</span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_create.html&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  {</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span>
-</span><span>                  })</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_create</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&#39;POST&#39;</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span>)
+</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():
+</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)
+</span><span>    </span><span style="color:#81a1c1;">else</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>()
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,
+</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_create.html&#39;</span><span style="color:#eceff4;">,
+</span><span>                  {
+</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form
+</span><span>                  })
 </span></code></pre>
 <ul>
 <li>The <code>if request.method == 'POST':</code> line checks if a form has been posted using the <code>POST</code> method.</li>
@@ -282,13 +283,13 @@
 <li>The <code>form</code> object is passed to the template in the <code>render()</code> function <em>context</em>. A <em>context</em> is a dictionary that maps template variable names to Python objects.</li>
 </ul>
 <p>Create a file called <code>post_create.html</code> in the <code>blog/templates/blog</code> directory and add these lines to it:</p>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Add new post</span><span style="color:#81a1c1;">&lt;/h1&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;</span><span>
-</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
-</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}</span><span>
-</span><span>      {{ form.as_p }}</span><span>
-</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Create</span><span style="color:#81a1c1;">&lt;/button&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Add new post</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;
+</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>      {{ form.as_p }}
+</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Create</span><span style="color:#81a1c1;">&lt;/button&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
 </span></code></pre>
 <ul>
 <li>The <code>csrf_token</code> provides protection against <em>Cross Site Request Forgeries</em>.</li>
@@ -298,40 +299,40 @@
 <p><img src="/images/blog/django-modelform-tutorial/01.png" alt="" /></p>
 <h3 id="edit-form">Edit form</h3>
 <p>Edit the project <code>urls.py</code> file and add the following path to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span style="color:#eceff4;">, </span><span>post_edit</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#616e88;"># HERE
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span style="color:#eceff4;">, </span><span>post_edit
 </span><span>
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         post_create</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/edit/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         post_edit</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_edit&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>]</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         post_create</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/edit/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         post_edit</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_edit&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>]
 </span></code></pre>
 <p>Edit the <em>blog</em> app <code>views.py</code> file and add a function called <code>post_edit</code> to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>render</span><span style="color:#eceff4;">, </span><span>redirect</span><span style="color:#eceff4;">, </span><span>get_object_or_404</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>render</span><span style="color:#eceff4;">, </span><span>redirect</span><span style="color:#eceff4;">, </span><span>get_object_or_404
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_edit</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):</span><span>
-</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,</span><span>
-</span><span>                        </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
-</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():</span><span>
-</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">else</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_edit</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):
+</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)
+</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,
+</span><span>                        </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
+</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():
+</span><span>            form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>()
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)
+</span><span>    </span><span style="color:#81a1c1;">else</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_edit.html&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  {</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post</span><span>
-</span><span>                  })</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">,
+</span><span>                  </span><span style="color:#a3be8c;">&#39;blog/post_edit.html&#39;</span><span style="color:#eceff4;">,
+</span><span>                  {
+</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,
+</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post
+</span><span>                  })
 </span></code></pre>
 <ul>
 <li>The <code>get_objects_or_404()</code> function is used to find the blog post we want to edit using its primary key. It returns <em>404 Not Found</em> error if the object doesn't exist.</li>
@@ -339,94 +340,99 @@
 <li>The <code>instance=post</code> in the <code>else</code> clause populates the HTML form with the object data when we visit the page without sending a <code>POST</code> request.</li>
 </ul>
 <p>Create a file called <code>post_edit.html</code> in the <code>blog/templates/blog</code> directory and add these lines to it:</p>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Edit post</span><span style="color:#81a1c1;">&lt;/h1&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_edit&#39; post.pk %}&quot;</span><span>
-</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
-</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}</span><span>
-</span><span>      {{ form.as_p }}</span><span>
-</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Update</span><span style="color:#81a1c1;">&lt;/button&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Edit post</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_edit&#39; post.pk %}&quot;
+</span><span>      </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>      {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>      {{ form.as_p }}
+</span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Update</span><span style="color:#81a1c1;">&lt;/button&gt;
+</span><span style="color:#81a1c1;">&lt;/form&gt;
 </span></code></pre>
 <p>Visit <code>/blog/edit/&lt;id&gt;/</code> to edit an item:</p>
 <p><img src="/images/blog/django-modelform-tutorial/02.png" alt="" /></p>
 <h3 id="delete-form">Delete form</h3>
 <p>Edit the <code>blog/forms.py</code> file and add a class called <code>PostDeleteForm</code> to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>forms </span><span style="color:#81a1c1;">import </span><span>ModelForm</span><span>
-</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>forms </span><span style="color:#81a1c1;">import </span><span>ModelForm
+</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
 </span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:</span><span>
-</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post</span><span>
-</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>]</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:
+</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[</span><span style="color:#a3be8c;">&#39;title&#39;</span><span>]
 </span><span>
-</span><span style="color:#616e88;"># START</span><span style="color:#616e88;">
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDeleteForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):</span><span>
-</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:</span><span>
-</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post</span><span>
-</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[]</span><span>
-</span><span style="color:#616e88;"># END</span><span style="color:#616e88;">
+</span><span style="color:#616e88;"># START
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDeleteForm</span><span>(</span><span style="color:#8fbcbb;">ModelForm</span><span>):
+</span><span>    </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Meta</span><span>:
+</span><span>        model </span><span style="color:#81a1c1;">= </span><span>Post
+</span><span>        fields </span><span style="color:#81a1c1;">= </span><span>[]
+</span><span style="color:#616e88;"># END
 </span></code></pre>
 <p>Edit the <code>urls.py</code> file and add the following path to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin</span><span>
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
 </span><span>
-</span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span style="color:#eceff4;">, </span><span>post_edit</span><span style="color:#eceff4;">, </span><span>post_delete</span><span>
+</span><span style="color:#616e88;"># HERE
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>post_create</span><span style="color:#eceff4;">, </span><span>post_edit</span><span style="color:#eceff4;">, </span><span>post_delete
 </span><span>
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         post_create</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/edit/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         post_edit</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_edit&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="color:#616e88;"># HERE</span><span style="color:#616e88;">
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/delete/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>
-</span><span>         post_delete</span><span style="color:#eceff4;">, </span><span>
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_delete&#39;</span><span>)</span><span style="color:#eceff4;">,</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,</span><span>
-</span><span>]</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/create/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         post_create</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/edit/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         post_edit</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_edit&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/delete/&lt;int:pk&gt;/&#39;</span><span style="color:#eceff4;">, 
+</span><span>         post_delete</span><span style="color:#eceff4;">, 
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_delete&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>]
 </span></code></pre>
 <p>Edit the <em>blog</em> app <code>views.py</code> file and add a function called <code>post_delete</code> to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from .</span><span>forms </span><span style="color:#81a1c1;">import </span><span>PostForm</span><span style="color:#eceff4;">, </span><span>PostDeleteForm</span><span>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from .</span><span>forms </span><span style="color:#81a1c1;">import </span><span>PostForm</span><span style="color:#eceff4;">, </span><span>PostDeleteForm
 </span><span>
-</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_delete</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):</span><span>
-</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,</span><span>
-</span><span>                              </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
-</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():</span><span>
-</span><span>            post</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">delete</span><span>()</span><span>
-</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)</span><span>
-</span><span>    </span><span style="color:#81a1c1;">else</span><span>:</span><span>
-</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)</span><span>
+</span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">post_delete</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">request</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=None</span><span>):
+</span><span>    post </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">get_object_or_404</span><span>(Post</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">pk</span><span style="color:#81a1c1;">=</span><span>pk)
+</span><span>    </span><span style="color:#81a1c1;">if </span><span>request</span><span style="color:#81a1c1;">.</span><span>method </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(request</span><span style="color:#81a1c1;">.POST</span><span style="color:#eceff4;">,
+</span><span>                              </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
+</span><span>        </span><span style="color:#81a1c1;">if </span><span>form</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">is_valid</span><span>():
+</span><span>            post</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">delete</span><span>()
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">redirect</span><span>(</span><span style="color:#a3be8c;">&#39;post_create&#39;</span><span>)
+</span><span>    </span><span style="color:#81a1c1;">else</span><span>:
+</span><span>        form </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">PostDeleteForm</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#81a1c1;">=</span><span>post)
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;blog/post_delete.html&#39;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  {</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post</span><span style="color:#eceff4;">,</span><span>
-</span><span>                  })</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">render</span><span>(request</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;blog/post_delete.html&#39;</span><span style="color:#eceff4;">,
+</span><span>                  {
+</span><span>                      </span><span style="color:#a3be8c;">&#39;form&#39;</span><span style="color:#eceff4;">: </span><span>form</span><span style="color:#eceff4;">,
+</span><span>                      </span><span style="color:#a3be8c;">&#39;post&#39;</span><span style="color:#eceff4;">: </span><span>post</span><span style="color:#eceff4;">,
+</span><span>                  })
 </span></code></pre>
 <ul>
 <li>The <code>post_delete</code> view is very similar to the <code>post_edit</code> view but instead of updating the blog post, we <em>delete</em> it using <code>post.delete()</code>.</li>
 </ul>
 <p>Create a file called <code>post_delete.html</code> in the <code>blog/templates/blog</code> directory and add these lines to it:</p>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Delete post</span><span style="color:#81a1c1;">&lt;/h1&gt;</span><span>
-</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_delete&#39; post.pk %}&quot; </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;</span><span>
-</span><span>    {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}</span><span>
-</span><span>    {{ form }}</span><span>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Delete post</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#81a1c1;">&lt;form </span><span style="color:#8fbcbb;">action</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_delete&#39; post.pk %}&quot; </span><span style="color:#8fbcbb;">method</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    {% </span><span style="color:#81a1c1;">csrf_token </span><span>%}
+</span><span>    {{ form }}
 </span><span>
-</span><span>    Are you sure you want to delete the following post?:</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;</span><span>
-</span><span>    {{ post.title }}?</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Delete</span><span style="color:#81a1c1;">&lt;/button&gt;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">&lt;a </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Cancel</span><span style="color:#81a1c1;">&lt;/a&gt;</span><span>
+</span><span>    Are you sure you want to delete the following post?:</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;
+</span><span>    {{ post.title }}?</span><span style="color:#81a1c1;">&lt;br&gt;&lt;br&gt;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">&lt;button </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;button&quot; </span><span style="color:#8fbcbb;">type</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;submit&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Delete</span><span style="color:#81a1c1;">&lt;/button&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;a </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{% url &#39;post_create&#39; %}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>Cancel</span><span style="color:#81a1c1;">&lt;/a&gt;
 </span><span>
-</span><span style="color:#81a1c1;">&lt;/form&gt;</span><span>
+</span><span style="color:#81a1c1;">&lt;/form&gt;
 </span></code></pre>
 <p>Visit <code>blog/delete/&lt;id&gt;/</code> to delete an item:</p>
 <p><img src="/images/blog/django-modelform-tutorial/03.png" alt="" /></p>
-</div>
+
+        
+    </div>
+
+    
+        
 
     <script>
         const copyButtonLabel = "Copy";

@@ -71,172 +71,178 @@
 
     
 
-    <div class="blog-content"><h2 id="main-cpp">main.cpp</h2>
-<pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN</span><span>
-</span><span style="color:#81a1c1;">#define UNICODE</span><span>
-</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;</span><span>
-</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;</span><span>
+    <div class="blog-content">
+        <h2 id="main-cpp">main.cpp</h2>
+<pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN
+</span><span style="color:#81a1c1;">#define UNICODE
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;
 </span><span>
-</span><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">uint32_t </span><span style="color:#81a1c1;">u32</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">uint32_t </span><span style="color:#81a1c1;">u32</span><span style="color:#eceff4;">;
 </span><span>
-</span><span style="color:#81a1c1;">void*</span><span> BitmapMemory</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">void*</span><span> BitmapMemory</span><span style="color:#eceff4;">;
 </span><span>
-</span><span style="color:#81a1c1;">int</span><span> BitmapWidth</span><span style="color:#eceff4;">;</span><span>
-</span><span style="color:#81a1c1;">int</span><span> BitmapHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">int</span><span> BitmapWidth</span><span style="color:#eceff4;">;
+</span><span style="color:#81a1c1;">int</span><span> BitmapHeight</span><span style="color:#eceff4;">;
 </span><span>
-</span><span style="color:#81a1c1;">int</span><span> ClientWidth</span><span style="color:#eceff4;">;</span><span>
-</span><span style="color:#81a1c1;">int</span><span> ClientHeight</span><span style="color:#eceff4;">;</span><span>
+</span><span style="color:#81a1c1;">int</span><span> ClientWidth</span><span style="color:#eceff4;">;
+</span><span style="color:#81a1c1;">int</span><span> ClientHeight</span><span style="color:#eceff4;">;
 </span><span>
-</span><span style="color:#616e88;">// Draws a pixel at X, Y (from top left corner)</span><span style="color:#616e88;">
-</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawPixel</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">X</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Y</span><span style="color:#eceff4;">,</span><span> u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span>) {</span><span>
-</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)BitmapMemory</span><span style="color:#eceff4;">;</span><span>
-</span><span>    Pixel </span><span style="color:#81a1c1;">+=</span><span> Y </span><span style="color:#81a1c1;">*</span><span> BitmapWidth </span><span style="color:#81a1c1;">+</span><span> X</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">=</span><span> Color</span><span style="color:#eceff4;">;</span><span>
-</span><span>}</span><span>
+</span><span style="color:#616e88;">// Draws a pixel at X, Y (from top left corner)
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawPixel</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">X</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">Y</span><span style="color:#eceff4;">,</span><span> u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span>) {
+</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)BitmapMemory</span><span style="color:#eceff4;">;
+</span><span>    Pixel </span><span style="color:#81a1c1;">+=</span><span> Y </span><span style="color:#81a1c1;">*</span><span> BitmapWidth </span><span style="color:#81a1c1;">+</span><span> X</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">=</span><span> Color</span><span style="color:#eceff4;">;
+</span><span>}
 </span><span>
-</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">ClearScreen</span><span>(u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span>) {</span><span>
-</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)BitmapMemory</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Index </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>
-</span><span>        Index </span><span style="color:#81a1c1;">&lt;</span><span> BitmapWidth </span><span style="color:#81a1c1;">*</span><span> BitmapHeight</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">++</span><span>Index) { </span><span style="color:#81a1c1;">*</span><span>Pixel</span><span style="color:#81a1c1;">++ =</span><span> Color</span><span style="color:#eceff4;">; </span><span>}</span><span>
-</span><span>}</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">ClearScreen</span><span>(u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span>) {
+</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)BitmapMemory</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Index </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; 
+</span><span>        Index </span><span style="color:#81a1c1;">&lt;</span><span> BitmapWidth </span><span style="color:#81a1c1;">*</span><span> BitmapHeight</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">++</span><span>Index) { </span><span style="color:#81a1c1;">*</span><span>Pixel</span><span style="color:#81a1c1;">++ =</span><span> Color</span><span style="color:#eceff4;">; </span><span>}
+</span><span>}
 </span><span>
-</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleX</span><span style="color:#eceff4;">,</span><span>
-</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleY</span><span style="color:#eceff4;">,</span><span>
-</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleWidth</span><span style="color:#eceff4;">,</span><span>
-</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleHeight</span><span style="color:#eceff4;">,</span><span>
-</span><span>                   u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span>) {</span><span>
-</span><span>    </span><span>
-</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)BitmapMemory</span><span style="color:#eceff4;">;</span><span>
-</span><span>    Pixel </span><span style="color:#81a1c1;">+=</span><span> RectangleY </span><span style="color:#81a1c1;">*</span><span> BitmapWidth </span><span style="color:#81a1c1;">+</span><span> RectangleX</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt;</span><span> RectangleHeight</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {</span><span>
-</span><span>        </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>            X </span><span style="color:#81a1c1;">&lt;</span><span> RectangleWidth</span><span style="color:#eceff4;">;</span><span>
-</span><span>            </span><span style="color:#81a1c1;">++</span><span>X) { </span><span style="color:#81a1c1;">*</span><span>Pixel</span><span style="color:#81a1c1;">++ =</span><span> Color</span><span style="color:#eceff4;">; </span><span>}</span><span>
-</span><span>        Pixel </span><span style="color:#81a1c1;">+=</span><span> BitmapWidth </span><span style="color:#81a1c1;">-</span><span> RectangleWidth</span><span style="color:#eceff4;">;</span><span>
-</span><span>    }</span><span>
-</span><span>}</span><span>
+</span><span style="color:#81a1c1;">void </span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleX</span><span style="color:#eceff4;">,
+</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleY</span><span style="color:#eceff4;">,
+</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleWidth</span><span style="color:#eceff4;">,
+</span><span>                   </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">RectangleHeight</span><span style="color:#eceff4;">,
+</span><span>                   u32 </span><span style="font-weight:bold;color:#d8dee9;">Color</span><span>) {
+</span><span>    
+</span><span>    u32 </span><span style="color:#81a1c1;">*</span><span>Pixel </span><span style="color:#81a1c1;">= </span><span>(u32 </span><span style="color:#81a1c1;">*</span><span>)BitmapMemory</span><span style="color:#eceff4;">;
+</span><span>    Pixel </span><span style="color:#81a1c1;">+=</span><span> RectangleY </span><span style="color:#81a1c1;">*</span><span> BitmapWidth </span><span style="color:#81a1c1;">+</span><span> RectangleX</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> Y </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span> Y </span><span style="color:#81a1c1;">&lt;</span><span> RectangleHeight</span><span style="color:#eceff4;">; </span><span style="color:#81a1c1;">++</span><span>Y) {
+</span><span>        </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#81a1c1;">int</span><span> X </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>            X </span><span style="color:#81a1c1;">&lt;</span><span> RectangleWidth</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="color:#81a1c1;">++</span><span>X) { </span><span style="color:#81a1c1;">*</span><span>Pixel</span><span style="color:#81a1c1;">++ =</span><span> Color</span><span style="color:#eceff4;">; </span><span>}
+</span><span>        Pixel </span><span style="color:#81a1c1;">+=</span><span> BitmapWidth </span><span style="color:#81a1c1;">-</span><span> RectangleWidth</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>}
 </span><span>
-</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">Window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">Message</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">WParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">LParam</span><span>) {</span><span>
-</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(Message) {</span><span>
-</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{</span><span>
-</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(WParam) { </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(Window)</span><span style="color:#eceff4;">; </span><span>}</span><span style="color:#eceff4;">; </span><span>}</span><span>
-</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{ </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProc</span><span>(Window</span><span style="color:#eceff4;">,</span><span> Message</span><span style="color:#eceff4;">,</span><span> WParam</span><span style="color:#eceff4;">,</span><span>  LParam)</span><span style="color:#eceff4;">; </span><span>}</span><span>
-</span><span>    }</span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>}</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">Window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">Message</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">WParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">LParam</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(Message) {
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(WParam) { </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(Window)</span><span style="color:#eceff4;">; </span><span>}</span><span style="color:#eceff4;">; </span><span>}
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{ </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{ </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProc</span><span>(Window</span><span style="color:#eceff4;">,</span><span> Message</span><span style="color:#eceff4;">,</span><span> WParam</span><span style="color:#eceff4;">,</span><span>  LParam)</span><span style="color:#eceff4;">; </span><span>}
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
 </span><span>
-</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">Instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">PrevInstance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">PWSTR </span><span style="font-weight:bold;color:#d8dee9;">CmdLine</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">CmdShow</span><span>) {</span><span>
-</span><span>    </span><span>
-</span><span>    WNDCLASS WindowClass </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#81a1c1;">const wchar_t</span><span> ClassName[] </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">;</span><span>
-</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">;</span><span>
-</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> Instance</span><span style="color:#eceff4;">;</span><span>
-</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">=</span><span> ClassName</span><span style="color:#eceff4;">;</span><span>
-</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>WindowClass)) {</span><span>
-</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;RegisterClass failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
-</span><span>    }</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> Window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> ClassName</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Program&quot;</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 WS_OVERLAPPEDWINDOW</span><span style="color:#81a1c1;">|</span><span>WS_VISIBLE</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> Instance</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span>Window) {</span><span>
-</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;CreateWindowEx failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;</span><span>
-</span><span>    }</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// Get client area dimensions </span><span style="color:#616e88;">
-</span><span>    </span><span>
-</span><span>    RECT ClientRect</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">GetClientRect</span><span>(Window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ClientRect)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    ClientWidth </span><span style="color:#81a1c1;">=</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;</span><span>
-</span><span>    ClientHeight </span><span style="color:#81a1c1;">=</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    BitmapWidth </span><span style="color:#81a1c1;">=</span><span> ClientWidth</span><span style="color:#eceff4;">;</span><span>
-</span><span>    BitmapHeight </span><span style="color:#81a1c1;">=</span><span> ClientHeight</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// Allocate memory for the bitmap</span><span style="color:#616e88;">
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">int</span><span> BytesPerPixel </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    BitmapMemory </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">VirtualAlloc</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                BitmapWidth </span><span style="color:#81a1c1;">*</span><span> BitmapHeight </span><span style="color:#81a1c1;">*</span><span> BytesPerPixel</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                MEM_RESERVE</span><span style="color:#81a1c1;">|</span><span>MEM_COMMIT</span><span style="color:#eceff4;">,</span><span>
-</span><span>                                PAGE_READWRITE</span><span>
-</span><span>                                )</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#616e88;">// BitmapInfo struct for StretchDIBits</span><span style="color:#616e88;">
-</span><span>    </span><span>
-</span><span>    BITMAPINFO BitmapInfo</span><span style="color:#eceff4;">;</span><span>
-</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biSize </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biWidth </span><span style="color:#81a1c1;">=</span><span> BitmapWidth</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span style="color:#616e88;">// Negative height makes top left as the coordinate system origin for the DrawPixel function, otherwise its bottom left</span><span style="color:#616e88;">
-</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biHeight </span><span style="color:#81a1c1;">= -</span><span>BitmapHeight</span><span style="color:#eceff4;">;</span><span>
-</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biPlanes </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;</span><span>
-</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biBitCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">32</span><span style="color:#eceff4;">;</span><span>
-</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biCompression </span><span style="color:#81a1c1;">=</span><span> BI_RGB</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#8fbcbb;">HDC</span><span> DeviceContext </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetDC</span><span>(Window)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">bool</span><span> Running </span><span style="color:#81a1c1;">= true</span><span style="color:#eceff4;">;</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {</span><span>
-</span><span>        MSG Message</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nullptr</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {</span><span>
-</span><span>            </span><span style="color:#81a1c1;">if</span><span>(Message</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) Running </span><span style="color:#81a1c1;">= false</span><span style="color:#eceff4;">;</span><span>
-</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;</span><span>
-</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        }</span><span>
-</span><span>        </span><span>
-</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ClearScreen</span><span>(</span><span style="color:#b48ead;">0x333333</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span>
-</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(</span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xff00ff</span><span>)</span><span style="color:#eceff4;">;</span><span>
-</span><span>        </span><span>
-</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">StretchDIBits</span><span>(DeviceContext</span><span style="color:#eceff4;">, </span><span>
-</span><span>                      </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      BitmapWidth</span><span style="color:#eceff4;">,</span><span> BitmapHeight</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      ClientWidth</span><span style="color:#eceff4;">,</span><span> ClientHeight</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      BitmapMemory</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>BitmapInfo</span><span style="color:#eceff4;">,</span><span>
-</span><span>                      DIB_RGB_COLORS</span><span style="color:#eceff4;">,</span><span> SRCCOPY)</span><span style="color:#eceff4;">;</span><span>
-</span><span>    }</span><span>
-</span><span>    </span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;</span><span>
-</span><span>}</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">wWinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">Instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">PrevInstance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">PWSTR </span><span style="font-weight:bold;color:#d8dee9;">CmdLine</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">CmdShow</span><span>) {
+</span><span>    
+</span><span>    WNDCLASS WindowClass </span><span style="color:#81a1c1;">= </span><span>{}</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">const wchar_t</span><span> ClassName[] </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">;
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">;
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> Instance</span><span style="color:#eceff4;">;
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">=</span><span> ClassName</span><span style="color:#eceff4;">;
+</span><span>    WindowClass</span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span style="font-weight:bold;color:#88c0d0;">RegisterClass</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>WindowClass)) {
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;RegisterClass failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> Window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowEx</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> ClassName</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Program&quot;</span><span style="color:#eceff4;">,
+</span><span>                                 WS_OVERLAPPEDWINDOW</span><span style="color:#81a1c1;">|</span><span>WS_VISIBLE</span><span style="color:#eceff4;">,
+</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,
+</span><span>                                 CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,
+</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> Instance</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#81a1c1;">!</span><span>Window) {
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">MessageBox</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;CreateWindowEx failed&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">GetLastError</span><span>()</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Get client area dimensions 
+</span><span>    
+</span><span>    RECT ClientRect</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">GetClientRect</span><span>(Window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ClientRect)</span><span style="color:#eceff4;">;
+</span><span>    ClientWidth </span><span style="color:#81a1c1;">=</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;
+</span><span>    ClientHeight </span><span style="color:#81a1c1;">=</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> ClientRect</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    BitmapWidth </span><span style="color:#81a1c1;">=</span><span> ClientWidth</span><span style="color:#eceff4;">;
+</span><span>    BitmapHeight </span><span style="color:#81a1c1;">=</span><span> ClientHeight</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Allocate memory for the bitmap
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> BytesPerPixel </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    BitmapMemory </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">VirtualAlloc</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>                                BitmapWidth </span><span style="color:#81a1c1;">*</span><span> BitmapHeight </span><span style="color:#81a1c1;">*</span><span> BytesPerPixel</span><span style="color:#eceff4;">,
+</span><span>                                MEM_RESERVE</span><span style="color:#81a1c1;">|</span><span>MEM_COMMIT</span><span style="color:#eceff4;">,
+</span><span>                                PAGE_READWRITE
+</span><span>                                )</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// BitmapInfo struct for StretchDIBits
+</span><span>    
+</span><span>    BITMAPINFO BitmapInfo</span><span style="color:#eceff4;">;
+</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biSize </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader)</span><span style="color:#eceff4;">;
+</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biWidth </span><span style="color:#81a1c1;">=</span><span> BitmapWidth</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#616e88;">// Negative height makes top left as the coordinate system origin for the DrawPixel function, otherwise its bottom left
+</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biHeight </span><span style="color:#81a1c1;">= -</span><span>BitmapHeight</span><span style="color:#eceff4;">;
+</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biPlanes </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;
+</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biBitCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">32</span><span style="color:#eceff4;">;
+</span><span>    BitmapInfo</span><span style="color:#81a1c1;">.</span><span>bmiHeader</span><span style="color:#81a1c1;">.</span><span>biCompression </span><span style="color:#81a1c1;">=</span><span> BI_RGB</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">HDC</span><span> DeviceContext </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetDC</span><span>(Window)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">bool</span><span> Running </span><span style="color:#81a1c1;">= true</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {
+</span><span>        MSG Message</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nullptr</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(Message</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) Running </span><span style="color:#81a1c1;">= false</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Message)</span><span style="color:#eceff4;">;
+</span><span>        }
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ClearScreen</span><span>(</span><span style="color:#b48ead;">0x333333</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">DrawRectangle</span><span>(</span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">100</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0xff00ff</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">StretchDIBits</span><span>(DeviceContext</span><span style="color:#eceff4;">, 
+</span><span>                      </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>                      BitmapWidth</span><span style="color:#eceff4;">,</span><span> BitmapHeight</span><span style="color:#eceff4;">,
+</span><span>                      </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>                      ClientWidth</span><span style="color:#eceff4;">,</span><span> ClientHeight</span><span style="color:#eceff4;">,
+</span><span>                      BitmapMemory</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>BitmapInfo</span><span style="color:#eceff4;">,
+</span><span>                      DIB_RGB_COLORS</span><span style="color:#eceff4;">,</span><span> SRCCOPY)</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
 </span><span>
 </span></code></pre>
 <h2 id="build">Build</h2>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.cpp /link user32.lib gdi32.lib</span><span>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.cpp /link user32.lib gdi32.lib
 </span></code></pre>
 <h2 id="build-bat">build.bat</h2>
-<pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off</span><span>
+<pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off
 </span><span>
-</span><span>set COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/W4 /wd4100 /Oi /nologo /Fegame.exe</span><span>
+</span><span>set COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/W4 /wd4100 /Oi /nologo /Fegame.exe
 </span><span>
-</span><span>set DEBUG_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/Zi /MTd</span><span>
-</span><span>set RELEASE_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/O2</span><span>
+</span><span>set DEBUG_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/Zi /MTd
+</span><span>set RELEASE_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/O2
 </span><span>
-</span><span>set COMPILER_FLAGS</span><span style="color:#81a1c1;">=%</span><span>COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>DEBUG_FLAGS</span><span style="color:#81a1c1;">%</span><span>
-</span><span>REM</span><span style="color:#616e88;"> set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %RELEASE_FLAGS%</span><span style="color:#616e88;">
+</span><span>set COMPILER_FLAGS</span><span style="color:#81a1c1;">=%</span><span>COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>DEBUG_FLAGS</span><span style="color:#81a1c1;">%
+</span><span>REM</span><span style="color:#616e88;"> set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %RELEASE_FLAGS%
 </span><span>
-</span><span>set LINKER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/INCREMENTAL:NO /OPT:REF</span><span>
-</span><span>set LIBS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">user32.lib gdi32.lib</span><span>
+</span><span>set LINKER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/INCREMENTAL:NO /OPT:REF
+</span><span>set LIBS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">user32.lib gdi32.lib
 </span><span>
-</span><span>cl </span><span style="color:#81a1c1;">%</span><span>COMPILER_FLAGS</span><span style="color:#81a1c1;">%</span><span> main.cpp /link </span><span style="color:#81a1c1;">%</span><span>LINKER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>LIBS</span><span style="color:#81a1c1;">%</span><span>
+</span><span>cl </span><span style="color:#81a1c1;">%</span><span>COMPILER_FLAGS</span><span style="color:#81a1c1;">%</span><span> main.cpp /link </span><span style="color:#81a1c1;">%</span><span>LINKER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>LIBS</span><span style="color:#81a1c1;">%
 </span></code></pre>
 <h2 id="result">Result</h2>
 <p><img src="/images/things/win32-drawing-rectangles/image.png" alt="" /></p>
-</div>
+
+        
+    </div>
+
+    
+        
 
     <script>
         const copyButtonLabel = "Copy";
