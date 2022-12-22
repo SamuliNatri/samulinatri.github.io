@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to create a web application with C and FastCGI">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=15">
+    <!-- 
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff"> -->
+
+    <title>Web App With C - Form Data (#3) |  Samuli Natri. Software developer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <p style="text-align: center;" class="menu">
+            <a class="menu-link " href="/">Home</a> &#x2219
+            <a class="menu-link" id="menu-link-blog" href="/blog/">Blog</a> &#x2219
+            <a class="menu-link" id="menu-link-shop" href="/shop/a-beginners-guide-to-django/">Shop</a> &#x2219
+            <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+            <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+            <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        </p>
+
+        <p style="text-align: center;" class="intro">
+            Hello. My name is <span class="intro-name">Samuli Natri</span>. I'm a software developer.
+        </p>
+
+        
+
+<div class="blog">
+
+    <div class="line"></div>
+
+    <div class="blog-dates">
+        <span itemprop="dateModified" content=" Dec 22, 2022"
+            class="blog-updated">Updated <strong>Dec 22, 2022</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">Web App With C - Form Data (#3)</h1>
+
+    <div class="blog-description">How to create a web application with C and FastCGI</div>
+
+    
+    <a target="_blank" class="blog-watch-video" href="https://www.youtube.com/watch?v=dsuounWq0h0">Watch
+        video on YouTube</a>
+    
+
+    <div class="blog-content">
+        <ul>
+<li><a href="/blog/web-app-with-c/">Quick Start</a></li>
+<li><a href="/blog/web-app-with-c-1-request-loop/">Request Loop (#1)</a></li>
+<li><a href="/blog/web-app-with-c-2-path-handling/">Path Handling &amp; Status Code (#2)</a></li>
+<li><a href="/blog/web-app-with-c-3-form-data/">Form Data (#3)</a></li>
+</ul>
+<h2 id="form-data">Form Data</h2>
+<p>We can access form data by reading bytes from the <strong>Request.in</strong> input stream:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;string.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;fcgiapp.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdlib.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
+</span><span>
+</span><span>	</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Hello.</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">FCGX_Init</span><span>()</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> Socket </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">FCGX_OpenSocket</span><span>(</span><span style="color:#a3be8c;">&quot;127.0.0.1:2016&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1024</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	FCGX_Request Request</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">FCGX_InitRequest</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Request</span><span style="color:#eceff4;">,</span><span> Socket</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">FCGX_Accept_r</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Request) </span><span style="color:#81a1c1;">&gt;= </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>		</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Request accepted.</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>		
+</span><span>		</span><span style="color:#81a1c1;">char *</span><span>Path </span><span style="color:#81a1c1;">=
+</span><span>			</span><span style="font-weight:bold;color:#88c0d0;">FCGX_GetParam</span><span>(
+</span><span>				</span><span style="color:#a3be8c;">&quot;SCRIPT_NAME&quot;</span><span style="color:#eceff4;">,
+</span><span>				Request</span><span style="color:#81a1c1;">.</span><span>envp
+</span><span>				)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>		</span><span style="color:#81a1c1;">char</span><span> Title[</span><span style="color:#b48ead;">64</span><span>] </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;
+</span><span>		</span><span style="color:#81a1c1;">char</span><span> Status[</span><span style="color:#b48ead;">64</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&quot;200 OK&quot;</span><span style="color:#eceff4;">;
+</span><span>		
+</span><span>		</span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#88c0d0;">strcmp</span><span>(Path</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;/&quot;</span><span>) </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>			</span><span style="color:#88c0d0;">strcpy</span><span>(Title</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Home&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>		} </span><span style="color:#81a1c1;">else if</span><span>(</span><span style="color:#88c0d0;">strcmp</span><span>(Path</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;/about/&quot;</span><span>) </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>			</span><span style="color:#88c0d0;">strcpy</span><span>(Title</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;About&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>		} </span><span style="color:#81a1c1;">else </span><span>{
+</span><span>			</span><span style="color:#88c0d0;">strcpy</span><span>(Title</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;404 Not Found&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>			</span><span style="color:#88c0d0;">strcpy</span><span>(Status</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;404 Not Found&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>		}
+</span><span>
+</span><span>		</span><span style="color:#616e88;">// form handling
+</span><span>
+</span><span>		</span><span style="color:#81a1c1;">char *</span><span>Method </span><span style="color:#81a1c1;">=
+</span><span>			</span><span style="font-weight:bold;color:#88c0d0;">FCGX_GetParam</span><span>(
+</span><span>				</span><span style="color:#a3be8c;">&quot;REQUEST_METHOD&quot;</span><span style="color:#eceff4;">,
+</span><span>				Request</span><span style="color:#81a1c1;">.</span><span>envp
+</span><span>				)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>		</span><span style="color:#81a1c1;">char</span><span> Form[</span><span style="color:#b48ead;">512</span><span>] </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;
+</span><span>		
+</span><span>		</span><span style="color:#81a1c1;">if</span><span>(</span><span style="color:#88c0d0;">strcmp</span><span>(Method</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;GET&quot;</span><span>) </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>			</span><span style="color:#88c0d0;">strcpy</span><span>(Form</span><span style="color:#eceff4;">,
+</span><span>				     </span><span style="color:#a3be8c;">&quot;&lt;form method=&#39;POST&#39; action=&#39;&#39;&gt;&quot;
+</span><span>					   </span><span style="color:#a3be8c;">&quot;&lt;input id=&#39;username&#39; name=&#39;username&#39; type=&#39;text&#39;&gt;&lt;/input&gt;&quot;
+</span><span>					   </span><span style="color:#a3be8c;">&quot;&lt;input id=&#39;password&#39; name=&#39;password&#39; type=&#39;password&#39;&gt;&lt;/input&gt;&quot;
+</span><span>					   </span><span style="color:#a3be8c;">&quot;&lt;input type=&#39;submit&#39; value=&#39;Submit&#39;&gt;&quot;
+</span><span>					   </span><span style="color:#a3be8c;">&quot;&lt;/form&gt;&quot;
+</span><span>				)</span><span style="color:#eceff4;">;
+</span><span>		} </span><span style="color:#81a1c1;">else if</span><span>(</span><span style="color:#88c0d0;">strcmp</span><span>(Method</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;POST&quot;</span><span>) </span><span style="color:#81a1c1;">== </span><span style="color:#b48ead;">0</span><span>) {
+</span><span>
+</span><span>			</span><span style="color:#616e88;">// read form data
+</span><span>			
+</span><span>			</span><span style="color:#81a1c1;">int</span><span> ContentLength </span><span style="color:#81a1c1;">=
+</span><span>				</span><span style="color:#88c0d0;">atoi</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">FCGX_GetParam</span><span>(</span><span style="color:#a3be8c;">&quot;CONTENT_LENGTH&quot;</span><span style="color:#eceff4;">,</span><span> Request</span><span style="color:#81a1c1;">.</span><span>envp))</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>			</span><span style="color:#81a1c1;">char *</span><span>ContentBuffer </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">malloc</span><span>((ContentLength </span><span style="color:#81a1c1;">+ </span><span style="color:#b48ead;">1</span><span>) </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">char</span><span>))</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>			</span><span style="font-weight:bold;color:#88c0d0;">FCGX_GetStr</span><span>(ContentBuffer</span><span style="color:#eceff4;">,</span><span> ContentLength</span><span style="color:#eceff4;">,</span><span> Request</span><span style="color:#81a1c1;">.</span><span>in)</span><span style="color:#eceff4;">;
+</span><span>			ContentBuffer[ContentLength] </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;</span><span style="color:#ebcb8b;">\0</span><span style="color:#a3be8c;">&#39;</span><span style="color:#eceff4;">;
+</span><span>			</span><span style="color:#88c0d0;">strcpy</span><span>(Form</span><span style="color:#eceff4;">,</span><span> ContentBuffer)</span><span style="color:#eceff4;">;
+</span><span>		}
+</span><span>		
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">FCGX_FPrintF</span><span>(
+</span><span>			Request</span><span style="color:#81a1c1;">.</span><span>out</span><span style="color:#eceff4;">,
+</span><span>			</span><span style="color:#a3be8c;">&quot;Status: </span><span style="color:#ebcb8b;">%s\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>			</span><span style="color:#a3be8c;">&quot;Content-type: text/html</span><span style="color:#ebcb8b;">\r\n\r\n</span><span style="color:#a3be8c;">&quot;
+</span><span>			</span><span style="color:#a3be8c;">&quot;&lt;h1&gt;</span><span style="color:#ebcb8b;">%s</span><span style="color:#a3be8c;">&lt;/h1&gt;&quot;
+</span><span>			</span><span style="color:#a3be8c;">&quot;&lt;p&gt;Path: </span><span style="color:#ebcb8b;">%s</span><span style="color:#a3be8c;">&lt;/p&gt;&quot;
+</span><span>			</span><span style="color:#a3be8c;">&quot;&lt;div&gt;Form: &lt;br&gt;</span><span style="color:#ebcb8b;">%s</span><span style="color:#a3be8c;">&lt;/div&gt;&quot;</span><span style="color:#eceff4;">,
+</span><span>			Status</span><span style="color:#eceff4;">,
+</span><span>			Title</span><span style="color:#eceff4;">,
+</span><span>			Path</span><span style="color:#eceff4;">,
+</span><span>			Form
+</span><span>			)</span><span style="color:#eceff4;">;
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">FCGX_Finish_r</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Request)</span><span style="color:#eceff4;">;
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<ul>
+<li><strong>FCGX_GetParam()</strong> returns a pointer to the given FCGI parameter or <strong>NULL</strong>.</li>
+<li><strong>atoi()</strong> creates an int out of a string.</li>
+<li><strong>malloc((ContentLength + 1)</strong> allocates <strong>ContentLength</strong> bytes + 1 for the NULL byte.</li>
+<li><strong>FCGX_GetStr</strong> reads bytes from the input stream.</li>
+</ul>
+
+         
+        <a target="_blank" class="blog-source" 
+        href="https://github.com/SamuliNatri/web-app-with-c" target="_blank">
+            <img class="blog-source-github-logo" 
+            src="/images/misc/GitHub-Mark-Light-32px.png">
+            Full source code
+        </a>
+        
+    </div>
+
+    
+        
+
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
+        }
+    </script>
+
+    
+
+        <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
+        
+        <script type="text/javascript"
+            src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+        
+
+        <script type="text/javascript">
+            let section = document.URL.split('/')[3];
+            if (section) {
+                document.getElementById("menu-link-" + section).classList.add("menu-link-active");
+            }
+        </script>
+
+    </div>
+
+</body>
+
+</html>
