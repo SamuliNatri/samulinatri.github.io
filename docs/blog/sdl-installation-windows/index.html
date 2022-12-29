@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to setup SDL and create a window.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=16">
+    <!-- 
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff"> -->
+
+    <title>SDL - Installation (Windows) (With C) |  Samuli Natri. Programmer. Mostly C. Gamedev.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <p style="text-align: center;" class="menu">
+            <a class="menu-link " href="/">Home</a> &#x2219
+            
+            
+            <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+            <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+            <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        </p>
+
+        
+
+        
+
+<div class="blog">
+
+    
+
+    <div class="blog-dates">
+        <span itemprop="dateModified" content=" Dec 29, 2022"
+            class="blog-updated">Updated <strong>Dec 29, 2022</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">SDL - Installation (Windows) (With C)</h1>
+
+    <div class="blog-description">How to setup SDL and create a window.</div>
+
+    
+    <a target="_blank" class="blog-watch-video" href="https://www.youtube.com/watch?v=riUcuqWeN6w">Watch
+        video on YouTube</a>
+    
+
+    <div class="blog-content">
+        <h2 id="source-main-c">Source (main.c)</h2>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">argc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">char *</span><span style="font-weight:bold;color:#d8dee9;">argv</span><span>[]) {
+</span><span>	</span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Hello</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_Init</span><span>(SDL_INIT_VIDEO)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    SDL_Window </span><span style="color:#81a1c1;">*</span><span>Window </span><span style="color:#81a1c1;">= 
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateWindow</span><span>(</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">, 
+</span><span>                         SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,
+</span><span>                         SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,
+</span><span>                         </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    SDL_Event Event </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SDL_PollEvent</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Event)) {
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>type) {
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_QUIT</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>key</span><span style="color:#81a1c1;">.</span><span>keysym</span><span style="color:#81a1c1;">.</span><span>sym) {
+</span><span>                        </span><span style="color:#81a1c1;">case</span><span> SDLK_o</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                            Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>                        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                    }
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_Quit</span><span>()</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<h2 id="step-by-step">Step-by-step</h2>
+<p>Create a project directory:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> project
+</span><span style="color:#88c0d0;">cd</span><span> project
+</span></code></pre>
+<p>Create <strong>libs</strong> folder in the project root:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> libs
+</span></code></pre>
+<p>Download <a href="https://github.com/libsdl-org/SDL/releases">SDL2-devel-2.26.1-VC.zip</a> and extract it to the libs folder (it has a folder called <strong>SDL2-2.26.1</strong> in it).</p>
+<ul>
+<li>This package allows us to build the project using <strong>cl.exe</strong> (a command line tool for the Microsoft Visual C++ Compiler [MSVC]). </li>
+<li>How to access <strong>cl.exe</strong>? Install Visual Studio, select C++ workload and launch <strong>Developer Command Prompt</strong>.</li>
+</ul>
+<p>Copy <strong>SDL2.dll</strong> to the project root: </p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>copy libs\SDL2-2.26.1\lib\x64\SDL2.dll .
+</span></code></pre>
+<p>You should now have this kind of folder structure:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">project
+</span><span style="font-weight:bold;color:#88c0d0;">│</span><span> SDL2.dll
+</span><span style="font-weight:bold;color:#88c0d0;">└─libs
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">└───SDL2-2.26.1
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">├───</span><span> ...
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">├───include
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">└───lib
+</span><span>			</span><span style="font-weight:bold;color:#88c0d0;">├───x64
+</span><span>			</span><span style="font-weight:bold;color:#88c0d0;">└───x86
+</span></code></pre>
+<p>Create <strong>main.c</strong> in the project root and add these lines to it:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">argc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">char *</span><span style="font-weight:bold;color:#d8dee9;">args</span><span>[]) {
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_Init</span><span>(SDL_INIT_VIDEO)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<ul>
+<li><code>SDL_Init()</code> initializes subsystems. Some systems are enabled by default. Some of them you have to initialize manually (e.g. video and audio). SDL functions might also enable uninitialized systems if needed.	</li>
+</ul>
+<p>Create <strong>build.bat</strong> and add these lines to it:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>@echo off
+</span><span>cl main.c ^
+</span><span>/Fea.exe /Zi /nologo ^
+</span><span>/Ilibs\SDL2-2.26.1\include ^
+</span><span>/link ^
+</span><span>/SUBSYSTEM:console ^
+</span><span>/LIBPATH:libs\SDL2-2.26.1\lib\x64 ^
+</span><span>SDL2.lib SDL2main.lib shell32.lib
+</span></code></pre>
+<ul>
+<li><strong>include</strong> folder contains the <strong>SDL.h</strong> header.</li>
+<li><strong>/subsystem:console</strong> provides a console. This allows us to <code>printf()</code> to terminal from the app.</li>
+<li><strong>lib\x64</strong> folder contains the two library files we will use: <strong>SDL2.lib</strong> and <strong>SDL2main.lib</strong>.</li>
+<li><strong>SDL2main.lib</strong> allows us to use the program entry point <code>int main(int argc, char* argv[])</code> in all platforms. SDL redefines your <code>main()</code> to <code>SDL_main()</code>, runs its own platform specific initialization and calls <code>SDL_main()</code>.</li>
+<li><strong>SDL2main.lib</strong> needs <strong>shell32.lib</strong> in Windows (for <code>CommandLineToArgvW()</code>). This is probably added automatically if you are using Visual Studio.</li>
+</ul>
+<p>Compile and run the program:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>build.bat &amp;&amp; a.exe
+</span></code></pre>
+<p>It should compile and run but we don't have a window yet.</p>
+<p>Add these lines:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">argc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">char *</span><span style="font-weight:bold;color:#d8dee9;">args</span><span>[]) {
+</span><span>	
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_Init</span><span>(SDL_INIT_VIDEO)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Create a window
+</span><span>	
+</span><span>	SDL_Window </span><span style="color:#81a1c1;">*</span><span>Window </span><span style="color:#81a1c1;">=
+</span><span>		</span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateWindow</span><span>(
+</span><span>			</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">,
+</span><span>			SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,</span><span> SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,
+</span><span>			</span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0
+</span><span>			)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>        
+</span><span>	</span><span style="color:#616e88;">// Add a loop
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">int</span><span> Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;
+</span><span>	SDL_Event Event</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#81a1c1;">while</span><span>(Running) {
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SDL_PollEvent</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Event)) {
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>type) {
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_QUIT</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>key</span><span style="color:#81a1c1;">.</span><span>keysym</span><span style="color:#81a1c1;">.</span><span>sym) {
+</span><span>                        </span><span style="color:#81a1c1;">case</span><span> SDLK_o</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                            Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>                        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                    }
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_Quit</span><span>()</span><span style="color:#eceff4;">;
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<ul>
+<li><strong>SDL_Window</strong> is a struct that holds information about a window.</li>
+<li><strong>SDL_CreateWindow()</strong> creates a window and returns a pointer to it.</li>
+<li><strong>SDL_Event</strong> is used to store data about events. It's a union of all event types. </li>
+<li><strong>SDL_PollEvent</strong> gets events from the event queue.</li>
+<li><strong>SDL_QUIT</strong> event happens for multiple reasons (e.g. when you click the window close button).</li>
+<li><strong>SDL_Quit()</strong> cleans up all subsystems.</li>
+</ul>
+<p>Compile and run. You should see a window.</p>
+<p><a class="previous" href="/blog/web-app-with-c-3-form-data/">Previous: Web App With C - Form Data (#3)</a></p>
+
+        
+    </div>
+
+
+
+
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
+        }
+    </script>
+
+    
+
+        <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
+        
+        <script type="text/javascript"
+            src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+        
+
+        <script type="text/javascript">
+            let section = document.URL.split('/')[3];
+            if (section) {
+                document.getElementById("menu-link-" + section).classList.add("menu-link-active");
+            }
+        </script>
+
+    </div>
+
+</body>
+
+</html>
