@@ -8,7 +8,7 @@
     <meta name="description"
         content="How to setup SDL and create a window.">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=16">
+    <link rel="stylesheet" href="/styles.css?v=17">
     <!-- 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
@@ -76,7 +76,15 @@
     
 
     <div class="blog-content">
-        <h2 id="source-main-c">Source (main.c)</h2>
+        <div class="related">
+    <h2 class="related-title">Related</h2>
+    <a class="related-a" href="
+    /blog/win32-window-creation/
+    ">
+    Win32 - Window Creation (With C)
+    </a>
+</div>
+<h2 id="source-main-c">Source (main.c)</h2>
 <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL.h&gt;
 </span><span>
@@ -230,13 +238,19 @@
 <li><strong>SDL_Quit()</strong> cleans up all subsystems.</li>
 </ul>
 <p>Compile and run. You should see a window.</p>
-<p><a class="previous" href="/blog/web-app-with-c-3-form-data/">Previous: Web App With C - Form Data (#3)</a></p>
-
+<div class="bottom-nav">
+<a class="bottom-nav-a" href="
+/blog/web-app-with-c-3-form-data/
+">
+<span class="bottom-nav-label">Previous:</span> 
+Web App With C - Form Data (#3)
+</a>
+</div>
         
         <a target="_blank" class="blog-source" href="https://github.com/SamuliNatri/sdl-installation-windows"
             target="_blank">
             <img class="blog-source-github-logo" src="/images/misc/GitHub-Mark-Light-32px.png">
-            Full source code
+            Full project in GitHub
         </a>
         
     </div>

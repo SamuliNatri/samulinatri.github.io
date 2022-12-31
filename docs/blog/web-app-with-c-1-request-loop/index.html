@@ -6,9 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="description"
-        content="How to create a web application with C and FastCGI">
+        content="How to initialize FastCGI and accept requests.">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=16">
+    <link rel="stylesheet" href="/styles.css?v=17">
     <!-- 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
@@ -18,7 +18,7 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff"> -->
 
-    <title>Web App With C - Request Loop (#1) |  Samuli Natri. Programmer. Mostly C. Gamedev.</title>
+    <title>Web App With C &amp; FastCGI - Request Loop (#1) |  Samuli Natri. Programmer. Mostly C. Gamedev.</title>
 
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
@@ -66,9 +66,9 @@
         </span>
     </div>
 
-    <h1 class="blog-title">Web App With C - Request Loop (#1)</h1>
+    <h1 class="blog-title">Web App With C &amp; FastCGI - Request Loop (#1)</h1>
 
-    <div class="blog-description">How to create a web application with C and FastCGI</div>
+    <div class="blog-description">How to initialize FastCGI and accept requests.</div>
 
     
     <a target="_blank" class="blog-watch-video" href="https://www.youtube.com/watch?v=dAvW3bQdXg8">Watch
@@ -76,12 +76,30 @@
     
 
     <div class="blog-content">
-        <ul>
-<li><a href="/blog/web-app-with-c/">Quick Start</a></li>
-<li><a href="/blog/web-app-with-c-1-request-loop/">Request Loop (#1)</a></li>
-<li><a href="/blog/web-app-with-c-2-path-handling/">Path Handling &amp; Status Code (#2)</a></li>
-<li><a href="/blog/web-app-with-c-3-form-data/">Form Data (#3)</a></li>
-</ul>
+        <div class="related">
+    <h2 class="related-title">Series</h2>
+    <a class="related-a" href="/blog/web-app-with-c/">
+    Quick Start
+    </a>
+	<br>
+	<a class="related-a related-active" href="
+    /blog/web-app-with-c-1-request-loop/
+    ">
+    Request Loop (#1)
+    </a>
+	<br>
+    <a class="related-a" href="
+    /blog/web-app-with-c-2-path-handling/
+    ">
+    Path Handling & Status Code (#2)
+    </a>
+	<br>
+    <a class="related-a" href="
+    /blog/web-app-with-c-3-form-data/
+    ">
+    Form Data (#3)
+    </a>
+</div>
 <h2 id="introduction">Introduction</h2>
 <p>This is how a typical web request / response cycle works:</p>
 <ul>
@@ -222,14 +240,25 @@
 <p>You should see the response body:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#81a1c1;">&lt;</span><span>h1</span><span style="color:#81a1c1;">&gt;</span><span>Hello.</span><span style="color:#81a1c1;">&lt;</span><span>/h1</span><span style="color:#81a1c1;">&gt;
 </span></code></pre>
-<p>Next: <a href="/blog/web-app-with-c-2-path-handling/">Path Handling &amp; Status Code (#2)</a><br>
-<a class="previous" href="/blog/web-app-with-c/">Previous: Quick Start</a></p>
-
+<div class="bottom-nav">
+<a class="bottom-nav-a" href="
+/blog/web-app-with-c-2-path-handling/
+">
+<span class="bottom-nav-label">Next:</span> 
+Web App With C - Path Handling & Status Code (#2)
+</a><br>
+<a class="bottom-nav-a" href="
+/blog/web-app-with-c/
+">
+<span class="bottom-nav-label">Previous:</span> 
+Web App With C - Quick Start
+</a>
+</div>
         
         <a target="_blank" class="blog-source" href="https://github.com/SamuliNatri/WebAppWithC"
             target="_blank">
             <img class="blog-source-github-logo" src="/images/misc/GitHub-Mark-Light-32px.png">
-            Full source code
+            Full project in GitHub
         </a>
         
     </div>

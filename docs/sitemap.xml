@@ -83,6 +83,14 @@
         <lastmod>2022-12-07</lastmod>
     </url>
     <url>
+        <loc>https://samulinatri.com/blog/win32-window-creation-cpp/</loc>
+        <lastmod>2022-06-25</lastmod>
+    </url>
+    <url>
+        <loc>https://samulinatri.com/blog/win32-window-creation/</loc>
+        <lastmod>2022-12-31</lastmod>
+    </url>
+    <url>
         <loc>https://samulinatri.com/books/</loc>
     </url>
     <url>
@@ -114,9 +122,5 @@
     <url>
         <loc>https://samulinatri.com/things/win32-drawing-rectangles/</loc>
         <lastmod>2022-06-28</lastmod>
-    </url>
-    <url>
-        <loc>https://samulinatri.com/things/win32-window-creation/</loc>
-        <lastmod>2022-06-25</lastmod>
     </url>
 </urlset>
