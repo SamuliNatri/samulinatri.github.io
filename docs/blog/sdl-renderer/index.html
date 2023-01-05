@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to create a renderer and draw a rectangle.">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=17">
+    <!-- 
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff"> -->
+
+    <title>SDL - Renderer &amp; Rectangle (With C) |  Samuli Natri. Programmer. Mostly C. Gamedev.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <p style="text-align: center;" class="menu">
+            <a class="menu-link " href="/">Home</a> &#x2219
+            
+            
+            <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+            <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+            <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+        </p>
+
+        
+
+        
+
+<div class="blog">
+
+    
+
+    <div class="blog-dates">
+        <span itemprop="dateModified" content=" Jan  5, 2023"
+            class="blog-updated">Updated <strong>Jan  5, 2023</strong>
+        </span>
+        
+        </span>
+    </div>
+
+    <h1 class="blog-title">SDL - Renderer &amp; Rectangle (With C)</h1>
+
+    <div class="blog-description">How to create a renderer and draw a rectangle.</div>
+
+    
+    <a target="_blank" class="blog-watch-video" href="https://www.youtube.com/watch?v=xGFAuAgMaUI">Watch
+        video on YouTube</a>
+    
+
+    <div class="blog-content">
+        <h2 id="quick-start-main-c">Quick Start (main.c)</h2>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">argc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">char *</span><span style="font-weight:bold;color:#d8dee9;">argv</span><span>[]) {
+</span><span>	
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_Init</span><span>(SDL_INIT_VIDEO)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    SDL_Window </span><span style="color:#81a1c1;">*</span><span>Window </span><span style="color:#81a1c1;">= 
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateWindow</span><span>(</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">,
+</span><span>                         SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,
+</span><span>                         SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,
+</span><span>                         </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>						 
+</span><span>    </span><span style="color:#616e88;">// Create a renderer
+</span><span>	
+</span><span>    SDL_Renderer </span><span style="color:#81a1c1;">*</span><span>Renderer </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateRenderer</span><span>(Window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">int</span><span> Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;
+</span><span>    SDL_Event Event </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SDL_PollEvent</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Event)) {
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>type) {
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_QUIT</span><span style="color:#eceff4;">: </span><span>{ Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>}
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{ 
+</span><span>                    </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>key</span><span style="color:#81a1c1;">.</span><span>keysym</span><span style="color:#81a1c1;">.</span><span>sym) {
+</span><span>                        </span><span style="color:#81a1c1;">case</span><span> SDLK_o</span><span style="color:#eceff4;">: </span><span>{ Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>}
+</span><span>                        </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                    }
+</span><span>                }
+</span><span>                </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        }
+</span><span>        
+</span><span>        </span><span style="color:#616e88;">// Render to a backbuffer
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_SetRenderDrawColor</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderClear</span><span>(Renderer)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_SetRenderDrawColor</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderFillRect</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>(SDL_Rect){</span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span>})</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="color:#616e88;">// Display rendered content
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderPresent</span><span>(Renderer)</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_Quit</span><span>()</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>	</span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span></code></pre>
+<h2 id="step-by-step">Step-by-step</h2>
+<p>Add this line after you have created a window:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>	SDL_Renderer </span><span style="color:#81a1c1;">*</span><span>Renderer </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateRenderer</span><span>(Window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><strong>Renderer</strong> hides the lower level rendering details from you. By default, it's hardware accelerated (e.g. OpenGL). It can also do software rendering.</li>
+<li>The second parameter (<strong>-1</strong>) initializes the first rendering driver that supports the requested flags.</li>
+<li>The third parameter (<strong>0</strong>) is for optional flags. <strong>SDL_RENDERER_ACCELERATED</strong> is the default value. You can force software rendering with <strong>SDL_RENDERER_SOFTWARE</strong>. Add <strong>SDL_RENDERER_PRESENTVSYNC</strong> to sync <strong>RenderPresent()</strong> with the display refresh rate.</li>
+</ul>
+<p>Add these lines below the event loop:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_SetRenderDrawColor</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderClear</span><span>(Renderer)</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><strong>SDL_SetRenderDrawColor()</strong> sets the drawing color.</li>
+<li><strong>SDL_RenderClear()</strong> clears the screen with the current drawing color.</li>
+</ul>
+<p>Use these lines to draw a colored rectangle:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_SetRenderDrawColor</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderFillRect</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>(SDL_Rect){</span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">64</span><span>})</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><strong>SDL_RenderFillRect()</strong> fills a rectangle with the current drawing color.</li>
+<li><strong>SDL_Rect</strong> is a struct that represents a rectangle (x, y, width, height).</li>
+</ul>
+<p>Display rendered content with this line:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>	</span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderPresent</span><span>(Renderer)</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><strong>SDL_RenderPresent()</strong> flips the image buffers. Backbuffer becomes the frontbuffer and frontbuffer becomes the backbuffer (in a two buffer system). Whatever is in the frontbuffer is displayed to the user.</li>
+</ul>
+
+        
+    </div>
+
+
+
+
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
+        }
+    </script>
+
+    
+
+        <div class="footer">&copy 2022 Samuli Natri. All rights reserved.</div>
+
+        
+        <script type="text/javascript"
+            src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+        
+
+        <script type="text/javascript">
+            let section = document.URL.split('/')[3];
+            if (section) {
+                document.getElementById("menu-link-" + section).classList.add("menu-link-active");
+            }
+        </script>
+
+    </div>
+
+</body>
+
+</html>
