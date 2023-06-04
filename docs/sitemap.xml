@@ -91,10 +91,6 @@
         <lastmod>2022-06-25</lastmod>
     </url>
     <url>
-        <loc>https://samulinatri.com/blog/win32-window-creation/</loc>
-        <lastmod>2022-12-31</lastmod>
-    </url>
-    <url>
         <loc>https://samulinatri.com/books/</loc>
     </url>
     <url>
@@ -112,6 +108,10 @@
         <lastmod>2022-06-26</lastmod>
     </url>
     <url>
+        <loc>https://samulinatri.com/things/sdl-text-rendering/</loc>
+        <lastmod>2023-05-25</lastmod>
+    </url>
+    <url>
         <loc>https://samulinatri.com/things/tetris/</loc>
         <lastmod>2022-07-05</lastmod>
     </url>
@@ -121,10 +121,14 @@
     </url>
     <url>
         <loc>https://samulinatri.com/things/win32-drawing-pixels/</loc>
-        <lastmod>2022-06-28</lastmod>
+        <lastmod>2023-06-28</lastmod>
     </url>
     <url>
         <loc>https://samulinatri.com/things/win32-drawing-rectangles/</loc>
         <lastmod>2022-06-28</lastmod>
+    </url>
+    <url>
+        <loc>https://samulinatri.com/things/win32-window-creation/</loc>
+        <lastmod>2023-06-01</lastmod>
     </url>
 </urlset>
