@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="How to render text with SDL_ttf">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css?v=21">
+    <title>SDL - Text Rendering (C) |  Samuli Natri. Programmer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+            <p class="menu">
+                <a class="menu-link " href="/">Home</a> &#x2219
+                
+                
+                <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
+                <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
+                <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
+            </p>
+
+            
+
+            
+
+<div class="blog">
+
+    
+
+    <div class="blog-top">
+       
+        <h1 class="blog-top-title">SDL - Text Rendering (C)</h1> 
+        <span class="blog-top-separator"></span>
+        <span class="blog-top-description">How to render text with SDL_ttf</span>
+        <span class="blog-top-date" itemprop="dateModified" content=" Jun  9, 2023">Jun  9, 2023
+        </span>
+
+        
+    </div>    
+
+    <div class="blog-content">
+        <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">/*
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">build.bat:
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">@echo off
+</span><span style="color:#616e88;">cl main.c ^
+</span><span style="color:#616e88;">/Fea.exe /Zi /nologo ^
+</span><span style="color:#616e88;">/Ilibs\SDL2-2.26.1\include ^
+</span><span style="color:#616e88;">/Ilibs\SDL2_ttf-2.20.1\include ^
+</span><span style="color:#616e88;">/link ^
+</span><span style="color:#616e88;">/SUBSYSTEM:console ^
+</span><span style="color:#616e88;">/LIBPATH:libs\SDL2-2.26.1\lib\x64 ^
+</span><span style="color:#616e88;">/LIBPATH:libs\SDL2_ttf-2.20.1\lib\x64 ^
+</span><span style="color:#616e88;">SDL2.lib SDL2main.lib SDL2_ttf.lib shell32.lib
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">*/
+</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;SDL_ttf.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>(</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">argc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">char *</span><span style="font-weight:bold;color:#d8dee9;">argv</span><span>[]) {
+</span><span>	
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_Init</span><span>(SDL_INIT_VIDEO)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// create window and renderer
+</span><span>    
+</span><span>    SDL_Window </span><span style="color:#81a1c1;">*</span><span>Window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateWindow</span><span>(</span><span style="color:#a3be8c;">&quot;Text Rendering&quot;</span><span style="color:#eceff4;">,</span><span> SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">,</span><span> SDL_WINDOWPOS_CENTERED</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">640</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Window </span><span style="color:#81a1c1;">== NULL</span><span>) { </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Window creation failed: </span><span style="color:#ebcb8b;">%s\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">SDL_GetError</span><span>())</span><span style="color:#eceff4;">; </span><span>}
+</span><span>    SDL_Renderer </span><span style="color:#81a1c1;">*</span><span>Renderer </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateRenderer</span><span>(Window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,</span><span> SDL_RENDERER_ACCELERATED </span><span style="color:#81a1c1;">|</span><span> SDL_RENDERER_PRESENTVSYNC)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Renderer </span><span style="color:#81a1c1;">== NULL</span><span>) { </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Renderer creation failed</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">: </span><span style="color:#ebcb8b;">%s</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">SDL_GetError</span><span>())</span><span style="color:#eceff4;">; </span><span>}
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// create text texture
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">TTF_Init</span><span>()</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    TTF_Font </span><span style="color:#81a1c1;">*</span><span>Font </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">TTF_OpenFont</span><span>(</span><span style="color:#a3be8c;">&quot;OpenSans-Regular.ttf&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">40</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(Font </span><span style="color:#81a1c1;">== NULL</span><span>) { </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Font loading failed: </span><span style="color:#ebcb8b;">%s\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">TTF_GetError</span><span>())</span><span style="color:#eceff4;">; </span><span>}
+</span><span>    
+</span><span>    SDL_Surface </span><span style="color:#81a1c1;">*</span><span>TextSurface </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">TTF_RenderText_Blended_Wrapped</span><span>(Font</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System, being larger than only Mercury.&quot;</span><span style="color:#eceff4;">, </span><span>(SDL_Color){</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span>}</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">500</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(TextSurface </span><span style="color:#81a1c1;">== NULL</span><span>) { </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Surface creation failed: </span><span style="color:#ebcb8b;">%s\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">TTF_GetError</span><span>())</span><span style="color:#eceff4;">; </span><span>}
+</span><span>    
+</span><span>    SDL_Texture </span><span style="color:#81a1c1;">*</span><span>TextTexture </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">SDL_CreateTextureFromSurface</span><span>(Renderer</span><span style="color:#eceff4;">,</span><span> TextSurface)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(TextSurface </span><span style="color:#81a1c1;">== NULL</span><span>) { </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Texture creation failed: </span><span style="color:#ebcb8b;">%s\n</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">TTF_GetError</span><span>())</span><span style="color:#eceff4;">; </span><span>}
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">uint32_t</span><span> Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    SDL_Event Event </span><span style="color:#81a1c1;">= </span><span>{</span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">while</span><span>(Running) {
+</span><span>        </span><span style="color:#81a1c1;">while</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SDL_PollEvent</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>Event)) {
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>type) {
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_QUIT</span><span style="color:#eceff4;">: </span><span>{ Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                </span><span style="color:#81a1c1;">case</span><span> SDL_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{ 
+</span><span>                    </span><span style="color:#81a1c1;">switch</span><span>(Event</span><span style="color:#81a1c1;">.</span><span>key</span><span style="color:#81a1c1;">.</span><span>keysym</span><span style="color:#81a1c1;">.</span><span>sym) {
+</span><span>                        </span><span style="color:#81a1c1;">case</span><span> SDLK_o</span><span style="color:#eceff4;">: </span><span>{ Running </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>                    }
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        }
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_SetRenderDrawColor</span><span>(Renderer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">30</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">255</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderClear</span><span>(Renderer)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="color:#616e88;">// display text
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderCopy</span><span>(Renderer</span><span style="color:#eceff4;">,</span><span> TextTexture</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, 
+</span><span>                       </span><span style="color:#81a1c1;">&amp;</span><span>(SDL_Rect){
+</span><span>                           </span><span style="color:#b48ead;">640 </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2 </span><span style="color:#81a1c1;">-</span><span> TextSurface</span><span style="color:#81a1c1;">-&gt;</span><span>w </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,
+</span><span>                           </span><span style="color:#b48ead;">640 </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2 </span><span style="color:#81a1c1;">-</span><span> TextSurface</span><span style="color:#81a1c1;">-&gt;</span><span>h </span><span style="color:#81a1c1;">/ </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,
+</span><span>                           TextSurface</span><span style="color:#81a1c1;">-&gt;</span><span>w</span><span style="color:#eceff4;">,
+</span><span>                           TextSurface</span><span style="color:#81a1c1;">-&gt;</span><span>h
+</span><span>                       })</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SDL_RenderPresent</span><span>(Renderer)</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">SDL_Quit</span><span>()</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span></code></pre>
+
+        
+    </div>
+
+    <script>
+        const copyButtonLabel = "Copy";
+        let blocks = document.querySelectorAll("pre");
+        blocks.forEach((block) => {
+            if (navigator.clipboard) {
+                let button = document.createElement("button");
+                button.innerText = copyButtonLabel;
+                button.addEventListener("click", copyCode);
+                block.appendChild(button);
+            }
+        });
+        async function copyCode(event) {
+            const button = event.srcElement;
+            const pre = button.parentElement;
+            let code = pre.querySelector("code");
+            let text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            button.innerText = "Copied";
+            setTimeout(() => {
+                button.innerText = copyButtonLabel;
+            }, 500)
+        }
+    </script>
+
+    
+
+
+            
+            <div class="footer">&copy 2023 Samuli Natri. All rights reserved.</div>
+            
+
+            
+            <script type="text/javascript"
+                src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+            
+
+            <script type="text/javascript">
+                let section = document.URL.split('/')[3];
+                if (section) {
+                    document.getElementById("menu-link-" + section).classList.add("menu-link-active");
+                }
+            </script>
+
+        <div class="clear"></div>
+    </div> <!-- main -->
+
+</body>
+
+</html>
