@@ -6,15 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="description" content="How to add convenient operators for vectors.">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
-    
 
-    <link rel="stylesheet" href="/styles.css?v=22">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=100">
     <title>Vectors &amp; Operator Overloading (C&#x2F;C++ &amp; Win32) |  Samuli Natri. Software Developer.</title>
 
     
@@ -38,36 +43,23 @@
 <body>
     <div class="main ">
 
-            <p class="menu">
-                <a class="menu-link " href="/">Home</a> &#x2219
-                
-                
-                <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
-                <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
-                <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
-            </p>
+        
 
-            
-
-            
-
-<div class="blog">
-
-    
-
-    <div class="blog-top">
-       
-        <h1 class="blog-top-title">Vectors &amp; Operator Overloading (C&#x2F;C++ &amp; Win32)</h1> 
-        <span class="blog-top-separator"></span>
-        <div class="blog-top-description">How to add convenient operators for vectors.</div>
-        <div class="blog-top-date" itemprop="dateModified" content=" Apr 29, 2021">Updated Apr 29, 2021
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Vectors &amp; Operator Overloading (C&#x2F;C++ &amp; Win32)
+        </div>
+        <div class="tutorial-subtitle">
+            How to add convenient operators for vectors.
         </div>
 
-        
-    </div>    
+        <div class="tutorial-updated" itemprop="dateModified" content=" Apr 29, 2021">
+            Updated <strong>Apr 29, 2021</strong>
+        </div>
 
-    <div class="blog-content">
-        <h2 id="code-main-cpp">Code (main.cpp)</h2>
+        <div class="tutorial-body">
+            <h2 id="code-main-cpp">Code (main.cpp)</h2>
 <pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;wchar.h&gt;
@@ -423,58 +415,53 @@
 </span><span>}
 </span></code></pre>
 <h2 id="build-script-build-bat">Build script (build.bat)</h2>
-<pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off
-</span><span>cl main.cpp /Fegame.exe </span><span style="color:#ebcb8b;">^
-</span><span>/Zi /nologo </span><span style="color:#ebcb8b;">^
-</span><span>/DUNICODE /D_UNICODE </span><span style="color:#ebcb8b;">^
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>@echo off
+</span><span>cl main.cpp /Fegame.exe ^
+</span><span>/Zi /nologo ^
+</span><span>/DUNICODE /D_UNICODE ^
 </span><span>user32.lib gdi32.lib
 </span></code></pre>
 
-        
+        </div>
+
     </div>
+</div>
 
-    <script>
-        const copyButtonLabel = "Copy";
-        let blocks = document.querySelectorAll("pre");
-        blocks.forEach((block) => {
-            if (navigator.clipboard) {
-                let button = document.createElement("button");
-                button.innerText = copyButtonLabel;
-                button.addEventListener("click", copyCode);
-                block.appendChild(button);
-            }
-        });
-        async function copyCode(event) {
-            const button = event.srcElement;
-            const pre = button.parentElement;
-            let code = pre.querySelector("code");
-            let text = code.innerText;
-            await navigator.clipboard.writeText(text);
-            button.innerText = "Copied";
-            setTimeout(() => {
-                button.innerText = copyButtonLabel;
-            }, 500)
+<div class="footer">
+    <p class="footer-p">Hello! I'm <strong>Samuli</strong>, A<br> <strong>Software Developer</strong>.</p>
+</div>
+
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
         }
-    </script>
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
 
-    
 
 
-            
-            <div class="footer">&copy 2023 Samuli Natri. All rights reserved.</div>
-            
-
-            
-            <script type="text/javascript"
-                src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
-            
-
-            <script type="text/javascript">
-                let section = document.URL.split('/')[3];
-                if (section) {
-                    document.getElementById("menu-link-" + section).classList.add("menu-link-active");
-                }
-            </script>
+        
+        <script type="text/javascript"
+            src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+        
 
         <div class="clear"></div>
     </div> <!-- main -->

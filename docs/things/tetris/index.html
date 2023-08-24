@@ -6,15 +6,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="description" content="How to program Tetris.">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="/images/favicon/site.webmanifest">
-    
 
-    <link rel="stylesheet" href="/styles.css?v=22">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=100">
     <title>Tetris With C&#x2F;C++ (Win32) |  Samuli Natri. Software Developer.</title>
 
     
@@ -38,36 +43,24 @@
 <body>
     <div class="main ">
 
-            <p class="menu">
-                <a class="menu-link " href="/">Home</a> &#x2219
-                
-                
-                <a class="menu-link" target="_blank" href="http://www.youtube.com/c/SamuliNatri">YouTube</a> &#x2219
-                <a class="menu-link" target="_blank" href="http://github.com/SamuliNatri">GitHub</a> &#x2219
-                <a class="menu-link" target="_blank" href="https://twitter.com/SamuliNatri">Twitter</a>
-            </p>
+        
 
-            
-
-            
-
-<div class="blog">
-
-    
-
-    <div class="blog-top">
-       
-        <h1 class="blog-top-title">Tetris With C&#x2F;C++ (Win32)</h1> 
-        <span class="blog-top-separator"></span>
-        <div class="blog-top-description">How to program Tetris.</div>
-        <div class="blog-top-date" itemprop="dateModified" content=" Jul  5, 2022">Updated Jul  5, 2022
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Tetris With C&#x2F;C++ (Win32)
+        </div>
+        <div class="tutorial-subtitle">
+            How to program Tetris.
         </div>
 
-        
-    </div>    
+        <div class="tutorial-updated" itemprop="dateModified" content=" Jul  5, 2022">
+            Updated <strong>Jul  5, 2022</strong>
+        </div>
 
-    <div class="blog-content">
-        <h2 id="main-cpp">main.cpp</h2>
+        <div class="tutorial-body">
+            <img style="width: 150px;" src="/images/things/tetris/image.png">
+<h2 id="main-cpp">main.cpp</h2>
 <pre data-lang="cpp" style="background-color:#2e3440;color:#d8dee9;" class="language-cpp "><code class="language-cpp" data-lang="cpp"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN
 </span><span style="color:#81a1c1;">#define UNICODE
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
@@ -625,69 +618,62 @@
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.cpp /link user32.lib gdi32.lib
 </span></code></pre>
 <h2 id="build-bat">build.bat</h2>
-<pre data-lang="bat" style="background-color:#2e3440;color:#d8dee9;" class="language-bat "><code class="language-bat" data-lang="bat"><span style="color:#81a1c1;">@</span><span>echo off
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>@echo off
 </span><span>
-</span><span>set COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/W4 /wd4100 /Oi /nologo /Fea.exe
+</span><span>set COMMON_COMPILER_FLAGS=/W4 /wd4100 /Oi /nologo /Fea.exe
 </span><span>
-</span><span>set DEBUG_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/Zi /MTd
-</span><span>set RELEASE_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/O2
+</span><span>set DEBUG_FLAGS=/Zi /MTd
+</span><span>set RELEASE_FLAGS=/O2
 </span><span>
-</span><span>set COMPILER_FLAGS</span><span style="color:#81a1c1;">=%</span><span>COMMON_COMPILER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>DEBUG_FLAGS</span><span style="color:#81a1c1;">%
-</span><span>REM</span><span style="color:#616e88;"> set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %RELEASE_FLAGS%
+</span><span>set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %DEBUG_FLAGS%
+</span><span>REM set COMPILER_FLAGS=%COMMON_COMPILER_FLAGS% %RELEASE_FLAGS%
 </span><span>
-</span><span>set LINKER_FLAGS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">/INCREMENTAL:NO /OPT:REF
-</span><span>set LIBS</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">user32.lib gdi32.lib
+</span><span>set LINKER_FLAGS=/INCREMENTAL:NO /OPT:REF
+</span><span>set LIBS=user32.lib gdi32.lib
 </span><span>
-</span><span>cl </span><span style="color:#81a1c1;">%</span><span>COMPILER_FLAGS</span><span style="color:#81a1c1;">%</span><span> main.cpp /link </span><span style="color:#81a1c1;">%</span><span>LINKER_FLAGS</span><span style="color:#81a1c1;">% %</span><span>LIBS</span><span style="color:#81a1c1;">%
+</span><span>cl %COMPILER_FLAGS% main.cpp /link %LINKER_FLAGS% %LIBS%
 </span></code></pre>
-<h2 id="result">Result</h2>
-<p><img src="/images/things/tetris/image.png" alt="" /></p>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="footer">
+    <p class="footer-p">Hello! I'm <strong>Samuli</strong>, A<br> <strong>Software Developer</strong>.</p>
+</div>
+
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+</script>
+
+
 
         
-    </div>
-
-    <script>
-        const copyButtonLabel = "Copy";
-        let blocks = document.querySelectorAll("pre");
-        blocks.forEach((block) => {
-            if (navigator.clipboard) {
-                let button = document.createElement("button");
-                button.innerText = copyButtonLabel;
-                button.addEventListener("click", copyCode);
-                block.appendChild(button);
-            }
-        });
-        async function copyCode(event) {
-            const button = event.srcElement;
-            const pre = button.parentElement;
-            let code = pre.querySelector("code");
-            let text = code.innerText;
-            await navigator.clipboard.writeText(text);
-            button.innerText = "Copied";
-            setTimeout(() => {
-                button.innerText = copyButtonLabel;
-            }, 500)
-        }
-    </script>
-
-    
-
-
-            
-            <div class="footer">&copy 2023 Samuli Natri. All rights reserved.</div>
-            
-
-            
-            <script type="text/javascript"
-                src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
-            
-
-            <script type="text/javascript">
-                let section = document.URL.split('/')[3];
-                if (section) {
-                    document.getElementById("menu-link-" + section).classList.add("menu-link-active");
-                }
-            </script>
+        <script type="text/javascript"
+            src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5bd9de747b7c9f30"></script>
+        
 
         <div class="clear"></div>
     </div> <!-- main -->
