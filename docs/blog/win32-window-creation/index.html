@@ -1,6 +1,221 @@
-<!doctype html>
-<meta charset="utf-8">
-<link rel="canonical" href="https://samulinatri.com/things/win32-window-creation/">
-<meta http-equiv="refresh" content="0; url=https://samulinatri.com/things/win32-window-creation/">
-<title>Redirect</title>
-<p><a href="https://samulinatri.com/things/win32-window-creation/">Click here</a> to be redirected.</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to create a window using Windows API">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=104">
+    <title>Win32 - Window Creation (C) |  Samuli Natri. Software Developer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Win32 - Window Creation (C)
+        </div>
+        <div class="tutorial-subtitle">
+            How to create a window using Windows API
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Jun  4, 2023">
+            Updated <strong>Jun  4, 2023</strong>
+        </div>
+
+        <div class="tutorial-body">
+            <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">// cl main.c
+</span><span>
+</span><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">#define </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">c</span><span>) </span><span style="color:#81a1c1;">do </span><span>{ </span><span style="color:#81a1c1;">if </span><span>(</span><span style="color:#81a1c1;">!</span><span>(c)) </span><span style="font-weight:bold;color:#88c0d0;">__debugbreak</span><span>()</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">while </span><span>(</span><span style="color:#b48ead;">0</span><span>)
+</span><span>
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;user32.lib&quot;)
+</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">msg</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">wparam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">lparam</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(msg) {
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(wparam) {
+</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(window)</span><span style="color:#eceff4;">;
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProcW</span><span>(window</span><span style="color:#eceff4;">,</span><span> msg</span><span style="color:#eceff4;">,</span><span> wparam</span><span style="color:#eceff4;">,</span><span> lparam)</span><span style="color:#eceff4;">;
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">WinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">pinstance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPSTR </span><span style="font-weight:bold;color:#d8dee9;">cmd</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">cmdshow</span><span>) {
+</span><span>    
+</span><span>    WNDCLASSW wc </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> instance</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#8fbcbb;">ATOM</span><span> atom </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">RegisterClassW</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>wc)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(atom </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to register a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowW</span><span>(wc</span><span style="color:#81a1c1;">.</span><span>lpszClassName</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Window Creation&quot;</span><span style="color:#eceff4;">,</span><span> WS_OVERLAPPEDWINDOW</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> instance</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(window </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to create a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ShowWindow</span><span>(window</span><span style="color:#eceff4;">,</span><span> cmdshow)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#eceff4;">;;</span><span>) {
+</span><span>        MSG msg</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(msg</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="color:#81a1c1;">continue</span><span style="color:#eceff4;">;
+</span><span>        }    
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<div class="blog-sources">Sources
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window">https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window</a>
+<a href="https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14">https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14</a></p>
+</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function(event) {
+        if(toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    About
+                </div>
+                <div class="footer-text">
+                    Hello! I'm <strong>Samuli</strong>, A<br>Software Developer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <a href="/blog/" class="footer-title">
+                    Blog
+                </a>
+                <div class="footer-text">
+                    <a href="https://samulinatri.com/blog/win32-window-creation/">Win32 - Window Creation (C)</a>
+                    <a href="https://samulinatri.com/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Links
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

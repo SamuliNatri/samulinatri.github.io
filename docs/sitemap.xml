@@ -4,9 +4,6 @@
         <loc>https://samulinatri.com/</loc>
     </url>
     <url>
-        <loc>https://samulinatri.com/about/</loc>
-    </url>
-    <url>
         <loc>https://samulinatri.com/blog/</loc>
     </url>
     <url>
@@ -90,11 +87,12 @@
         <lastmod>2022-12-07</lastmod>
     </url>
     <url>
-        <loc>https://samulinatri.com/blog/win32-window-creation-cpp/</loc>
-        <lastmod>2022-06-25</lastmod>
+        <loc>https://samulinatri.com/blog/win32-drawing-pixels/</loc>
+        <lastmod>2023-06-20</lastmod>
     </url>
     <url>
-        <loc>https://samulinatri.com/books/</loc>
+        <loc>https://samulinatri.com/blog/win32-window-creation/</loc>
+        <lastmod>2023-06-04</lastmod>
     </url>
     <url>
         <loc>https://samulinatri.com/shop/a-beginners-guide-to-django/</loc>
@@ -123,15 +121,7 @@
         <lastmod>2022-02-03</lastmod>
     </url>
     <url>
-        <loc>https://samulinatri.com/things/win32-drawing-pixels/</loc>
-        <lastmod>2023-06-20</lastmod>
-    </url>
-    <url>
         <loc>https://samulinatri.com/things/win32-drawing-rectangles/</loc>
         <lastmod>2022-06-28</lastmod>
-    </url>
-    <url>
-        <loc>https://samulinatri.com/things/win32-window-creation/</loc>
-        <lastmod>2023-06-04</lastmod>
     </url>
 </urlset>
