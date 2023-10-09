@@ -60,6 +60,8 @@
             Updated <strong>Jun  7, 2020</strong>
         </div>
 
+        <div class="hide" id="toc-container"></div>
+
         <div class="tutorial-body">
             <h2 id="quickstart">Quickstart</h2>
 <p>Make these changes to the project settings file:</p>
@@ -366,6 +368,37 @@
 </div>
 
 <script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
     const copyButtonLabel = "Copy";
     let blocks = document.querySelectorAll("pre");
     blocks.forEach((block) => {
@@ -392,8 +425,8 @@
     let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
     let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
     let toggleable = document.getElementById("toggleable");
-    toggleable_toggle.addEventListener('click', function(event) {
-        if(toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
             toggleable_toggle_info.innerHTML = " (click to hide)"
             toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
             toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')

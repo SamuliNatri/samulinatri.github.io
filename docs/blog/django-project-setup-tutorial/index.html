@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="An easy way to create a minimal Django app.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=104">
+    <title>Django - Project Setup Tutorial (Python) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Django - Project Setup Tutorial (Python)
+        </div>
+        <div class="tutorial-subtitle">
+            An easy way to create a minimal Django app.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Oct  9, 2023">
+            Updated <strong>Oct  9, 2023</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <h2 id="quick-start">Quick Start</h2>
+<p>One-liner (Windows):</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">venv</span><span style="font-weight:bold;color:#ebcb8b;">\S</span><span style="font-weight:bold;color:#88c0d0;">cripts</span><span style="font-weight:bold;color:#ebcb8b;">\a</span><span style="font-weight:bold;color:#88c0d0;">ctivate.bat </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite . </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">set </span><span style="color:#a3be8c;">&quot;DJANGO_SUPERUSER_PASSWORD=admin&quot; </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py createsuperuser</span><span style="font-weight:bold;color:#d8dee9;"> --noinput --username</span><span> admin</span><span style="font-weight:bold;color:#d8dee9;"> --email</span><span> admin@example.org </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver
+</span></code></pre>
+<p>One-liner (macOS, Linux):</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">source</span><span> venv/bin/activate </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite . </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate </span><span style="color:#81a1c1;">&amp;&amp; export </span><span>DJANGO_SUPERUSER_PASSWORD</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">admin </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py createsuperuser</span><span style="font-weight:bold;color:#d8dee9;"> --noinput --username</span><span> admin</span><span style="font-weight:bold;color:#d8dee9;"> --email</span><span> admin@example.org </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver
+</span></code></pre>
+<h2 id="how-to-setup-project-step-by-step">How To Setup Project Step-By-Step</h2>
+<p>Create a new folder for the project:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite
+</span><span style="color:#88c0d0;">cd</span><span> mysite
+</span></code></pre>
+<p>Create a virtual envinronment:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv
+</span><span style="font-weight:bold;color:#88c0d0;">venv</span><span style="font-weight:bold;color:#ebcb8b;">\S</span><span style="font-weight:bold;color:#88c0d0;">cripts</span><span style="font-weight:bold;color:#ebcb8b;">\a</span><span style="font-weight:bold;color:#88c0d0;">ctivate.bat</span><span> (Windows)
+</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate (macOS, Linux)
+</span></code></pre>
+<p>Virtual environments isolate projects, with each having its own &quot;venv&quot; folder for dependencies. This ensures that projects remain separate and conflict-free. For example, Project <strong>A</strong> (Python 3.10, Django 4.1.0) and Project <strong>B</strong> (Python 3.11, Django 4.2.6) can coexist without issues. Each environment has its own Python executable.</p>
+<p>Install Django and create a new project:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite .
+</span></code></pre>
+<p>The <em>startproject</em> command generates a basic project structure. &quot;mysite&quot; is merely an arbitrary folder name containing the main configuration files. The dot (.) creates the project in the current folder.</p>
+<p>Run migrations and create a superuser:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py createsuperuser
+</span></code></pre>
+<p>The &quot;migrate&quot; command synchronizes the database with the current state of your Django project's models. A model defines the structure and behavior of a database table, enabling you to manage databases with Python.</p>
+<p>Run the development server:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver
+</span></code></pre>
+<p>Visit <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a></p>
+<p><img src="/images/blog/django-project-setup-tutorial/01.png" alt="" /></p>
+<p>You can login to <em>admin</em> in here: <a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a></p>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Samuli Natri
+                </div>
+                <div class="footer-text">
+                    Entrepreneur. <br>Software Engineer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <a href="/blog/" class="footer-title">
+                    Blog
+                </a>
+                <div class="footer-text">
+                    <a href="https://samulinatri.com/blog/win32-window-creation/">Win32 - Window Creation (C)</a>
+                    <a href="https://samulinatri.com/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Links
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
