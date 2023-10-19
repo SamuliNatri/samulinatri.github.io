@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to create a very basic blog app.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=105">
+    <title>Django - Blog App Tutorial (Python) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Django - Blog App Tutorial (Python)
+        </div>
+        <div class="tutorial-subtitle">
+            How to create a very basic blog app.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Oct 19, 2023">
+            Updated <strong>Oct 19, 2023</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <h2 id="new-project">New Project</h2>
+<p>Use this to setup a new project:</p>
+<p><a href="/blog/django-project-setup-tutorial">Django - Project Setup Tutorial (Python)</a></p>
+<h2 id="blog-app">Blog App</h2>
+<p>Create a new app:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog
+</span></code></pre>
+<p>An <em>app</em> is a self-contained unit that encapsulates specific functionality, such as a blog system.</p>
+<h2 id="settings">Settings</h2>
+<p>Edit <em>mysite/settings.py</em> and make these changes:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>]
+</span><span>
+</span><span style="color:#81a1c1;">TEMPLATES = </span><span>[
+</span><span>    {
+</span><span>        </span><span style="color:#a3be8c;">&#39;BACKEND&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;django.template.backen...&#39;</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[</span><span style="color:#81a1c1;">BASE_DIR / </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>]</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>        </span><span style="color:#a3be8c;">&#39;APP_DIRS&#39;</span><span style="color:#eceff4;">: </span><span style="color:#81a1c1;">True</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#616e88;"># ..
+</span><span>    }</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<p>The preferred method, according to the official documentation, for adding a new app is to explicitly provide a dotted path to its configuration class:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.PagesConfig&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># ...
+</span><span>]
+</span></code></pre>
+<p><strong>However</strong>, in real life, you often encounter this kind of structure:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#616e88;"># default
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sites&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># third-party
+</span><span>    </span><span style="color:#a3be8c;">&#39;rest_framework&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># local
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<p>This is how I do it; I simply add my apps at the bottom of the list.</p>
+<h3 id="installed-apps-order">INSTALLED_APPS order</h3>
+<p>The order of the list matters; apps at the top take precedence. Source: <a href="https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps">https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps</a></p>
+<p>For example, let's consider two apps: <em>Blog</em> and <em>Forum</em>, both of which provide a <em>profile.html</em> template (located in blog/templates/profile.html and forum/templates/profile.html). The app that is listed first provides the template when you reference it: <code>return render(request, 'profile.html', {})</code>. </p>
+<p>On the other hand, typically, you would place the template in a subfolder like this: <em>blog/templates/blog/profile.html</em> and reference it as <code>blog/profile.html</code>.</p>
+<h3 id="dirs-setting">DIRS setting</h3>
+<p>By specifying the <code>'DIRS': [BASE_DIR / 'templates']</code> setting, we enable Django to locate templates in the project root <em>templates</em> folder, allowing us to centralize all templates in one place.</p>
+<p>Instead of this...</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">blog/templates/blog/profile.html 
+</span><span style="font-weight:bold;color:#88c0d0;">forum/templates/forum/profile.html
+</span></code></pre>
+<p>...we can do this:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">templates/blog/profile.html 
+</span><span style="font-weight:bold;color:#88c0d0;">templates/forum/profile.html
+</span></code></pre>
+<h2 id="post-model">Post Model</h2>
+<p>Edit <em>blog/models.py</em> and create the following model:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
+</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">blank</span><span style="color:#81a1c1;">=False</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)
+</span><span>    body </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">TextField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">blank</span><span style="color:#81a1c1;">=False</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)
+</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">SlugField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">blank</span><span style="color:#81a1c1;">=False</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span>)
+</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">__str__</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
+</span><span>        </span><span style="color:#81a1c1;">return self.</span><span>title
+</span></code></pre>
+<p>Use <code>CharField</code> to store text when you know its maximum length. </p>
+<p><code>blank=False</code> requires the user to fill in the field. </p>
+<p><code>default=''</code> sets a default value for a field. This is particularly useful when adding a new field to a model with <em>existing database entries</em> because it specifies the value for those existing items.</p>
+<p>Use <code>TextField</code> when you anticipate lengthy text entries.</p>
+<p><code>slug</code> is a short label that we use for blog URLs, for example, <em>how-to-make-money</em>.</p>
+<p><code>unique=True</code> requires the field value to be unique. We don't want multiple blog posts to have identical URLs.</p>
+<h3 id="null-values">Null values</h3>
+<p>While <code>null=True</code> is available, it introduces three potential states: null, an empty string, and a non-empty string. I prefer just the last two to keep things simple.</p>
+<h3 id="human-readable-representation">Human-readable representation</h3>
+<p>The <code>__str__</code> method should yield a human-readable representation of an object. This returned value is used in various contexts, including the admin interface and templates.</p>
+<h2 id="migrate">Migrate</h2>
+<p>Run migrations:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate
+</span></code></pre>
+<p>Database migrations are a way to manage changes to your database schema over time.</p>
+<p><em>makemigrations</em> generates migration files from models. This command is typically only run in the development environment.</p>
+<p><em>migrate</em> applies those migrations to update the database. This command is used in both the development and production environments.</p>
+<p>You should now have a new database (<em>db.sqlite3</em>) in the site root with a table for the <code>Post</code> model.</p>
+<h2 id="view">View</h2>
+<p>Edit <em>blog/views.py</em> and create a view for blog posts:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>DetailView
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span>
+</span><span>
+</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDetailView</span><span>(</span><span style="color:#8fbcbb;">DetailView</span><span>):
+</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
+</span></code></pre>
+<p><code>DetailView</code> is a class-based view that's used to display the details of a single object.</p>
+<h2 id="template">Template</h2>
+<p>Create <em>templates/blog/post_detail.html</em>:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;div </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;h1&gt;</span><span>{{ post.title }}</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;div </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;body&quot;</span><span style="color:#81a1c1;">&gt;</span><span>{{ post.body }}</span><span style="color:#81a1c1;">&lt;/div&gt;
+</span><span style="color:#81a1c1;">&lt;/div&gt;
+</span></code></pre>
+<p><code>PostDetailView</code> uses the <em>post_detail.html</em> template automatically, without us needing to specify it.</p>
+<p>We could simply use <code>&lt;h1&gt;{{ post }}&lt;/h1&gt;</code> because the <code>__str__</code> method in the <code>Post</code> model already returns the title. This is one of the places the human-readable representation is used.</p>
+<h2 id="urls">URLs</h2>
+<p>Edit <em>mysite/urls.py</em> and add these lines to the project <em>urls.py</em> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostDetailView </span><span style="color:#616e88;"># here
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="color:#616e88;"># add this path:
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&lt;slug:slug&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>PostDetailView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_detail&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<p><code>urlpatterns</code> map URLs to views, passing any captured parameters from the URL to the view.</p>
+<p>In <code>&lt;slug:slug&gt;</code>, the first 'slug' indicates that we are capturing a slug, and the second 'slug' is the name of the parameter that we pass to the view</p>
+<p><code>name='post_detail'</code> assigns a name to the URL pattern, enabling you to generate URLs based on their names in templates or views.</p>
+<h3 id="including-urls">Including URLs</h3>
+<p>In this case, we manage all URLs in the main <em>urls.py</em> file, allowing you to see all endpoints for your apps in one place. However, you could create a separate <em>urls.py</em> file for each app.</p>
+<p>Create <em>blog/urls.py</em>:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostDetailView
+</span><span>
+</span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog&#39;
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&lt;slug:slug&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>PostDetailView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;post_detail&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<p><code>app_name = 'blog'</code> namespaces the URLs. This allows you to target specific apps using namespaced patterns like <code>blog:post_detail</code>.</p>
+<p>Include it in the main <em>urls.py</em> file:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path </span><span style="color:#616e88;"># import include
+</span><span>
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>]
+</span></code></pre>
+<h2 id="admin">Admin</h2>
+<p>Edit <em>blog/admin.py</em> and register the <code>Post</code> model so that we can add content using the admin app:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from . import </span><span>models
+</span><span>
+</span><span>
+</span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">register</span><span>(models</span><span style="color:#81a1c1;">.</span><span>Post)
+</span></code></pre>
+<h2 id="content">Content</h2>
+<p>Visit <em>/admin/</em> to create a new blog post:</p>
+<p><img src="/images/blog/django-blog-app-tutorial/01.png" alt="" /></p>
+<h2 id="result">Result</h2>
+<p>Visit <em>/blog/how-to-make-money/</em> to see the post:</p>
+<p><img src="/images/blog/django-blog-app-tutorial/02.png" alt="" /></p>
+<p>Note that you will see this on the front page because we don't have a URL / view for it:</p>
+<p><img src="/images/blog/django-blog-app-tutorial/03.png" alt="" /></p>
+<h3 id="more-django-tutorials"><a href="/blog/django-tutorials/">More Django Tutorials</a></h3>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Samuli Natri
+                </div>
+                <div class="footer-text">
+                    Entrepreneur. <br>Software Engineer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Blog
+                </div>
+                <div class="footer-text">
+                    <a href="https://samulinatri.com/blog/win32-window-creation/">Win32 - Window Creation (C)</a>
+                    <a href="https://samulinatri.com/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Links
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

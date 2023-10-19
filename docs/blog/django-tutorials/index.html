@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to use the Django web framework.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=105">
+    <title>Django Tutorials (Python) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Django Tutorials (Python)
+        </div>
+        <div class="tutorial-subtitle">
+            How to use the Django web framework.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Oct 19, 2023">
+            Updated <strong>Oct 19, 2023</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <div class="tutorials">
+<p><a href="/blog/django-project-setup-tutorial/">Django - Project Setup Tutorial (Python)</a>
+<a href="/blog/django-blog-app-tutorial/">Django - Blog App Tutorial (Python)</a></p>
+</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Samuli Natri
+                </div>
+                <div class="footer-text">
+                    Entrepreneur. <br>Software Engineer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Blog
+                </div>
+                <div class="footer-text">
+                    <a href="https://samulinatri.com/blog/win32-window-creation/">Win32 - Window Creation (C)</a>
+                    <a href="https://samulinatri.com/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Links
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
