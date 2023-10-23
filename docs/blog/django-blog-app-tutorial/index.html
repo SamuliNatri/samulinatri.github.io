@@ -56,22 +56,45 @@
             How to create a very basic blog app.
         </div>
 
-        <div class="tutorial-updated" itemprop="dateModified" content=" Oct 19, 2023">
-            Updated <strong>Oct 19, 2023</strong>
+        <div class="tutorial-updated" itemprop="dateModified" content=" Oct 24, 2023">
+            Updated <strong>Oct 24, 2023</strong>
         </div>
 
         <div class="hide" id="toc-container"></div>
 
         <div class="tutorial-body">
-            <h2 id="new-project">New Project</h2>
+            <h2 id="quick-start">Quick Start</h2>
+<p>Windows:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> django-blog-app </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> django-blog-app
+</span><span style="font-weight:bold;color:#88c0d0;">git</span><span> clone git@github.com:SamuliNatri/django-blog-app-tutorial.git .
+</span><span style="font-weight:bold;color:#88c0d0;">setup.bat
+</span><span style="font-weight:bold;color:#88c0d0;">venv</span><span style="font-weight:bold;color:#ebcb8b;">\S</span><span style="font-weight:bold;color:#88c0d0;">cripts</span><span style="font-weight:bold;color:#ebcb8b;">\a</span><span style="font-weight:bold;color:#88c0d0;">ctivate.bat
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver
+</span></code></pre>
+<p>macOS, Linux:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> django-blog-app </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> django-blog-app
+</span><span style="font-weight:bold;color:#88c0d0;">git</span><span> clone git@github.com:SamuliNatri/django-blog-app-tutorial.git .
+</span><span style="color:#88c0d0;">cd</span><span> django-blog-app
+</span><span style="font-weight:bold;color:#88c0d0;">chmod</span><span> 700 setup.sh
+</span><span style="font-weight:bold;color:#88c0d0;">./setup.sh
+</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate
+</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver
+</span></code></pre>
+<p>Visit these URLs:</p>
+<ul>
+<li><a href="http://127.0.0.1:8000/admin">http://127.0.0.1:8000/admin</a> (username &amp;&amp; password == admin)</li>
+<li><a href="http://127.0.0.1:8000/blog/how-to-make-money/">http://127.0.0.1:8000/blog/how-to-make-money/</a></li>
+</ul>
+<h2 id="step-by-step-tutorial">Step-By-Step Tutorial</h2>
+<h3 id="new-project">New Project</h3>
 <p>Use this to setup a new project:</p>
 <p><a href="/blog/django-project-setup-tutorial">Django - Project Setup Tutorial (Python)</a></p>
-<h2 id="blog-app">Blog App</h2>
+<h3 id="blog-app">Blog App</h3>
 <p>Create a new app:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog
 </span></code></pre>
 <p>An <em>app</em> is a self-contained unit that encapsulates specific functionality, such as a blog system.</p>
-<h2 id="settings">Settings</h2>
+<h3 id="settings">Settings</h3>
 <p>Edit <em>mysite/settings.py</em> and make these changes:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
 </span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
@@ -111,11 +134,11 @@
 </span><span>]
 </span></code></pre>
 <p>This is how I do it; I simply add my apps at the bottom of the list.</p>
-<h3 id="installed-apps-order">INSTALLED_APPS order</h3>
+<h4 id="installed-apps-order">INSTALLED_APPS order</h4>
 <p>The order of the list matters; apps at the top take precedence. Source: <a href="https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps">https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps</a></p>
 <p>For example, let's consider two apps: <em>Blog</em> and <em>Forum</em>, both of which provide a <em>profile.html</em> template (located in blog/templates/profile.html and forum/templates/profile.html). The app that is listed first provides the template when you reference it: <code>return render(request, 'profile.html', {})</code>. </p>
 <p>On the other hand, typically, you would place the template in a subfolder like this: <em>blog/templates/blog/profile.html</em> and reference it as <code>blog/profile.html</code>.</p>
-<h3 id="dirs-setting">DIRS setting</h3>
+<h4 id="dirs-setting">DIRS setting</h4>
 <p>By specifying the <code>'DIRS': [BASE_DIR / 'templates']</code> setting, we enable Django to locate templates in the project root <em>templates</em> folder, allowing us to centralize all templates in one place.</p>
 <p>Instead of this...</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">blog/templates/blog/profile.html 
@@ -125,7 +148,7 @@
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">templates/blog/profile.html 
 </span><span style="font-weight:bold;color:#88c0d0;">templates/forum/profile.html
 </span></code></pre>
-<h2 id="post-model">Post Model</h2>
+<h3 id="post-model">Post Model</h3>
 <p>Edit <em>blog/models.py</em> and create the following model:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
 </span><span>
@@ -144,11 +167,11 @@
 <p>Use <code>TextField</code> when you anticipate lengthy text entries.</p>
 <p><code>slug</code> is a short label that we use for blog URLs, for example, <em>how-to-make-money</em>.</p>
 <p><code>unique=True</code> requires the field value to be unique. We don't want multiple blog posts to have identical URLs.</p>
-<h3 id="null-values">Null values</h3>
+<h4 id="null-values">Null values</h4>
 <p>While <code>null=True</code> is available, it introduces three potential states: null, an empty string, and a non-empty string. I prefer just the last two to keep things simple.</p>
-<h3 id="human-readable-representation">Human-readable representation</h3>
+<h4 id="human-readable-representation">Human-readable representation</h4>
 <p>The <code>__str__</code> method should yield a human-readable representation of an object. This returned value is used in various contexts, including the admin interface and templates.</p>
-<h2 id="migrate">Migrate</h2>
+<h3 id="migrate">Migrate</h3>
 <p>Run migrations:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations
 </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate
@@ -157,7 +180,7 @@
 <p><em>makemigrations</em> generates migration files from models. This command is typically only run in the development environment.</p>
 <p><em>migrate</em> applies those migrations to update the database. This command is used in both the development and production environments.</p>
 <p>You should now have a new database (<em>db.sqlite3</em>) in the site root with a table for the <code>Post</code> model.</p>
-<h2 id="view">View</h2>
+<h3 id="view">View</h3>
 <p>Edit <em>blog/views.py</em> and create a view for blog posts:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>DetailView
 </span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
@@ -167,7 +190,7 @@
 </span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
 </span></code></pre>
 <p><code>DetailView</code> is a class-based view that's used to display the details of a single object.</p>
-<h2 id="template">Template</h2>
+<h3 id="template">Template</h3>
 <p>Create <em>templates/blog/post_detail.html</em>:</p>
 <pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;div </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
 </span><span>    </span><span style="color:#81a1c1;">&lt;h1&gt;</span><span>{{ post.title }}</span><span style="color:#81a1c1;">&lt;/h1&gt;
@@ -176,7 +199,7 @@
 </span></code></pre>
 <p><code>PostDetailView</code> uses the <em>post_detail.html</em> template automatically, without us needing to specify it.</p>
 <p>We could simply use <code>&lt;h1&gt;{{ post }}&lt;/h1&gt;</code> because the <code>__str__</code> method in the <code>Post</code> model already returns the title. This is one of the places the human-readable representation is used.</p>
-<h2 id="urls">URLs</h2>
+<h3 id="urls">URLs</h3>
 <p>Edit <em>mysite/urls.py</em> and add these lines to the project <em>urls.py</em> file:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
@@ -191,7 +214,7 @@
 <p><code>urlpatterns</code> map URLs to views, passing any captured parameters from the URL to the view.</p>
 <p>In <code>&lt;slug:slug&gt;</code>, the first 'slug' indicates that we are capturing a slug, and the second 'slug' is the name of the parameter that we pass to the view</p>
 <p><code>name='post_detail'</code> assigns a name to the URL pattern, enabling you to generate URLs based on their names in templates or views.</p>
-<h3 id="including-urls">Including URLs</h3>
+<h4 id="including-urls">Including URLs</h4>
 <p>In this case, we manage all URLs in the main <em>urls.py</em> file, allowing you to see all endpoints for your apps in one place. However, you could create a separate <em>urls.py</em> file for each app.</p>
 <p>Create <em>blog/urls.py</em>:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
@@ -214,7 +237,7 @@
 </span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
 </span><span>]
 </span></code></pre>
-<h2 id="admin">Admin</h2>
+<h3 id="admin">Admin</h3>
 <p>Edit <em>blog/admin.py</em> and register the <code>Post</code> model so that we can add content using the admin app:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
 </span><span style="color:#81a1c1;">from . import </span><span>models
@@ -222,10 +245,10 @@
 </span><span>
 </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">register</span><span>(models</span><span style="color:#81a1c1;">.</span><span>Post)
 </span></code></pre>
-<h2 id="content">Content</h2>
+<h3 id="content">Content</h3>
 <p>Visit <em>/admin/</em> to create a new blog post:</p>
 <p><img src="/images/blog/django-blog-app-tutorial/01.png" alt="" /></p>
-<h2 id="result">Result</h2>
+<h3 id="result">Result</h3>
 <p>Visit <em>/blog/how-to-make-money/</em> to see the post:</p>
 <p><img src="/images/blog/django-blog-app-tutorial/02.png" alt="" /></p>
 <p>Note that you will see this on the front page because we don't have a URL / view for it:</p>
