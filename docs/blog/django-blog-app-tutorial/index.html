@@ -132,7 +132,8 @@
 </span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">,
 </span><span>]
 </span></code></pre>
-<p>This is how I do it; I simply add my apps at the bottom of the list.</p>
+<p>This is how I do it; I simply add my apps at the bottom of the list. </p>
+<p><em>Note</em>: Third-party packages might have their own preferences regarding the order.</p>
 <h4 id="installed-apps-order">INSTALLED_APPS order</h4>
 <p>The order of the list matters; apps at the top take precedence. Source: <a href="https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps">https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps</a></p>
 <p>For example, let's consider two apps: <em>Blog</em> and <em>Forum</em>, both of which provide a <em>profile.html</em> template (located in blog/templates/profile.html and forum/templates/profile.html). The app that is listed first provides the template when you reference it: <code>return render(request, 'profile.html', {})</code>. </p>
@@ -150,6 +151,7 @@
 <h3 id="post-model">Post Model</h3>
 <p>Edit <em>blog/models.py</em> and create the following model:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>reverse
 </span><span>
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
@@ -159,6 +161,9 @@
 </span><span>
 </span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">__str__</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
 </span><span>        </span><span style="color:#81a1c1;">return self.</span><span>title
+</span><span>
+</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_absolute_url</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:post_detail&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])
 </span></code></pre>
 <p>Use <code>CharField</code> to store text when you know its maximum length. </p>
 <p><code>blank=False</code> requires the user to fill in the field. </p>
@@ -170,6 +175,12 @@
 <p>While <code>null=True</code> is available, it introduces three potential states: null, an empty string, and a non-empty string. I prefer just the last two to keep things simple.</p>
 <h4 id="human-readable-representation">Human-readable representation</h4>
 <p>The <code>__str__</code> method should yield a human-readable representation of an object. This returned value is used in various contexts, including the admin interface and templates.</p>
+<h4 id="absolute-url">Absolute URL</h4>
+<p><code>get_absolute_url</code> is used to generate an absolute URL for an object, making it easier to link to them.</p>
+<p>For example, you can create a link to the object like this:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;a </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.get_absolute_url }}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>{{ post.title }}</span><span style="color:#81a1c1;">&lt;/a&gt;
+</span></code></pre>
+<p>This also adds a convenient <em>VIEW ON SITE</em> link to the admin edit page.</p>
 <h3 id="migrate">Migrate</h3>
 <p>Run migrations:</p>
 <pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations

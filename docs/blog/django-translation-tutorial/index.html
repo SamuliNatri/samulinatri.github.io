@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to create multilingual websites using Django.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=105">
+    <title>Django - Translation Tutorial (Internationalization) (Python) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Django - Translation Tutorial (Internationalization) (Python)
+        </div>
+        <div class="tutorial-subtitle">
+            How to create multilingual websites using Django.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Nov  2, 2023">
+            Updated <strong>Nov  2, 2023</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <h2 id="introduction">Introduction</h2>
+<p>This tutorial shows how to translate texts, URLs and database content.</p>
+<p>For example, here is an English blog post:</p>
+<p><img src="/images/blog/django-translation-tutorial/06.png" alt="" /></p>
+<p>And here is its German translation:</p>
+<p><img src="/images/blog/django-translation-tutorial/07.png" alt="" /></p>
+<p>The text &quot;<strong>Title</strong>&quot; is defined in the <em>post_detail.html</em> template and translated to &quot;<strong>Titel</strong>&quot; using Django's default translation system.</p>
+<p>The actual <strong>title</strong>, <strong>body</strong>, and the <strong>slug</strong> are stored in the database and translated using the admin (with the help of the <strong>django-modeltranslation</strong> package).</p>
+<h2 id="prerequisities">Prerequisities</h2>
+<p>Use this to setup a base project:</p>
+<p><a href="/blog/django-blog-app-tutorial">Django - Blog App Tutorial (Python)</a></p>
+<h2 id="update-settings">Update Settings</h2>
+<p>Edit <em>mysite/settings.py</em> and add this line:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">LOCALE_PATHS = </span><span>[</span><span style="color:#81a1c1;">BASE_DIR / </span><span style="color:#a3be8c;">&#39;locale&#39;</span><span>] </span><span style="color:#616e88;"># here
+</span><span style="color:#81a1c1;">LANGUAGE_CODE = </span><span style="color:#a3be8c;">&#39;en-us&#39; 
+</span></code></pre>
+<ul>
+<li><code>LOCALE_PATHS</code> setting is used to specify the directories where the application should look for translation files.</li>
+<li><code>LANGUAGE_CODE</code> specifies the default language for the project. Set it to <code>LANGUAGE_CODE = 'de'</code> if you want German to be the default language.</li>
+</ul>
+<h2 id="url-prefix">URL Prefix</h2>
+<p>Edit <em>mysite/settings.py</em> and add <code>LocaleMiddleware</code> above <code>CommonMiddleware</code>:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">MIDDLEWARE = </span><span>[ 
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.middleware.locale.LocaleMiddleware&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.middleware.common.CommonMiddleware&#39;</span><span style="color:#eceff4;">,
+</span><span>] 
+</span></code></pre>
+<p>Edit <em>mysite/urls.py</em>, import <code>i18n_patterns</code> and use it like this:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf</span><span style="color:#81a1c1;">.</span><span>urls</span><span style="color:#81a1c1;">.</span><span>i18n </span><span style="color:#81a1c1;">import </span><span>i18n_patterns </span><span style="color:#616e88;"># here
+</span><span>
+</span><span style="color:#616e88;"># wrap the paths with i18n_patterns:
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">i18n_patterns</span><span>(
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#d8dee9;">prefix_default_language</span><span style="color:#81a1c1;">=False
+</span><span>)                     
+</span></code></pre>
+<ul>
+<li><code>i18n_patterns</code> prepends the current active language code to all URL patterns defined inside the function.</li>
+<li><code>prefix_default_language=False</code> argument hides the language prefix for the default language.</li>
+</ul>
+<h2 id="translate-text-in-templates">Translate Text In Templates</h2>
+<p>Edit <em>templates/blog/post_detail.html</em>. Load the <code>i18n</code> tag, and use the <code>trans</code> tag to translate a string:</p>
+<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span>{% </span><span style="color:#81a1c1;">load </span><span>i18n %}
+</span><span style="color:#81a1c1;">&lt;div </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;post&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;h1&gt;</span><span>{% </span><span style="color:#81a1c1;">trans </span><span style="color:#a3be8c;">&quot;Title&quot; </span><span>%}: {{ post.title }}</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span>    </span><span style="color:#81a1c1;">&lt;div </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;body&quot;</span><span style="color:#81a1c1;">&gt;</span><span>{{ post.body }}</span><span style="color:#81a1c1;">&lt;/div&gt;
+</span><span style="color:#81a1c1;">&lt;/div&gt;
+</span></code></pre>
+<p>Create a directory in the project's root for the translation files and execute the <code>makemessages</code> command:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> locale
+</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> de</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv
+</span></code></pre>
+<p>Are you getting an error like this: <strong>CommandError: Can't find msguniq. Make sure you have GNU gettext tools 0.15 or newer installed.</strong>?</p>
+<h3 id="windows">Windows</h3>
+<p>Install <em>gettext</em> from here:
+<a href="https://mlocati.github.io/articles/gettext-iconv-windows.html" target="_blank">https://mlocati.github.io/articles/gettext-iconv-windows.html</a></p>
+<p>You probably want the <em>64 bit static</em> installer.</p>
+<h3 id="macos-linux">macOS, Linux</h3>
+<p>Run these commands:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">sudo</span><span> apt-get update
+</span><span style="font-weight:bold;color:#88c0d0;">sudo</span><span> apt-get install gettext
+</span></code></pre>
+<p>Then, you can create translation files:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> fi</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv
+</span></code></pre>
+<p>Edit <code>locale/de/LC_MESSAGES/django.po</code> and add the translation:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>#: .\templates\blog\post_detail.html:3
+</span><span>msgid &quot;Title&quot;
+</span><span>msgstr &quot;Titel&quot; # here
+</span></code></pre>
+<p>Run this command:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> compilemessages</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv
+</span></code></pre>
+<p>Restart the development server.</p>
+<p>Visit <code>/de/blog/how-to-make-money/</code> and you should see this:</p>
+<p><img src="/images/blog/django-translation-tutorial/01.png" alt="" /></p>
+<p>This is something you might actually want. You might want the slug to be in English for all languages.</p>
+<h2 id="slug-and-content-translation">Slug And Content Translation</h2>
+<p>On the other hand, it might make more sense to do something like this:</p>
+<ul>
+<li>/blog/how-to-make-money/ (English version)</li>
+<li>/<strong>de/blog/wie-man-geld-verdient</strong>/ (German version)</li>
+</ul>
+<p>Install <em>django-modeltranslation</em>:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django-modeltranslation
+</span></code></pre>
+<p>Edit <em>mysite/settings.py</em>:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
+</span><span>    </span><span style="color:#a3be8c;">&#39;modeltranslation&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here, put it on top
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">,
+</span><span>]
+</span><span>
+</span><span style="color:#616e88;"># add languages to the project:
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils</span><span style="color:#81a1c1;">.</span><span>translation </span><span style="color:#81a1c1;">import </span><span>gettext_lazy </span><span style="color:#81a1c1;">as _
+</span><span style="color:#81a1c1;">LANGUAGES = </span><span>(
+</span><span>    (</span><span style="color:#a3be8c;">&#39;en&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;English&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>    (</span><span style="color:#a3be8c;">&#39;de&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;German&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>)
+</span></code></pre>
+<ul>
+<li><code>gettext_lazy</code> is used to translate the actual language <em>names</em>.</li>
+<li>If we don't specify the <code>LANGUAGES</code> setting, Django's default value is used, which includes a lot of languages.</li>
+</ul>
+<p>Create <em>blog/translation.py</em>:</p>
+<p>Create a translation class for the <code>Post</code> model and register it:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>from modeltranslation.translator import translator, TranslationOptions
+</span><span>from .models import Post
+</span><span>
+</span><span>class PostTranslationOptions(TranslationOptions):
+</span><span>    fields = (&#39;title&#39;, &#39;body&#39;, &#39;slug&#39;) # specify the fields you want to translate
+</span><span>
+</span><span>translator.register(Post, PostTranslationOptions)
+</span></code></pre>
+<p>Run these commands:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>python manage.py makemigrations
+</span><span>python manage.py migrate
+</span><span>python manage.py update_translation_fields
+</span></code></pre>
+<ul>
+<li>Run <code>update_translation_fields</code> if you have an existing project and you have already synced the model fields (that you are trying to translate) with the database.</li>
+</ul>
+<p>Restart the development server.</p>
+<p>Visit <em>/admin</em>/ and edit a blog post:</p>
+<p><img src="/images/blog/django-translation-tutorial/04.png" alt="" /></p>
+<p><img src="/images/blog/django-translation-tutorial/05.png" alt="" /></p>
+<p>The first &quot;Title&quot; field shows the currently active translation:</p>
+<p><a href="http://127.0.0.1:8000/de/verwaltung/blog/post/1/change/">http://127.0.0.1:8000/de/admin/blog/post/1/change/</a></p>
+<p><img src="/images/blog/django-translation-tutorial/08.png" alt="" /></p>
+<p>Now we have the English post...</p>
+<p><img src="/images/blog/django-translation-tutorial/06.png" alt="" /></p>
+<p>...and its German translation:</p>
+<p><img src="/images/blog/django-translation-tutorial/07.png" alt="" /></p>
+<h2 id="admin-translation">Admin Translation</h2>
+<p>The admin UI is translated automatically for the added languages.</p>
+<p>You can see this in action by visiting <em>/<strong>de</strong>/admin</em>:</p>
+<p><img src="/images/blog/django-translation-tutorial/03.png" alt="" /></p>
+<p><strong>/admin/</strong> provides the login form in the default language:</p>
+<p><img src="/images/blog/django-translation-tutorial/03_02.png" alt="" /></p>
+<h3 id="admin-url-translation">Admin URL Translation</h3>
+<p>You can also translate the admin url: <strong>/de/verwaltung/</strong></p>
+<p>Edit the <em>mysite/urls.py</em> file, and make these changes:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>conf</span><span style="color:#81a1c1;">.</span><span>urls</span><span style="color:#81a1c1;">.</span><span>i18n </span><span style="color:#81a1c1;">import </span><span>i18n_patterns
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils</span><span style="color:#81a1c1;">.</span><span>translation </span><span style="color:#81a1c1;">import </span><span>gettext_lazy </span><span style="color:#81a1c1;">as _ </span><span style="color:#616e88;"># here
+</span><span>
+</span><span>
+</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">i18n_patterns</span><span>(
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="font-weight:bold;color:#81a1c1;">_</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>    </span><span style="font-weight:bold;color:#d8dee9;">prefix_default_language</span><span style="color:#81a1c1;">=False
+</span><span>)  
+</span></code></pre>
+<ul>
+<li>The <code>gettext_lazy</code> function translates the string when the value is accessed, not when we call the function.</li>
+</ul>
+<p>Run the <code>makemessages</code> command:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> makemessages</span><span style="font-weight:bold;color:#d8dee9;"> -l</span><span> de</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv
+</span></code></pre>
+<p>Edit <em>locale/de/LC_MESSAGES/django.po</em> and translate the <em>admin/</em> path:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>#: .\mysite\urls.py:25
+</span><span>msgid &quot;admin/&quot;
+</span><span>msgstr &quot;verwaltung/&quot; # here
+</span></code></pre>
+<p>Run the <code>compilemessages</code> command:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> compilemessages</span><span style="font-weight:bold;color:#d8dee9;"> --ignore</span><span> venv
+</span></code></pre>
+<p>Now you can find the admin page translated to German in here:</p>
+<p><a href="http://127.0.0.1:8000/de/verwaltung/">http://127.0.0.1:8000/de/verwaltung/</a></p>
+<p>The English translated admin can be accessed here:</p>
+<p><a href="http://127.0.0.1:8000/admin/">http://127.0.0.1:8000/admin/</a></p>
+<h3 id="source-code"><a href="https://github.com/SamuliNatri/django-translation-tutorial">Source Code</a></h3>
+<h3 id="more-django-tutorials"><a href="/blog/django-tutorials/">More Django Tutorials</a></h3>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Samuli Natri
+                </div>
+                <div class="footer-text">
+                    Entrepreneur. <br>Software Engineer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Blog
+                </div>
+                <div class="footer-text">
+                    <a href="https://samulinatri.com/blog/win32-window-creation/">Win32 - Window Creation (C)</a>
+                    <a href="https://samulinatri.com/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Menu
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                        <a href="/blog/django-tutorials/">Django Tutorials</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
