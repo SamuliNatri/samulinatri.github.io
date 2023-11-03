@@ -21,7 +21,7 @@
     <script>hljs.highlightAll();</script>
 
     <link rel="stylesheet" href="/styles.css?v=105">
-    <title>Django - Sitemap Tutorial | Samuli Natri. Entrepreneur. Software Engineer.</title>
+    <title>Django - Sitemap Tutorial (Python) | Samuli Natri. Entrepreneur. Software Engineer.</title>
 
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
@@ -50,317 +50,171 @@
 <div class="tutorial">
     <div class="tutorial-inner">
         <div class="tutorial-title">
-            Django - Sitemap Tutorial
+            Django - Sitemap Tutorial (Python)
         </div>
         <div class="tutorial-subtitle">
             How to create XML sitemaps with Django sitemap framework.
         </div>
 
-        <div class="tutorial-updated" itemprop="dateModified" content=" Jun  7, 2020">
-            Updated <strong>Jun  7, 2020</strong>
+        <div class="tutorial-updated" itemprop="dateModified" content=" Nov  3, 2023">
+            Updated <strong>Nov  3, 2023</strong>
         </div>
 
         <div class="hide" id="toc-container"></div>
 
         <div class="tutorial-body">
-            <h2 id="quickstart">Quickstart</h2>
-<p>Make these changes to the project settings file:</p>
+            <h2 id="prerequisities">Prerequisities</h2>
+<p>Use this to setup a base project:</p>
+<p><a href="/blog/django-blog-app-tutorial">Django - Blog App Tutorial (Python)</a></p>
+<h2 id="settings">Settings</h2>
+<p>Edit <em>mysite/settings.py</em> and add these lines:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
-</span><span>    </span><span style="color:#616e88;"># Add these at the bottom:
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sites&#39;</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps&#39;</span><span style="color:#eceff4;">,
-</span><span>]
-</span><span>
-</span><span style="color:#616e88;"># Define SITE_ID:
-</span><span style="color:#81a1c1;">SITE_ID = </span><span style="color:#b48ead;">1
-</span></code></pre>
-<p>Add a field called <code>modified</code> and a method called <code>get_absolute_url()</code> to a model:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
-</span><span>    </span><span style="color:#616e88;"># Add &quot;modified&quot; field:
-</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">DateTimeField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">auto_now</span><span style="color:#81a1c1;">=True</span><span>)
-</span><span>    </span><span style="color:#616e88;"># Add &quot;get_absolute_url()&quot; method:
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_absolute_url</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">,
-</span><span>                       </span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])
-</span></code></pre>
-<p>Make these changes to your URL configuration file:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
-</span><span style="color:#616e88;"># Import these
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>sitemap
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>GenericSitemap
-</span><span style="color:#81a1c1;">from </span><span>mysite</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>StaticViewSitemap
-</span><span>
-</span><span style="color:#616e88;"># Add `sitemaps` dictionary:
-</span><span>sitemaps </span><span style="color:#81a1c1;">= </span><span>{
-</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="font-weight:bold;color:#88c0d0;">GenericSitemap</span><span>({
-</span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,
-</span><span>        </span><span style="color:#a3be8c;">&#39;date_field&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;modified&#39;</span><span style="color:#eceff4;">,
-</span><span>    }</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">priority</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">9</span><span>)</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#a3be8c;">&#39;static&#39;</span><span style="color:#eceff4;">: </span><span>StaticViewSitemap</span><span style="color:#eceff4;">,
-</span><span>}
-</span><span>
-</span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
-</span><span>    </span><span style="color:#616e88;"># ...
-</span><span>    </span><span style="color:#616e88;"># Pass the `sitemaps` dictionary to the `sitemap` view:
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,
-</span><span>         {</span><span style="color:#a3be8c;">&#39;sitemaps&#39;</span><span style="color:#eceff4;">: </span><span>sitemaps}</span><span style="color:#eceff4;">,
-</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,
-</span><span>]
-</span></code></pre>
-<p>Create a file called <code>sitemaps.py</code> somewhere (in the <code>mysite</code> directory in this case) and add these lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>Sitemap
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>reverse
-</span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">StaticViewSitemap</span><span>(</span><span style="color:#8fbcbb;">Sitemap</span><span>):
-</span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">items</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
-</span><span>        </span><span style="color:#81a1c1;">return </span><span>[</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>]
-</span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">location</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">item</span><span>):
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(item)
-</span></code></pre>
-<p>Visit <code>/sitemap.xml</code>:</p>
-<p><img src="/images/blog/django-sitemap-tutorial/00.png" alt="" /></p>
-<h2 id="full-tutorial">Full tutorial</h2>
-<p>Sitemap is an XML file that lists URLs for a site. Each URL can be associated with metadata. For example, we can tell the crawler how important a URL is related to other URLs in the site, how often it usually changes and when it was last updated. This helps search engines to index your site.</p>
-<h3 id="setup">Setup</h3>
-<p>Run these commands to setup a project:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">mkdir</span><span> mysite </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#88c0d0;">cd</span><span> mysite
-</span><span style="font-weight:bold;color:#88c0d0;">python3</span><span style="font-weight:bold;color:#d8dee9;"> -m</span><span> venv venv
-</span><span style="color:#88c0d0;">source</span><span> venv/bin/activate 
-</span><span style="font-weight:bold;color:#88c0d0;">pip</span><span> install django
-</span><span style="font-weight:bold;color:#88c0d0;">django-admin</span><span> startproject mysite .
-</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp blog
-</span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py startapp pages
-</span></code></pre>
-<h3 id="configure-settings-py">Configure settings.py</h3>
-<p>Add these lines to the project <code>settings.py</code> file:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">INSTALLED_APPS = </span><span>[
-</span><span>    </span><span style="color:#616e88;"># START
-</span><span>    </span><span style="color:#a3be8c;">&#39;blog.apps.BlogConfig&#39;</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#a3be8c;">&#39;pages.apps.PagesConfig&#39;</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#616e88;"># END
 </span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.admin&#39;</span><span style="color:#eceff4;">,
 </span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.auth&#39;</span><span style="color:#eceff4;">,
 </span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.contenttypes&#39;</span><span style="color:#eceff4;">,
 </span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sessions&#39;</span><span style="color:#eceff4;">,
 </span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.messages&#39;</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,    
-</span><span>    </span><span style="color:#616e88;"># START
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sites&#39;</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps&#39;</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#616e88;"># END
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.staticfiles&#39;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sites&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>    </span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps&#39;</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">,
 </span><span>]
 </span><span>
-</span><span style="color:#616e88;"># HERE
-</span><span style="color:#81a1c1;">SITE_ID = </span><span style="color:#b48ead;">1
-</span><span>
-</span><span style="color:#81a1c1;">TEMPLATES = </span><span>[
-</span><span>    {
-</span><span>        </span><span style="color:#616e88;"># ...
-</span><span>        </span><span style="color:#616e88;"># HERE
-</span><span>        </span><span style="color:#a3be8c;">&#39;DIRS&#39;</span><span style="color:#eceff4;">: </span><span>[os</span><span style="color:#81a1c1;">.</span><span>path</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">join</span><span>(</span><span style="color:#81a1c1;">BASE_DIR</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&#39;templates&#39;</span><span>)]</span><span style="color:#eceff4;">,
-</span><span>        </span><span style="color:#616e88;"># ...
-</span><span>    }</span><span style="color:#eceff4;">,
-</span><span>]
+</span><span style="color:#81a1c1;">SITE_ID = </span><span style="color:#b48ead;">1 </span><span style="color:#616e88;"># here
 </span></code></pre>
 <ul>
-<li><code>django.contrib.sites</code> enables the &quot;sites&quot; framework. The sitemap framework needs it to work properly. It gets the <em>domain</em> for the URLs using the current <code>Site</code> object.</li>
+<li><code>django.contrib.sites</code> enables the <em>sites</em> framework. The <em>sitemap</em> framework needs it to work properly.</li>
 <li><code>django.contrib.sitemaps</code> enables the sitemap framework.</li>
-<li>We <em>wire</em> our apps into the project by adding <code>blog.apps.BlogConfig</code> and <code>pages.apps.PagesConfig</code> to the <code>INSTALLED_APPS</code> list.</li>
-<li><code>SITE_ID = 1</code> associates a <code>Site</code> object from the database (with an ID of <code>1</code>) to this settings file.</li>
-<li><code>'DIRS': [os.path.join(BASE_DIR, 'templates')]</code> makes Django look for template files in the root <code>templates</code> directory.</li>
+<li>&quot;1&quot; is the database ID of the default <code>Site</code> object. This association is made to connect this particular settings file with a <code>Site</code> object.</li>
 </ul>
-<h3 id="add-post-model">Add Post model</h3>
-<p>Add a class called <code>Post</code> to the <em>blog</em> app <code>models.py</code> file:</p>
+<h2 id="update-post-model">Update Post Model</h2>
+<p>Edit <em>blog/models.py</em> and add a <code>modified</code> field to it. Make sure that your model has the <code>get_absolute_url</code> method:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>db </span><span style="color:#81a1c1;">import </span><span>models
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>utils</span><span style="color:#81a1c1;">.</span><span>text </span><span style="color:#81a1c1;">import </span><span>slugify
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>reverse
 </span><span>
 </span><span>
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">Post</span><span>(</span><span style="color:#8fbcbb;">models</span><span style="color:#81a1c1;">.</span><span style="color:#8fbcbb;">Model</span><span>):
-</span><span>
-</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">,
-</span><span>                             </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span>)
-</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">SlugField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">50</span><span style="color:#eceff4;">,
-</span><span>                            </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span style="color:#eceff4;">,
-</span><span>                            </span><span style="font-weight:bold;color:#d8dee9;">default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)
-</span><span>    </span><span style="color:#616e88;"># HERE
-</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">DateTimeField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">auto_now</span><span style="color:#81a1c1;">=True</span><span>)
+</span><span>    title </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">CharField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">blank</span><span style="color:#81a1c1;">=False</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)
+</span><span>    body </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">TextField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">blank</span><span style="color:#81a1c1;">=False</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">default</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;&#39;</span><span>)
+</span><span>    slug </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">SlugField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">max_length</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">255</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">blank</span><span style="color:#81a1c1;">=False</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">unique</span><span style="color:#81a1c1;">=True</span><span>)
+</span><span>    modified </span><span style="color:#81a1c1;">= </span><span>models</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">DateTimeField</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">auto_now</span><span style="color:#81a1c1;">=True</span><span>) </span><span style="color:#616e88;"># here
 </span><span>
 </span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">__str__</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
 </span><span>        </span><span style="color:#81a1c1;">return self.</span><span>title
 </span><span>
-</span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">save</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span style="font-weight:bold;color:#d8dee9;">kwargs</span><span>):
-</span><span>        </span><span style="color:#81a1c1;">self.</span><span>slug </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">slugify</span><span>(</span><span style="color:#81a1c1;">self.</span><span>title)
-</span><span>        </span><span style="font-style:italic;color:#88c0d0;">super</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">save</span><span>(</span><span style="color:#81a1c1;">*</span><span>args</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">**</span><span>kwargs)
-</span><span>
-</span><span>    </span><span style="color:#616e88;"># HERE
+</span><span>    </span><span style="color:#616e88;"># here
 </span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">get_absolute_url</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
-</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:detail&#39;</span><span style="color:#eceff4;">,
-</span><span>                       </span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])
+</span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(</span><span style="color:#a3be8c;">&#39;blog:post_detail&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">args</span><span style="color:#81a1c1;">=</span><span>[</span><span style="color:#81a1c1;">self.</span><span>slug])
 </span></code></pre>
 <ul>
-<li>The <code>modified</code> field is used for the sitemap <code>lastmod</code> attribute. It tells when the item was last modified.</li>
-<li>The <code>get_absolute_url()</code> method is used for the sitemap <code>loc</code> attribute. This is the page URL.</li>
+<li>The <code>modified</code> field is used for the sitemap <code>lastmod</code> attribute.</li>
+<li><code>auto_now=True</code> is used to specify that the field should be automatically set to the current date and time when the object is created or updated.</li>
 </ul>
-<p>An example from the generated sitemap:</p>
-<pre data-lang="xml" style="background-color:#2e3440;color:#d8dee9;" class="language-xml "><code class="language-xml" data-lang="xml"><span style="color:#81a1c1;">&lt;loc&gt;</span><span style="color:#eceff4;">http://example.com/blog/my-post-title/</span><span style="color:#81a1c1;">&lt;/loc&gt;
-</span><span style="color:#81a1c1;">&lt;lastmod&gt;</span><span style="color:#eceff4;">2020-05-30</span><span style="color:#81a1c1;">&lt;/lastmod&gt;
-</span></code></pre>
-<h3 id="run-migrations">Run migrations</h3>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations </span><span style="color:#81a1c1;">&amp;&amp; \
+<p>Run migrations:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py makemigrations
 </span><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py migrate
 </span></code></pre>
-<p>This makes the necessary changes to the database.</p>
-<h3 id="create-posts">Create posts</h3>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py shell
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> from </span><span style="font-weight:bold;color:#88c0d0;">blog.models</span><span> import Post
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> import </span><span style="font-weight:bold;color:#88c0d0;">uuid
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;</span><span> for </span><span style="font-weight:bold;color:#88c0d0;">x</span><span> in range(10)</span><span style="color:#88c0d0;">:
-</span><span style="font-weight:bold;color:#88c0d0;">...</span><span>     post = Post.objects.create(title=</span><span style="color:#a3be8c;">&#39;%d&#39; </span><span style="color:#81a1c1;">%</span><span> uuid.uuid4())
-</span><span style="font-weight:bold;color:#88c0d0;">...
-</span><span style="color:#81a1c1;">&gt;&gt;&gt;
-</span></code></pre>
-<ul>
-<li><code>python manage.py shell</code> starts the Python interactive interpreter.</li>
-<li><code>for x in range(10)</code> loops 10 times.</li>
-<li><a href="https://docs.python.org/3/library/uuid.html#uuid.uuid4">uuid4</a> is used to create a random title for each object. The title has to be unique because we are using it to create a slug for the object. That slug goes to the generated sitemap through the <code>get_absolute_url</code> method.</li>
-</ul>
-<h3 id="update-urls">Update URLs</h3>
-<p>Edit <code>mysite/urls.py</code> and add these lines to it:</p>
+<h2 id="sitemap-for-blog-posts">Sitemap For Blog Posts</h2>
+<p>Edit <em>mysite/urls.py</em>:</p>
 <pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
 </span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>sitemap
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>GenericSitemap
-</span><span style="color:#81a1c1;">from </span><span>sitemaps</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>StaticViewSitemap
-</span><span style="color:#81a1c1;">from </span><span>pages</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostListView
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>TemplateView
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post </span><span style="color:#616e88;"># here
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>GenericSitemap </span><span style="color:#616e88;"># here
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>sitemap </span><span style="color:#616e88;"># here
 </span><span>
+</span><span style="color:#616e88;"># here
 </span><span>sitemaps </span><span style="color:#81a1c1;">= </span><span>{
 </span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="font-weight:bold;color:#88c0d0;">GenericSitemap</span><span>({
 </span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,
 </span><span>        </span><span style="color:#a3be8c;">&#39;date_field&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;modified&#39;</span><span style="color:#eceff4;">,
-</span><span>    }</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">priority</span><span style="color:#81a1c1;">=</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">9</span><span>)</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="color:#a3be8c;">&#39;static&#39;</span><span style="color:#eceff4;">: </span><span>StaticViewSitemap</span><span style="color:#eceff4;">,
+</span><span>    })</span><span style="color:#eceff4;">,
 </span><span>}
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&#39;</span><span style="color:#eceff4;">, </span><span>PostListView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;home&#39;</span><span>)</span><span style="color:#eceff4;">,
 </span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;about/&#39;</span><span style="color:#eceff4;">, </span><span>TemplateView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">template_name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about.html&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># here
 </span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,
 </span><span>         {</span><span style="color:#a3be8c;">&#39;sitemaps&#39;</span><span style="color:#eceff4;">: </span><span>sitemaps}</span><span style="color:#eceff4;">,
 </span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
 </span><span>]
 </span></code></pre>
 <ul>
-<li>The <code>sitemaps</code> dictionary holds information about the items we want to add to the sitemap. In this example it holds two labels. <code>blog</code> maps to a <code>GenericSitemap</code> instance that adds post URLs to the sitemap. <code>static</code> adds static pages (an <code>about</code> page in this case) using a custom sitemap class called <code>StaticViewSitemap</code>. The labels can map to <code>Sitemap</code> class <em>instances</em> (<code>GenericSitemap(..)</code>) or <code>Sitemap</code> classes (<code>StaticViewSitemap</code>).</li>
-<li>The <code>GenericSitemap</code> convenience class allows you to create basic sitemaps by passing it a <code>queryset</code> entry. <code>'queryset': Post.objects.all()</code> means that all posts will be added to the generated sitemap. <code>'date_field': 'modified'</code> adds a <code>lastmod</code> attribute to each item using the <code>Post</code> model <code>modified</code> field. The <code>date_field</code> entry is optional. </li>
+<li>The <code>GenericSitemap</code> convenience class allows you to create basic sitemaps by passing it a <code>queryset</code> entry.</li>
 </ul>
-<p>Additionally, you can add the following keyword arguments:</p>
-<ul>
-<li><code>priority</code> informs the crawler how important an item is relative to other items in your site. Search engines may use this information when crawling your site.</li>
-<li><code>changefreq</code> specifies how often the content is likely to change. For example: <code>changefreq=&quot;weekly&quot;</code>. Search engines may use this information when crawling your site.</li>
-<li><code>protocol</code> defines the protocol for the sitemap URLs (<code>http</code> or <code>https</code>). By default, the request protocol is used, or <code>http</code> if the sitemap is generated without a request.</li>
-</ul>
-<p>Finally we pass in the <code>sitemaps</code> dictionary to the <code>sitemap</code> view: <code>{'sitemaps': sitemaps}</code>. This generates the sitemap when a client accesses <code>/sitemap.xml</code>. Note: the sitemap is generated dynamically. A file called <code>sitemap.xml</code> is <em>not</em> added to your codebase. </p>
-<h3 id="add-staticviewsitemap">Add StaticViewSitemap</h3>
-<p>Create a file called <code>sitemaps.py</code> in the project package directory and add these lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>Sitemap
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>reverse
+<p>Visit <a href="http://127.0.0.1:8000/sitemap.xml">http://127.0.0.1:8000/sitemap.xml</a> and you should see something like this:</p>
+<pre data-lang="xml" style="background-color:#2e3440;color:#d8dee9;" class="language-xml "><code class="language-xml" data-lang="xml"><span style="color:#81a1c1;">&lt;urlset </span><span style="color:#8fbcbb;">xmlns</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;http://www.sitemaps.org...&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;url&gt;
+</span><span style="color:#81a1c1;">&lt;loc&gt;</span><span style="color:#eceff4;">http://example.com/blog/how-to-make-money/</span><span style="color:#81a1c1;">&lt;/loc&gt;
+</span><span style="color:#81a1c1;">&lt;lastmod&gt;</span><span style="color:#eceff4;">2023-11-03</span><span style="color:#81a1c1;">&lt;/lastmod&gt;
+</span><span style="color:#81a1c1;">&lt;/url&gt;
+</span><span style="color:#81a1c1;">&lt;/urlset&gt;
+</span></code></pre>
+<h2 id="sitemap-for-static-pages">Sitemap For Static Pages</h2>
+<p>Let's add <strong>/about/</strong> page to the sitemap.</p>
+<p>Edit <em>mysite/urls.py</em> and make these changes:</p>
+<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib </span><span style="color:#81a1c1;">import </span><span>admin
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>include</span><span style="color:#eceff4;">, </span><span>path</span><span style="color:#eceff4;">, </span><span>reverse </span><span style="color:#616e88;"># here
+</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>GenericSitemap
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps</span><span style="color:#81a1c1;">.</span><span>views </span><span style="color:#81a1c1;">import </span><span>sitemap
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>contrib</span><span style="color:#81a1c1;">.</span><span>sitemaps </span><span style="color:#81a1c1;">import </span><span>Sitemap </span><span style="color:#616e88;"># here
+</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic </span><span style="color:#81a1c1;">import </span><span>TemplateView </span><span style="color:#616e88;"># here
 </span><span>
+</span><span>
+</span><span style="color:#616e88;"># here
 </span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">StaticViewSitemap</span><span>(</span><span style="color:#8fbcbb;">Sitemap</span><span>):
-</span><span>
 </span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">items</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span>):
 </span><span>        </span><span style="color:#81a1c1;">return </span><span>[</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>]
 </span><span>
 </span><span>    </span><span style="color:#81a1c1;">def </span><span style="font-weight:bold;color:#88c0d0;">location</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">self</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">item</span><span>):
 </span><span>        </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">reverse</span><span>(item)
-</span></code></pre>
-<ul>
-<li>Use the <code>items</code> method to return the pages you want to add to the sitemap. You should return a <em>QuerySet</em> or <em>sequence</em>. In this case we provide the <code>about</code> URL pattern name in a list.</li>
-<li>The list items that we return from the <code>items</code> method are passed to the <code>location</code> method. For static pages we can't use the model <code>get_absolute_url()</code> method so we use the <code>location</code> method to return the URL for each item in the list. The <code>reverse</code> function gets the URL using the URL pattern name (<code>about</code>).</li>
-</ul>
-<h3 id="add-blog-url-configuration-file">Add blog URL configuration file</h3>
-<p>Create a file called <code>urls.py</code> in the <em>blog</em> app directory:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>urls </span><span style="color:#81a1c1;">import </span><span>path
-</span><span style="color:#81a1c1;">from .</span><span>views </span><span style="color:#81a1c1;">import </span><span>PostDetailView
 </span><span>
-</span><span>app_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog&#39;
+</span><span>sitemaps </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>    </span><span style="color:#a3be8c;">&#39;blog&#39;</span><span style="color:#eceff4;">: </span><span style="font-weight:bold;color:#88c0d0;">GenericSitemap</span><span>({
+</span><span>        </span><span style="color:#a3be8c;">&#39;queryset&#39;</span><span style="color:#eceff4;">: </span><span>Post</span><span style="color:#81a1c1;">.</span><span>objects</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">all</span><span>()</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#a3be8c;">&#39;date_field&#39;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&#39;modified&#39;</span><span style="color:#eceff4;">,
+</span><span>    })</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&#39;static&#39;</span><span style="color:#eceff4;">: </span><span>StaticViewSitemap</span><span style="color:#eceff4;">, </span><span style="color:#616e88;"># here
+</span><span>}
 </span><span>
 </span><span>urlpatterns </span><span style="color:#81a1c1;">= </span><span>[
-</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;&lt;slug:slug&gt;/&#39;</span><span style="color:#eceff4;">, </span><span>PostDetailView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>()</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;detail&#39;</span><span>)
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;blog/&#39;</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">include</span><span>(</span><span style="color:#a3be8c;">&#39;blog.urls&#39;</span><span>))</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;admin/&#39;</span><span style="color:#eceff4;">, </span><span>admin</span><span style="color:#81a1c1;">.</span><span>site</span><span style="color:#81a1c1;">.</span><span>urls)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#616e88;"># here:
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;about/&#39;</span><span style="color:#eceff4;">, </span><span>TemplateView</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">as_view</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">template_name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about.html&#39;</span><span>)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;about&#39;</span><span>)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">path</span><span>(</span><span style="color:#a3be8c;">&#39;sitemap.xml&#39;</span><span style="color:#eceff4;">, </span><span>sitemap</span><span style="color:#eceff4;">,
+</span><span>         {</span><span style="color:#a3be8c;">&#39;sitemaps&#39;</span><span style="color:#eceff4;">: </span><span>sitemaps}</span><span style="color:#eceff4;">,
+</span><span>         </span><span style="font-weight:bold;color:#d8dee9;">name</span><span style="color:#81a1c1;">=</span><span style="color:#a3be8c;">&#39;django.contrib.sitemaps.views.sitemap&#39;</span><span>)</span><span style="color:#eceff4;">,
 </span><span>]
 </span></code></pre>
-<h3 id="edit-blog-app-views">Edit blog app views</h3>
-<p>Edit the <em>blog</em> app <code>views.py</code> file and add the following lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>render
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic</span><span style="color:#81a1c1;">.</span><span>detail </span><span style="color:#81a1c1;">import </span><span>DetailView
-</span><span style="color:#81a1c1;">from .</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
-</span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostDetailView</span><span>(</span><span style="color:#8fbcbb;">DetailView</span><span>):
-</span><span>
-</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
-</span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;blog/detail.html&#39;
-</span><span>    context_object_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;post&#39;
+<ul>
+<li>The <code>Sitemap</code> class provides more control over the creation of sitemaps, but it requires you to create a dedicated class.</li>
+</ul>
+<p>Create <em>templates/about.html</em>:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;div </span><span style="color:#8fbcbb;">class</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;about&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">About</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;p&gt;
+</span><span style="color:#eceff4;">        Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;/p&gt;
+</span><span style="color:#81a1c1;">&lt;/div&gt;
 </span></code></pre>
-<p>This allows us to get information about one post and display it on the detail page.</p>
-<h3 id="add-postlistview">Add PostListView</h3>
-<p>Edit the <em>pages</em> app <code>views.py</code> file and add the following lines to it:</p>
-<pre data-lang="python" style="background-color:#2e3440;color:#d8dee9;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>shortcuts </span><span style="color:#81a1c1;">import </span><span>render
-</span><span style="color:#81a1c1;">from </span><span>django</span><span style="color:#81a1c1;">.</span><span>views</span><span style="color:#81a1c1;">.</span><span>generic</span><span style="color:#81a1c1;">.</span><span>list </span><span style="color:#81a1c1;">import </span><span>ListView
-</span><span style="color:#81a1c1;">from </span><span>blog</span><span style="color:#81a1c1;">.</span><span>models </span><span style="color:#81a1c1;">import </span><span>Post
-</span><span>
-</span><span style="color:#81a1c1;">class </span><span style="color:#8fbcbb;">PostListView</span><span>(</span><span style="color:#8fbcbb;">ListView</span><span>):
-</span><span>
-</span><span>    model </span><span style="color:#81a1c1;">= </span><span>Post
-</span><span>    template_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;pages/home.html&#39;
-</span><span>    context_object_name </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;posts&#39;
-</span></code></pre>
-<p>This allows us to list all posts on the homepage.</p>
-<h3 id="update-home-template">Update home template</h3>
-<p>Create a directory called <code>templates</code> in the project root. Create a directory called <code>pages</code> inside it. Add a file called <code>home.html</code> to the <code>templates/pages</code> directory:</p>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>Home</span><span style="color:#81a1c1;">&lt;/h1&gt;
-</span><span>
-</span><span style="color:#81a1c1;">&lt;ul&gt;
-</span><span>{% </span><span style="color:#81a1c1;">for </span><span>post </span><span style="color:#81a1c1;">in </span><span>posts %}
-</span><span style="color:#81a1c1;">&lt;li&gt;
-</span><span>    </span><span style="color:#81a1c1;">&lt;a </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;{{ post.get_absolute_url }}&quot;</span><span style="color:#81a1c1;">&gt;</span><span>{{ post }}</span><span style="color:#81a1c1;">&lt;/a&gt;
-</span><span style="color:#81a1c1;">&lt;/li&gt;
-</span><span>{% </span><span style="color:#81a1c1;">endfor </span><span>%}
-</span><span style="color:#81a1c1;">&lt;/ul&gt;
-</span></code></pre>
-<p>This displays post links on the homepage.</p>
-<h3 id="add-about-html">Add about.html</h3>
-<p>Add a file called <code>about.html</code> in the <code>templates/pages</code> directory:</p>
-<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">About</span><span style="color:#81a1c1;">&lt;/h1&gt;
-</span></code></pre>
-<h3 id="add-detail-html">Add detail.html</h3>
-<p>Create a directory called <code>blog</code> in the <code>templates</code> directory. Add a file called <code>detail.html</code> in it:</p>
-<pre data-lang="html.j2" style="background-color:#2e3440;color:#d8dee9;" class="language-html.j2 "><code class="language-html.j2" data-lang="html.j2"><span style="color:#81a1c1;">&lt;h1&gt;</span><span>{{ post.title }}</span><span style="color:#81a1c1;">&lt;/h1&gt;
-</span></code></pre>
-<p>This displays the post title.</p>
-<h3 id="result">Result</h3>
-<p>Run the development server:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">python</span><span> manage.py runserver
-</span></code></pre>
-<p>Visit <code>/sitemap.xml</code> and you should see the generated sitemap:</p>
-<pre data-lang="xml" style="background-color:#2e3440;color:#d8dee9;" class="language-xml "><code class="language-xml" data-lang="xml"><span style="color:#81a1c1;">&lt;urlset </span><span style="color:#8fbcbb;">xmlns</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;</span><span style="color:#81a1c1;">&gt;
+<p>Visit <code>/sitemap.xml</code>:</p>
+<pre data-lang="xml" style="background-color:#2e3440;color:#d8dee9;" class="language-xml "><code class="language-xml" data-lang="xml"><span style="color:#81a1c1;">&lt;urlset </span><span style="color:#8fbcbb;">xmlns</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;http://www.sitemaps...&quot;</span><span style="color:#81a1c1;">&gt;
 </span><span style="color:#81a1c1;">&lt;url&gt;
-</span><span style="color:#81a1c1;">&lt;loc&gt;</span><span style="color:#eceff4;">http://example.com/blog/84513265289461491745040709504185504735/</span><span style="color:#81a1c1;">&lt;/loc&gt;
-</span><span style="color:#81a1c1;">&lt;lastmod&gt;</span><span style="color:#eceff4;">2020-05-30</span><span style="color:#81a1c1;">&lt;/lastmod&gt;
-</span><span style="color:#81a1c1;">&lt;priority&gt;</span><span style="color:#eceff4;">0.9</span><span style="color:#81a1c1;">&lt;/priority&gt;
+</span><span style="color:#81a1c1;">&lt;loc&gt;</span><span style="color:#eceff4;">http://example.com/blog/how-to-make-money/</span><span style="color:#81a1c1;">&lt;/loc&gt;
+</span><span style="color:#81a1c1;">&lt;lastmod&gt;</span><span style="color:#eceff4;">2023-11-03</span><span style="color:#81a1c1;">&lt;/lastmod&gt;
 </span><span style="color:#81a1c1;">&lt;/url&gt;
 </span><span style="color:#81a1c1;">&lt;url&gt;
 </span><span style="color:#81a1c1;">&lt;loc&gt;</span><span style="color:#eceff4;">http://example.com/about/</span><span style="color:#81a1c1;">&lt;/loc&gt;
 </span><span style="color:#81a1c1;">&lt;/url&gt;
 </span><span style="color:#81a1c1;">&lt;/urlset&gt;
 </span></code></pre>
+<h2 id="domain">Domain</h2>
+<p>In production, make sure to update the <code>Site</code> object to match your domain:</p>
+<p><img src="/images/blog/django-sitemap-tutorial/01.png" alt="" /></p>
+<h3 id="source-code"><a href="https://github.com/SamuliNatri/django-sitemap-tutorial">Source Code</a></h3>
+<h3 id="more-django-tutorials"><a href="/blog/django-tutorials/">More Django Tutorials</a></h3>
 
         </div>
 
