@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to create a window using Windows API.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=105">
+    <title>Win32 - Window Creation Tutorial (C) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Win32 - Window Creation Tutorial (C)
+        </div>
+        <div class="tutorial-subtitle">
+            How to create a window using Windows API.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Nov 14, 2023">
+            Updated <strong>Nov 14, 2023</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <h2 id="quick-start">Quick Start</h2>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">// cl main.c /nologo /Zi
+</span><span>
+</span><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">#define </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">c</span><span>) </span><span style="color:#81a1c1;">do </span><span>{ </span><span style="color:#81a1c1;">if </span><span>(</span><span style="color:#81a1c1;">!</span><span>(c)) </span><span style="font-weight:bold;color:#88c0d0;">__debugbreak</span><span>()</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">while </span><span>(</span><span style="color:#b48ead;">0</span><span>)
+</span><span>
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;user32.lib&quot;)
+</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">msg</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">wParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">lParam</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(msg) {
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(wParam) {
+</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(window)</span><span style="color:#eceff4;">;
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProcW</span><span>(window</span><span style="color:#eceff4;">,</span><span> msg</span><span style="color:#eceff4;">,</span><span> wParam</span><span style="color:#eceff4;">,</span><span> lParam)</span><span style="color:#eceff4;">;
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">WinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">pInstance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPSTR </span><span style="font-weight:bold;color:#d8dee9;">cmd</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">cmdShow</span><span>) {
+</span><span>    
+</span><span>    WNDCLASSW wc </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> instance</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#8fbcbb;">ATOM</span><span> atom </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">RegisterClassW</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>wc)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(atom </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to register a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowW</span><span>(wc</span><span style="color:#81a1c1;">.</span><span>lpszClassName</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Window Creation&quot;</span><span style="color:#eceff4;">,</span><span> WS_OVERLAPPEDWINDOW</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> instance</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(window </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to create a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ShowWindow</span><span>(window</span><span style="color:#eceff4;">,</span><span> cmdShow)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#eceff4;">;;</span><span>) {
+</span><span>        MSG msg</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(msg</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="color:#81a1c1;">continue</span><span style="color:#eceff4;">;
+</span><span>        }    
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<h2 id="step-by-step-tutorial">Step-By-Step Tutorial</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><code>cl.exe</code>, the command-line compiler. To use it, you can either install <em>Visual Studio</em> and select the <em>C++ Workload</em> in the installation options or download the standalone <strong>Build Tools for Visual Studio</strong> from here: <a href="https://visualstudio.microsoft.com/downloads/">https://visualstudio.microsoft.com/downloads/</a>.</li>
+</ul>
+<h3 id="hello-world">Hello, World!</h3>
+<p>Create <em>main.c</em> and add these lines to it:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
+</span><span>    </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Hello, World!</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<p>Compile the program:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.c
+</span></code></pre>
+<p>Execute <em>main</em> and you should see &quot;Hello, World!&quot; printed on the screen:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">$</span><span> main
+</span><span style="font-weight:bold;color:#88c0d0;">Hello,</span><span> World!
+</span></code></pre>
+<p>You can also use a <em>script</em> to build the program. Create <em>build.bat</em> and add these lines to it:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">@echo</span><span> off
+</span><span style="font-weight:bold;color:#88c0d0;">cl</span><span> main.c /nologo /Zi /Fea.exe
+</span></code></pre>
+<ul>
+<li><code>@echo off</code> turns off the echoing of commands to the command prompt, making the script execute more silently. The <code>@</code> symbol is used to prevent the echoing of the echo off command itself.</li>
+<li><code>cl.exe</code> is the command-line interface to the Microsoft Visual C++ compiler. You can use it to compile C and C++ source code into executable programs.</li>
+<li><code>/nologo</code> suppresses the display of copyright and version information.</li>
+<li><code>/Zi</code> generates debugging information for later use with a debugger.</li>
+<li><code>/Fe</code> specifies the name of the output file.</li>
+</ul>
+<p>In many programs, such as <em>Emacs</em> and <em>4Coder</em>, you can evoke the script using a keyboard shortcut (such as <code>Alt + M</code>). </p>
+<p>With <em>VSCode</em>, you can create a folder named <code>.vscode</code> in the project root and create a file named <code>tasks.json</code> in it:</p>
+<pre data-lang="json" style="background-color:#2e3440;color:#d8dee9;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>    </span><span style="color:#a3be8c;">&quot;version&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;2.0.0&quot;</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#a3be8c;">&quot;tasks&quot;</span><span style="color:#eceff4;">: </span><span>[
+</span><span>        {
+</span><span>            </span><span style="color:#a3be8c;">&quot;label&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;build&quot;</span><span style="color:#eceff4;">,
+</span><span>            </span><span style="color:#a3be8c;">&quot;type&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;shell&quot;</span><span style="color:#eceff4;">,
+</span><span>            </span><span style="color:#a3be8c;">&quot;command&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;${workspaceFolder}/build.bat&quot;</span><span style="color:#eceff4;">,
+</span><span>            </span><span style="color:#a3be8c;">&quot;group&quot;</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                </span><span style="color:#a3be8c;">&quot;kind&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;build&quot;</span><span style="color:#eceff4;">,
+</span><span>                </span><span style="color:#a3be8c;">&quot;isDefault&quot;</span><span style="color:#eceff4;">: </span><span style="color:#81a1c1;">true
+</span><span>            }
+</span><span>        }
+</span><span>    ]
+</span><span>}
+</span></code></pre>
+<p>And assign a shortcut (such as <code>Alt + M</code>) to <code>Tasks: Run Build Task</code>.</p>
+<h3 id="winmain">WinMain</h3>
+<p>For graphical user interface (GUI) applications, we should use the <code>WinMain</code> function as the entry point. It is called by the system when the application starts and serves as the starting point for the application's execution. Replace the contents of <em>main.c</em> with these lines:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
+</span><span>
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;user32.lib&quot;)
+</span><span style="color:#81a1c1;">#define </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">c</span><span>) </span><span style="color:#81a1c1;">do </span><span>{ </span><span style="color:#81a1c1;">if </span><span>(</span><span style="color:#81a1c1;">!</span><span>(c)) </span><span style="font-weight:bold;color:#88c0d0;">__debugbreak</span><span>()</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">while </span><span>(</span><span style="color:#b48ead;">0</span><span>)
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">WinMain</span><span>(
+</span><span>    </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">pInstance</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#8fbcbb;">LPSTR     </span><span style="font-weight:bold;color:#d8dee9;">cmd</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#81a1c1;">int       </span><span style="font-weight:bold;color:#d8dee9;">cmdShow</span><span>) {
+</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">OutputDebugString</span><span>(</span><span style="color:#a3be8c;">&quot;Hello World!</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<ul>
+<li><code>WIN32_LEAN_AND_MEAN</code> excludes some of the less commonly used parts of the Windows API.</li>
+<li>The <code>windows.h</code> header provides access to a variety of functions, data types, and macros necessary for developing Windows applications.</li>
+<li><code>#pragma comment (lib, &quot;user32.lib&quot;)</code> is a preprocessor directive that instructs the linker to include the <code>user32.lib</code> library during the linking phase of compilation. You can also link it like this: <code>cl main.c /nologo /Zi /link user32.lib</code>.</li>
+</ul>
+<aside>
+<h3 id="what-is-user32-lib">What is user32.lib?</h3>
+<p>The &quot;user32.lib&quot; library is a crucial library in Windows programming. It contains functions related to user interfaces, windows, messages, and other essential elements for creating graphical user interfaces (GUIs) in Windows applications.</p>
+</aside>
+<ul>
+<li><code>#define Assert(c) do { if (!(c)) __debugbreak(); } while (0)</code> macro provides a simple mechanism for incorporating runtime assertions into the code. The <code>do-while</code> loop wraps the macro body to ensure that the macro behaves like a single statement. <code>while (0)</code> is there to create a loop that executes only once. If the assertion fails, it triggers a debugger breakpoint.</li>
+<li><code>int WINAPI</code> specifies the return type and <em>calling convention</em> of the <code>WinMain</code> function. A return value of <code>0</code> often signifies successful execution, while a non-zero value may indicate an error or abnormal termination.</li>
+</ul>
+<aside>
+<h3 id="what-is-a-calling-convention">What is a calling convention?</h3>
+<p>A calling convention is a set of rules that dictate how functions receive parameters and return values during their invocation. The <code>WINAPI</code> macro usually resolves to the <code>stdcall</code> calling convention. In functions using <code>stdcall</code>, parameters are pushed onto the stack from right to left, and the callee (the called function) is responsible for cleaning up the stack after the call.</p>
+</aside>
+<ul>
+<li><code>instance</code> is a handle to the current instance of the application. It is essentially a <em>pointer to a structure</em> that contains information about the program's executable module (e.g., .exe file). The actual structure and content of the internal data referred to by HINSTANCE are not part of the public Windows API. They are abstracted away from application developers.</li>
+</ul>
+<aside>
+<h3 id="what-is-an-instance">What is an Instance?</h3>
+<p>In Windows, an &quot;instance&quot; generally refers to the occurrence of a running program. Each time you run your application, it creates a new instance. Instances are used to distinguish between multiple copies of the same application running concurrently.</p>
+</aside>
+<ul>
+<li><code>pInstance</code> (previous instance) is a legacy parameter that allowed a new instance of the application to communicate with the previous one.</li>
+<li><code>cmd</code> is a pointer to a null-terminated string that represents the command-line arguments passed to the program. <code>LPSTR</code> stands for &quot;Long Pointer to a String&quot;.</li>
+<li><code>cmdShow</code>  specifies the initial appearance of the application's main window. <code>SW_SHOWNORMAL</code> is the default state, while <code>SW_SHOWMAXIMIZED</code> would display the window in a maximized state. We will use this later with the <code>ShowWindow(window, cmdShow);</code> command.</li>
+</ul>
+<p>The value of <code>cmdShow</code> can be influenced by the user's preferences like this:</p>
+<p><img src="/images/blog/win32-window-creation-tutorial/02.png" alt="" /></p>
+<p>With GUI programs, we typically use <code>OutputDebugString()</code> to print to the IDE's <em>output</em> window. This program will compile and run, but you won't see anything in the terminal.</p>
+<p>But in your debugger, such as <a href="https://remedybg.itch.io/remedybg">RemedyBG</a>, you will see this:</p>
+<p><img src="/images/blog/win32-window-creation-tutorial/01.png" alt="" /></p>
+<h3 id="window-class">Window Class</h3>
+<p>A window class serves as a template for creating windows with similar characteristics. Add the <code>WNDCLASSW</code> struct, which defines the attributes for a window class:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI </span><span style="font-weight:bold;color:#88c0d0;">WinMain</span><span>(
+</span><span>    </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">pInstance</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#8fbcbb;">LPSTR     </span><span style="font-weight:bold;color:#d8dee9;">cmd</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#81a1c1;">int       </span><span style="font-weight:bold;color:#d8dee9;">cmdShow</span><span>) {
+</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">OutputDebugString</span><span>(</span><span style="color:#a3be8c;">&quot;Hello World!</span><span style="color:#ebcb8b;">\n</span><span style="color:#a3be8c;">&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>    </span><span style="color:#616e88;">// Here
+</span><span>    WNDCLASSW wc </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> WindowProc</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> instance</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>    </span><span style="color:#8fbcbb;">ATOM</span><span> atom </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">RegisterClassW</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>wc)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(atom </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to register a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<ul>
+<li><code>lpszClassName</code> is a unique identifier for the type of window we are creating.  The <code>L</code> before the string indicates that it's a wide string (Unicode).</li>
+<li><code>lpfnWndProc</code> is a function pointer to the window procedure, which is a function that processes messages sent to a window.</li>
+<li><code>hCursor</code> represents the handle to the cursor that will be used as the default cursor for windows of this class. The <code>NULL</code> parameter indicates that the cursor is a standard system cursor, and <code>IDC_CROSS</code> specifies the crosshair cursor type.</li>
+<li><code>RegisterClassW()</code> informs the OS about the window class. The <code>W</code> indicates that it deals with wide-character (UTF-16) strings, as opposed to the ANSI version, which is <code>RegisterClassA</code>.</li>
+<li>An <code>ATOM</code> is a small, unique numerical identifier associated with a character string. The use of atoms allows for efficient string lookups. Instead of working with entire strings, applications can work with atoms.</li>
+<li><code>Assert(atom &amp;&amp; &quot;Failed to register a window&quot;);</code> triggers when atom is zero (indicating failure). The purpose of including a descriptive message is to provide meaningful information about why the assertion failed.</li>
+</ul>
+<h3 id="windowproc">WindowProc</h3>
+<p>When an event occurs in a window (such as a button click, keypress, or mouse movement), Windows sends a message to the window. Every window has an associated window procedure that handles messages related to that window.</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">// Add this above the WinMain function:
+</span><span>
+</span><span style="color:#8fbcbb;">LRESULT CALLBACK </span><span style="font-weight:bold;color:#88c0d0;">WindowProc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">msg</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">wParam</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">lParam</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(msg) {
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(wParam) {
+</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(window)</span><span style="color:#eceff4;">;
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProcW</span><span>(window</span><span style="color:#eceff4;">,</span><span> msg</span><span style="color:#eceff4;">,</span><span> wParam</span><span style="color:#eceff4;">,</span><span> lParam)</span><span style="color:#eceff4;">;
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<ul>
+<li><code>LRESULT</code> is usually a 32-bit signed value that is used to indicate the result or status of an operation.</li>
+<li><code>CALLBACK</code> is a macro that defines the <code>stdcall</code> calling convention.</li>
+</ul>
+<aside>
+<h3 id="winapi-vs-callback">WINAPI vs CALLBACK</h3>
+<p><code>CALLBACK</code> and <code>WINAPI</code> are both used to define functions with the <code>sdtcall</code> calling convention. When using <code>CALLBACK</code>, we are emphasizing that the function is a <em>callback</em> function.</p>
+</aside>
+<aside>
+<h3 id="what-is-a-callback-function">What is a callback function?</h3>
+<p>A callback function is a function that is passed as an argument to another 
+function, typically to handle events or asynchronous operations.</p>
+</aside>
+<ul>
+<li><code>wParam</code> and <code>lParam</code> parameters are used to provide additional information about a message sent to a window. The interpretation of these parameters depends on the type of message being sent. For example, in the case of <code>WM_KEYDOWN</code>, <code>wParam</code> contains the <em>virtual-key code</em> of the pressed key. In mouse-related messages like <code>WM_MOUSEMOVE</code>, <code>lParam</code> often contains the mouse cursor's screen coordinates.</li>
+<li><code>WM_DESTROY</code> is typically sent when the window is closed. This allows us to gracefully exit when the user closes the window.</li>
+<li><code>PostQuitMessage(0)</code> posts a quit message to the application's message queue, indicating that the application should exit and return the specified exit code (in this case, <code>0</code>). We use this message to exit the main loop.</li>
+<li><code>WM_KEYDOWN</code> is sent when a key on the keyboard is pressed.</li>
+<li><code>DestroyWindow(window)</code> is used to close and destroy a window. It performs various cleanup tasks associated with the window. Before the window is actually destroyed, the system sends a series of messages to the window procedure. These messages include <code>WM_DESTROY</code>, which we use to post a quit message.</li>
+<li><code>DefWindowProcW</code> processes the rest of the messages we don't explicitly handle.</li>
+</ul>
+<h3 id="window-creation">Window Creation</h3>
+<p>Add this after <code>Assert(atom &amp;&amp; &quot;Failed to register a window&quot;);</code>:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowW</span><span>(
+</span><span>        wc</span><span style="color:#81a1c1;">.</span><span>lpszClassName</span><span style="color:#eceff4;">, 
+</span><span>        </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Window Creation&quot;</span><span style="color:#eceff4;">, 
+</span><span>        WS_OVERLAPPEDWINDOW</span><span style="color:#eceff4;">, 
+</span><span>        CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// position (x, y)
+</span><span>        CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// size (width, height)
+</span><span>        </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// parent window handle 
+</span><span>        </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// menu handle
+</span><span>        instance</span><span style="color:#eceff4;">, </span><span style="color:#616e88;">// handle to the application instance
+</span><span>        </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">; </span><span style="color:#616e88;">// additional data to window procedure
+</span><span>
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(window </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to create a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ShowWindow</span><span>(window</span><span style="color:#eceff4;">,</span><span> cmdShow)</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li>Each window in a Windows application is assigned a unique <code>HWND</code> (Handle to a Window) that distinguishes it from other windows. It is typically declared as a pointer to a structure that contains information about the window.</li>
+<li><code>wc.lpszClassName</code> specifies the class of the window.</li>
+<li><code>L&quot;Window Creation</code> specifies the window caption. It appears in the title bar of the window.</li>
+<li><code>WS_OVERLAPPEDWINDOW</code> is a combination of styles that gives the window a standard window appearance. It includes a title bar, a system menu, a minimize button, a maximize button, and a close button.</li>
+<li>Using the <code>CW_USEDEFAULT</code> constant instructs the system to choose the default position and size for the window.</li>
+<li>We can use the last parameter to pass additional information to <code>WindowProc</code> through the <code>WM_CREATE</code> message when the window is being created. The <code>WM_CREATE</code> message is sent to the window procedure immediately after the window is created but before it is shown. This allows you to perform initialization tasks.</li>
+<li><code>ShowWindow(window, cmdShow);</code> sets the window's show state using the <code>cmdShow</code> parameter.</li>
+</ul>
+<h3 id="the-main-loop">The Main Loop</h3>
+<p>Add this after <code>ShowWindow(window, cmdshow);</code>:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#eceff4;">;;</span><span>) {
+</span><span>        MSG msg</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(msg</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="color:#81a1c1;">continue</span><span style="color:#eceff4;">;
+</span><span>        }    
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><code>for (;;)</code> is an infinite loop that continues to execute until explicitly broken out of with the <code>break</code> statement.</li>
+<li><code>PeekMessage(&amp;msg, NULL, 0, 0, PM_REMOVE)</code> checks if there is a message in the application's message queue. If a message is available, it removes the message from the queue and stores it in the <code>msg</code> variable.</li>
+<li><code>if (msg.message == WM_QUIT) break;</code> checks if the received message is a &quot;quit&quot; message. This is the message that we send to the window using the <code>PostQuitMessage(0)</code> function.</li>
+<li><code>TranslateMessage(&amp;msg)</code> is used to translate <em>virtual-key messages</em> into <em>character messages</em>.</li>
+</ul>
+<aside>
+<h3 id="what-is-a-virtual-key-message">What is a virtual-key message?</h3>
+<p>Each key press or release event generates a <em>virtual-key message</em>, and these messages are initially in a form that represents keys on the keyboard rather than the characters they produce. For example, pressing the 'A' key generates a <em>virtual-key message</em>, but it should eventually result in a <em>character message</em> containing the character 'A.'</p>
+</aside>
+<ul>
+<li><code>DispatchMessage(&amp;msg)</code> dispatches the message to <code>WindowProc</code>.</li>
+<li>If a message was processed, the loop <code>continues</code> to the next iteration. This ensures that any remaining messages in the queue are also processed.</li>
+</ul>
+<h3 id="source-code"><a href="https://github.com/SamuliNatri/win32-window-creation-tutorial">Source Code</a></h3>
+<div class="blog-sources">
+<p>Sources</p>
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window">https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window</a>
+<a href="https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14">https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14</a></p>
+</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Samuli Natri
+                </div>
+                <div class="footer-text">
+                    Entrepreneur. <br>Software Engineer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Blog
+                </div>
+                <div class="footer-text">
+                    <a href="https://samulinatri.com/blog/win32-window-creation/">Win32 - Window Creation (C)</a>
+                    <a href="https://samulinatri.com/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Menu
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                        <a href="/blog/django-tutorials/">Django Tutorials</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
