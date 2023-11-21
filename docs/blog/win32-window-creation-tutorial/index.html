@@ -196,10 +196,10 @@
 </ul>
 <aside>
 <h3 id="what-is-user32-lib">What is user32.lib?</h3>
-<p>The &quot;user32.lib&quot; library is a crucial library in Windows programming. It contains functions related to user interfaces, windows, messages, and other essential elements for creating graphical user interfaces (GUIs) in Windows applications.</p>
+<p>The <em>user32.lib</em> library contains functions related to user interfaces, windows, messages, and other essential elements for creating GUIs.</p>
 </aside>
 <ul>
-<li><code>#define Assert(c) do { if (!(c)) __debugbreak(); } while (0)</code> macro provides a simple mechanism for incorporating runtime assertions into the code. The <code>do-while</code> loop wraps the macro body to ensure that the macro behaves like a single statement. <code>while (0)</code> is there to create a loop that executes only once. If the assertion fails, it triggers a debugger breakpoint.</li>
+<li><code>#define Assert(c) do { if (!(c)) __debugbreak(); } while (0)</code> macro provides a simple mechanism for incorporating runtime assertions into the code. The <code>do-while</code> loop wraps the macro body to ensure that the macro behaves like a single statement. <code>while (0)</code> is there to create a loop that executes only once. If the assertion fails, it triggers a debugger breakpoint. In development, I find this more useful than a message box.</li>
 <li><code>int WINAPI</code> specifies the return type and <em>calling convention</em> of the <code>WinMain</code> function. A return value of <code>0</code> often signifies successful execution, while a non-zero value may indicate an error or abnormal termination.</li>
 </ul>
 <aside>
@@ -210,12 +210,12 @@
 <li><code>instance</code> is a handle to the current instance of the application. It is essentially a <em>pointer to a structure</em> that contains information about the program's executable module (e.g., .exe file). The actual structure and content of the internal data referred to by HINSTANCE are not part of the public Windows API. They are abstracted away from application developers.</li>
 </ul>
 <aside>
-<h3 id="what-is-an-instance">What is an Instance?</h3>
-<p>In Windows, an &quot;instance&quot; generally refers to the occurrence of a running program. Each time you run your application, it creates a new instance. Instances are used to distinguish between multiple copies of the same application running concurrently.</p>
+<h3 id="what-is-an-instance">What is an instance?</h3>
+<p>In Windows, an <em>instance</em> generally refers to the occurrence of a running program. Each time you run your application, it creates a new instance. Instances are used to distinguish between multiple copies of the same application running concurrently.</p>
 </aside>
 <ul>
 <li><code>pInstance</code> (previous instance) is a legacy parameter that allowed a new instance of the application to communicate with the previous one.</li>
-<li><code>cmd</code> is a pointer to a null-terminated string that represents the command-line arguments passed to the program. <code>LPSTR</code> stands for &quot;Long Pointer to a String&quot;.</li>
+<li><code>cmd</code> is a pointer to a null-terminated string that represents the command-line arguments passed to the program. <code>LPSTR</code> stands for &quot;long pointer to a string&quot;.</li>
 <li><code>cmdShow</code>  specifies the initial appearance of the application's main window. <code>SW_SHOWNORMAL</code> is the default state, while <code>SW_SHOWMAXIMIZED</code> would display the window in a maximized state. We will use this later with the <code>ShowWindow(window, cmdShow);</code> command.</li>
 </ul>
 <p>The value of <code>cmdShow</code> can be influenced by the user's preferences like this:</p>
@@ -317,9 +317,9 @@ function, typically to handle events or asynchronous operations.</p>
 </span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ShowWindow</span><span>(window</span><span style="color:#eceff4;">,</span><span> cmdShow)</span><span style="color:#eceff4;">;
 </span></code></pre>
 <ul>
-<li>Each window in a Windows application is assigned a unique <code>HWND</code> (Handle to a Window) that distinguishes it from other windows. It is typically declared as a pointer to a structure that contains information about the window.</li>
+<li>Each window in a Windows application is assigned a unique <code>HWND</code> (handle to a window) that distinguishes it from other windows. It is typically declared as a pointer to a structure that contains information about the window.</li>
 <li><code>wc.lpszClassName</code> specifies the class of the window.</li>
-<li><code>L&quot;Window Creation</code> specifies the window caption. It appears in the title bar of the window.</li>
+<li><code>L&quot;Window Creation&quot;</code> specifies the window caption. It appears in the title bar of the window.</li>
 <li><code>WS_OVERLAPPEDWINDOW</code> is a combination of styles that gives the window a standard window appearance. It includes a title bar, a system menu, a minimize button, a maximize button, and a close button.</li>
 <li>Using the <code>CW_USEDEFAULT</code> constant instructs the system to choose the default position and size for the window.</li>
 <li>We can use the last parameter to pass additional information to <code>WindowProc</code> through the <code>WM_CREATE</code> message when the window is being created. The <code>WM_CREATE</code> message is sent to the window procedure immediately after the window is created but before it is shown. This allows you to perform initialization tasks.</li>
@@ -341,7 +341,7 @@ function, typically to handle events or asynchronous operations.</p>
 <ul>
 <li><code>for (;;)</code> is an infinite loop that continues to execute until explicitly broken out of with the <code>break</code> statement.</li>
 <li><code>PeekMessage(&amp;msg, NULL, 0, 0, PM_REMOVE)</code> checks if there is a message in the application's message queue. If a message is available, it removes the message from the queue and stores it in the <code>msg</code> variable.</li>
-<li><code>if (msg.message == WM_QUIT) break;</code> checks if the received message is a &quot;quit&quot; message. This is the message that we send to the window using the <code>PostQuitMessage(0)</code> function.</li>
+<li><code>if (msg.message == WM_QUIT) break;</code> checks if the message is <code>WM_QUIT</code> and, if true, exits the loop. This is the message sent to the window via <code>PostQuitMessage(0)</code>.</li>
 <li><code>TranslateMessage(&amp;msg)</code> is used to translate <em>virtual-key messages</em> into <em>character messages</em>.</li>
 </ul>
 <aside>
@@ -350,14 +350,15 @@ function, typically to handle events or asynchronous operations.</p>
 </aside>
 <ul>
 <li><code>DispatchMessage(&amp;msg)</code> dispatches the message to <code>WindowProc</code>.</li>
-<li>If a message was processed, the loop <code>continues</code> to the next iteration. This ensures that any remaining messages in the queue are also processed.</li>
+<li>If a message was processed, the loop <code>continues</code> to the next iteration.</li>
 </ul>
-<h3 id="source-code"><a href="https://github.com/SamuliNatri/win32-window-creation-tutorial">Source Code</a></h3>
+<p><a href="https://github.com/SamuliNatri/win32-window-creation-tutorial">Source Code</a></p>
 <div class="blog-sources">
-<p>Sources</p>
-<p><a href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window">https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window</a>
-<a href="https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14">https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14</a></p>
-</p>
+<p>Sources:</p>
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window">https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window</a></p>
+<p><a href="https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14">https://gist.github.com/mmozeiko/6825cb94d393cb4032d250b8e7cc9d14</a></p>
+</div>
+
         </div>
 
     </div>
