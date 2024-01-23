@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to move an object on the screen using a transformation matrix and a D3D11 constant buffer.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_black/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_black/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_black/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_black/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=108">
+    <title>Direct3D 11 - Constant Buffer Tutorial (C &amp; Win32) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Direct3D 11 - Constant Buffer Tutorial (C &amp; Win32)
+        </div>
+        <div class="tutorial-subtitle">
+            How to move an object on the screen using a transformation matrix and a D3D11 constant buffer.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Jan 23, 2024">
+            Updated <strong>Jan 23, 2024</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <p>Constant buffers allow you to pass constant data, such as matrices or colors to shaders during runtime. </p>
+<h2 id="quick-start">Quick start</h2>
+<h3 id="shader-hlsl">shader.hlsl</h3>
+<p>Add this to your shader:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>cbuffer constants : register(b0) {
+</span><span>	row_major float4x4 model;
+</span><span>};
+</span></code></pre>
+<ul>
+<li><code>cbuffer</code> declares a constant buffer.</li>
+<li><code>register(b0)</code> associates the buffer with a specific location in GPU memory. Later, we set it using <code>VSSetConstantBuffers()</code> before drawing so that the shader can access it during rendering.</li>
+<li>The <code>row_major</code> qualifier is used to inform the shader that the matrix in memory is laid out in a row-major order. In HLSL, the default memory layout for matrices is <em>column-major</em>, signifying that the elements of each <em>column</em> are stored consecutively in memory. However, I want to specify and pass the model matrix as a basic C array, where the data is laid out in memory in a <em>row-major</em> order (<em>rows</em> are stored consecutively in memory):</li>
+</ul>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>{
+</span><span>    1.0f, 0.0f, 0.0f, 0.0f,
+</span><span>    0.0f, 1.0f, 0.0f, 0.0f,
+</span><span>    0.0f, 0.0f, 1.0f, 0.0f,
+</span><span>    1.0f, 0.0f, 0.0f, 1.0f
+</span><span>}
+</span></code></pre>
+<p>Multiply the vertex position by the <code>model</code> matrix:</p>
+<pre style="background-color:#2e3440;color:#d8dee9;"><code><span>VS_Output vs_main(VS_Input input) {
+</span><span>	VS_Output output;
+</span><span>	output.position = float4(input.position, 1.0f);
+</span><span>	output.position = mul(output.position, model); // here
+</span><span>	output.uv = input.uv;
+</span><span>	return output;
+</span><span>};
+</span></code></pre>
+<h3 id="main-c">main.c</h3>
+<p>Create a struct that matches the <code>constants</code> buffer in the shader:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">typedef struct </span><span>{ 
+</span><span>    F32 m[</span><span style="color:#b48ead;">4</span><span>][</span><span style="color:#b48ead;">4</span><span>]</span><span style="color:#eceff4;">; 
+</span><span>} </span><span style="color:#81a1c1;">Matrix</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{
+</span><span>    Matrix model</span><span style="color:#eceff4;">;
+</span><span>} </span><span style="color:#81a1c1;">D3D11Constants</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><code>Matrix</code> represents a <em>4x4</em> matrix.</li>
+<li><code>D3D11Constants</code> specifies the constants that will be sent to shaders during rendering.</li>
+</ul>
+<p>Create the constant buffer:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>ID3D11Buffer </span><span style="color:#81a1c1;">*</span><span>constant_buffer</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>D3D11_BUFFER_DESC constant_buffer_desc </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>    </span><span style="color:#81a1c1;">.</span><span>ByteWidth </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(D3D11Constants)</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#81a1c1;">.</span><span>Usage </span><span style="color:#81a1c1;">=</span><span> D3D11_USAGE_DYNAMIC</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#81a1c1;">.</span><span>BindFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_BIND_CONSTANT_BUFFER</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#81a1c1;">.</span><span>CPUAccessFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_CPU_ACCESS_WRITE</span><span style="color:#eceff4;">,
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#8fbcbb;">HRESULT</span><span> hr </span><span style="color:#81a1c1;">=
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateBuffer</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>constant_buffer_desc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>constant_buffer)</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><code>D3D11_BUFFER_DESC</code> describes the buffer.</li>
+<li><code>D3D11_USAGE_DYNAMIC</code> indicates that the buffer will be frequently updated by the CPU.</li>
+<li><code>D3D11_BIND_CONSTANT_BUFFER</code> specifies that the buffer will be bound as a constant buffer.</li>
+<li><code>D3D11_CPU_ACCESS_WRITE</code> indicates that the CPU is allowed to update the buffer.</li>
+</ul>
+<p>Set the constant buffer and map it before drawing:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_VSSetConstantBuffers</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>constant_buffer)</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>D3D11_MAPPED_SUBRESOURCE mapped_subresource</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_Map</span><span>(context</span><span style="color:#eceff4;">, 
+</span><span>                            (ID3D11Resource </span><span style="color:#81a1c1;">*</span><span>)constant_buffer</span><span style="color:#eceff4;">, 
+</span><span>                            </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> D3D11_MAP_WRITE_DISCARD</span><span style="color:#eceff4;">, 
+</span><span>                            </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>mapped_subresource)</span><span style="color:#eceff4;">;
+</span><span>D3D11Constants </span><span style="color:#81a1c1;">*</span><span>constants </span><span style="color:#81a1c1;">= </span><span>(D3D11Constants </span><span style="color:#81a1c1;">*</span><span>)mapped_subresource</span><span style="color:#81a1c1;">.</span><span>pData</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>constants</span><span style="color:#81a1c1;">-&gt;</span><span>model </span><span style="color:#81a1c1;">= </span><span>(Matrix){
+</span><span>    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_Unmap</span><span>(context</span><span style="color:#eceff4;">, </span><span>(ID3D11Resource </span><span style="color:#81a1c1;">*</span><span>)constant_buffer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><code>ID3D11DeviceContext1_VSSetConstantBuffers</code> sets the vertex shader's constant buffers.</li>
+<li><code>ID3D11DeviceContext1_Map</code> maps the constant buffer for CPU access.</li>
+<li><code>D3D11_MAP_WRITE_DISCARD</code> mapping type indicates that the previous contents of the resource can be discarded.</li>
+<li><code>D3D11Constants *constants = (D3D11Constants *)mapped_subresource.pData</code> creates a pointer to the mapped data. The data in the constant buffer will be accessed through this pointer.</li>
+<li><code>constants-&gt;model = (Matrix){ ... };</code> updates the data in the constant buffer.</li>
+<li><code>ID3D11DeviceContext1_Unmap</code> unmaps the constant buffer, allowing the GPU to access it again.</li>
+</ul>
+<h2 id="result">Result</h2>
+<p>Result with an identity matrix:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>constants</span><span style="color:#81a1c1;">-&gt;</span><span>model </span><span style="color:#81a1c1;">= </span><span>(Matrix){
+</span><span>    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f
+</span><span>}</span><span style="color:#eceff4;">;
+</span></code></pre>
+<p><img src="/images/blog/direct3d-11-constant-buffer-tutorial/1.jpg" alt="" /></p>
+<p>Moving everything 1 unit to the right:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>constants</span><span style="color:#81a1c1;">-&gt;</span><span>model </span><span style="color:#81a1c1;">= </span><span>(Matrix){
+</span><span>    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f
+</span><span>}</span><span style="color:#eceff4;">;
+</span></code></pre>
+<p><img src="/images/blog/direct3d-11-constant-buffer-tutorial/2.jpg" alt="" /></p>
+<p>You can download this image from <a href="/images/blog/direct3d-11-constant-buffer-tutorial/image.png">here</a>.</p>
+<h2 id="complete-example">Complete example</h2>
+<h3 id="main-c-1">main.c</h3>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">// cl main.c /Zi /nologo /link /SUBSYSTEM:windows
+</span><span>
+</span><span style="color:#81a1c1;">#define WIN32_LEAN_AND_MEAN
+</span><span style="color:#81a1c1;">#define _USE_MATH_DEFINES
+</span><span style="color:#81a1c1;">#define COBJMACROS
+</span><span>
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdint.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;windows.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;d3d11_1.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;dxgidebug.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;Dxgi1_3.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;assert.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;float.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stddef.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;intrin.h&gt;
+</span><span style="color:#81a1c1;">#define STB_IMAGE_IMPLEMENTATION
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&quot;stb_image.h&quot;
+</span><span>
+</span><span style="color:#81a1c1;">#define </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">c</span><span>) </span><span style="color:#81a1c1;">do </span><span>{ </span><span style="color:#81a1c1;">if </span><span>(</span><span style="color:#81a1c1;">!</span><span>(c)) </span><span style="font-weight:bold;color:#88c0d0;">__debugbreak</span><span>()</span><span style="color:#eceff4;">; </span><span>} </span><span style="color:#81a1c1;">while </span><span>(</span><span style="color:#b48ead;">0</span><span>)
+</span><span style="color:#81a1c1;">#define </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(</span><span style="font-weight:bold;color:#d8dee9;">hr</span><span>) </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">SUCCEEDED</span><span>(hr))
+</span><span>
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;user32&quot;)
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;d3d11&quot;)
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;d3dcompiler&quot;)
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;dxguid&quot;)
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;gdi32&quot;)
+</span><span style="color:#5e81ac;">#pragma</span><span> comment (lib, &quot;dxgi&quot;)
+</span><span>
+</span><span style="color:#616e88;">// Types.
+</span><span>
+</span><span style="color:#81a1c1;">typedef </span><span style="color:#8fbcbb;">uint32_t </span><span style="color:#81a1c1;">U32</span><span style="color:#eceff4;">;
+</span><span style="color:#81a1c1;">typedef float    F32</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{ 
+</span><span>    F32 m[</span><span style="color:#b48ead;">4</span><span>][</span><span style="color:#b48ead;">4</span><span>]</span><span style="color:#eceff4;">; 
+</span><span>} </span><span style="color:#81a1c1;">Matrix</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{
+</span><span>	Matrix model</span><span style="color:#eceff4;">;
+</span><span>} </span><span style="color:#81a1c1;">D3D11Constants</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#616e88;">// Globals.
+</span><span>
+</span><span>ID3D11Buffer </span><span style="color:#81a1c1;">*</span><span>constant_buffer</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>U32 client_width</span><span style="color:#eceff4;">;
+</span><span>U32 client_height</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>ID3D11Device </span><span style="color:#81a1c1;">*</span><span>device</span><span style="color:#eceff4;">;
+</span><span>ID3D11DeviceContext </span><span style="color:#81a1c1;">*</span><span>context</span><span style="color:#eceff4;">;
+</span><span>ID3D11RenderTargetView </span><span style="color:#81a1c1;">*</span><span>render_target_view</span><span style="color:#eceff4;">;
+</span><span>ID3D11InputLayout </span><span style="color:#81a1c1;">*</span><span>input_layout</span><span style="color:#eceff4;">;
+</span><span>ID3D11SamplerState </span><span style="color:#81a1c1;">*</span><span>sampler_state</span><span style="color:#eceff4;">;
+</span><span>IDXGISwapChain1 </span><span style="color:#81a1c1;">*</span><span>swap_chain</span><span style="color:#eceff4;">;
+</span><span>ID3D11ShaderResourceView </span><span style="color:#81a1c1;">*</span><span>shader_resource_view</span><span style="color:#eceff4;">;
+</span><span>D3D11_VIEWPORT viewport</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>LRESULT CALLBACK 
+</span><span style="font-weight:bold;color:#88c0d0;">win_proc</span><span>(</span><span style="color:#8fbcbb;">HWND </span><span style="font-weight:bold;color:#d8dee9;">window</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">UINT </span><span style="font-weight:bold;color:#d8dee9;">msg</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">WPARAM </span><span style="font-weight:bold;color:#d8dee9;">w_param</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPARAM </span><span style="font-weight:bold;color:#d8dee9;">l_param</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">switch</span><span>(msg) {
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_DESTROY</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">PostQuitMessage</span><span>(</span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">case</span><span> WM_KEYDOWN</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">switch</span><span>(w_param) {
+</span><span>                </span><span style="color:#81a1c1;">case </span><span style="color:#a3be8c;">&#39;O&#39;</span><span style="color:#eceff4;">: </span><span>{
+</span><span>                    </span><span style="font-weight:bold;color:#88c0d0;">DestroyWindow</span><span>(window)</span><span style="color:#eceff4;">;
+</span><span>                } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            }
+</span><span>        } </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">default</span><span style="color:#eceff4;">: </span><span>{
+</span><span>            </span><span style="color:#81a1c1;">return </span><span style="font-weight:bold;color:#88c0d0;">DefWindowProcW</span><span>(window</span><span style="color:#eceff4;">,</span><span> msg</span><span style="color:#eceff4;">,</span><span> w_param</span><span style="color:#eceff4;">,</span><span> l_param)</span><span style="color:#eceff4;">;
+</span><span>        }
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="color:#8fbcbb;">WINAPI 
+</span><span style="font-weight:bold;color:#88c0d0;">WinMain</span><span>(</span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">HINSTANCE </span><span style="font-weight:bold;color:#d8dee9;">p_instance</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">LPSTR </span><span style="font-weight:bold;color:#d8dee9;">cmd</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#d8dee9;">cmd_show</span><span>) {
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Window creation.
+</span><span>    
+</span><span>    WNDCLASSW wc </span><span style="color:#81a1c1;">= </span><span>{ 
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpszClassName </span><span style="color:#81a1c1;">= L</span><span style="color:#a3be8c;">&quot;MyWindowClass&quot;</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>lpfnWndProc </span><span style="color:#81a1c1;">=</span><span> win_proc</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hInstance </span><span style="color:#81a1c1;">=</span><span> instance</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>hCursor </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">LoadCursor</span><span>(</span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> IDC_CROSS)</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#8fbcbb;">ATOM</span><span> atom </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">RegisterClassW</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>wc)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(atom </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to register a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">HWND</span><span> window </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">CreateWindowW</span><span>(wc</span><span style="color:#81a1c1;">.</span><span>lpszClassName</span><span style="color:#eceff4;">, 
+</span><span>                                </span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;Window&quot;</span><span style="color:#eceff4;">,</span><span> WS_OVERLAPPEDWINDOW</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,</span><span> CW_USEDEFAULT</span><span style="color:#eceff4;">,
+</span><span>                                client_width</span><span style="color:#eceff4;">,</span><span> client_height</span><span style="color:#eceff4;">,
+</span><span>                                </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> instance</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(window </span><span style="color:#81a1c1;">&amp;&amp; </span><span style="color:#a3be8c;">&quot;Failed to create a window&quot;</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ShowWindow</span><span>(window</span><span style="color:#eceff4;">,</span><span> cmd_show)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Fullscreen.
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">DWORD</span><span> window_style </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">GetWindowLong</span><span>(window</span><span style="color:#eceff4;">,</span><span> GWL_STYLE)</span><span style="color:#eceff4;">;
+</span><span>    MONITORINFO mi </span><span style="color:#81a1c1;">= </span><span>{ </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(mi) }</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">GetMonitorInfo</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">MonitorFromWindow</span><span>(window</span><span style="color:#eceff4;">,</span><span> MONITOR_DEFAULTTOPRIMARY)</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>mi)) {
+</span><span>        client_width </span><span style="color:#81a1c1;">=</span><span> mi</span><span style="color:#81a1c1;">.</span><span>rcMonitor</span><span style="color:#81a1c1;">.</span><span>right </span><span style="color:#81a1c1;">-</span><span> mi</span><span style="color:#81a1c1;">.</span><span>rcMonitor</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">;
+</span><span>        client_height </span><span style="color:#81a1c1;">=</span><span> mi</span><span style="color:#81a1c1;">.</span><span>rcMonitor</span><span style="color:#81a1c1;">.</span><span>bottom </span><span style="color:#81a1c1;">-</span><span> mi</span><span style="color:#81a1c1;">.</span><span>rcMonitor</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SetWindowLong</span><span>(window</span><span style="color:#eceff4;">,</span><span> GWL_STYLE</span><span style="color:#eceff4;">,</span><span> window_style </span><span style="color:#81a1c1;">&amp; ~</span><span>WS_OVERLAPPEDWINDOW)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">SetWindowPos</span><span>(window</span><span style="color:#eceff4;">,</span><span> HWND_TOP</span><span style="color:#eceff4;">,
+</span><span>                     mi</span><span style="color:#81a1c1;">.</span><span>rcMonitor</span><span style="color:#81a1c1;">.</span><span>left</span><span style="color:#eceff4;">,</span><span> mi</span><span style="color:#81a1c1;">.</span><span>rcMonitor</span><span style="color:#81a1c1;">.</span><span>top</span><span style="color:#eceff4;">,
+</span><span>                     client_width</span><span style="color:#eceff4;">,
+</span><span>                     client_height</span><span style="color:#eceff4;">,
+</span><span>                     SWP_NOOWNERZORDER </span><span style="color:#81a1c1;">|</span><span> SWP_FRAMECHANGED)</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Viewport.
+</span><span>    
+</span><span>    viewport</span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">=</span><span> client_width</span><span style="color:#eceff4;">;
+</span><span>    viewport</span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">=</span><span> client_height</span><span style="color:#eceff4;">;
+</span><span>    viewport</span><span style="color:#81a1c1;">.</span><span>MaxDepth </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Device &amp; Context.
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">UINT</span><span> creation_flags </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span style="color:#5e81ac;">#ifndef</span><span> NDEBUG
+</span><span>    creation_flags </span><span style="color:#81a1c1;">=</span><span> D3D11_CREATE_DEVICE_DEBUG</span><span style="color:#eceff4;">;
+</span><span style="color:#5e81ac;">#endif
+</span><span>    
+</span><span>    D3D_FEATURE_LEVEL feature_levels[] </span><span style="color:#81a1c1;">= </span><span>{ D3D_FEATURE_LEVEL_11_0 }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#8fbcbb;">HRESULT</span><span> hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3D11CreateDevice</span><span>(</span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> D3D_DRIVER_TYPE_HARDWARE</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">,</span><span> creation_flags</span><span style="color:#eceff4;">,</span><span> feature_levels</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ARRAYSIZE</span><span>(feature_levels)</span><span style="color:#eceff4;">,</span><span> D3D11_SDK_VERSION</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>context)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Debug.
+</span><span>    
+</span><span style="color:#5e81ac;">#ifndef</span><span> NDEBUG
+</span><span>    {
+</span><span>        ID3D11InfoQueue </span><span style="color:#81a1c1;">*</span><span>info</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device_QueryInterface</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>IID_ID3D11InfoQueue</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void**</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>info)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11InfoQueue_SetBreakOnSeverity</span><span>(info</span><span style="color:#eceff4;">,</span><span> D3D11_MESSAGE_SEVERITY_CORRUPTION</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">TRUE</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11InfoQueue_SetBreakOnSeverity</span><span>(info</span><span style="color:#eceff4;">,</span><span> D3D11_MESSAGE_SEVERITY_ERROR</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">TRUE</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11InfoQueue_Release</span><span>(info)</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span>    {
+</span><span>        IDXGIInfoQueue </span><span style="color:#81a1c1;">*</span><span>dxgi_info</span><span style="color:#eceff4;">;
+</span><span>        hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">DXGIGetDebugInterface1</span><span>(</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>IID_IDXGIInfoQueue</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void**</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>dxgi_info)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">IDXGIInfoQueue_SetBreakOnSeverity</span><span>(dxgi_info</span><span style="color:#eceff4;">,</span><span> DXGI_DEBUG_ALL</span><span style="color:#eceff4;">,</span><span> DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">TRUE</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">IDXGIInfoQueue_SetBreakOnSeverity</span><span>(dxgi_info</span><span style="color:#eceff4;">,</span><span> DXGI_DEBUG_ALL</span><span style="color:#eceff4;">,</span><span> DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">TRUE</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">IDXGIInfoQueue_Release</span><span>(dxgi_info)</span><span style="color:#eceff4;">;
+</span><span>    }
+</span><span style="color:#5e81ac;">#endif
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Swap chain.
+</span><span>    
+</span><span>    IDXGIDevice </span><span style="color:#81a1c1;">*</span><span>dxgi_device</span><span style="color:#eceff4;">;
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device_QueryInterface</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>IID_IDXGIDevice</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>dxgi_device)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    IDXGIAdapter </span><span style="color:#81a1c1;">*</span><span>dxgi_adapter</span><span style="color:#eceff4;">;
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">IDXGIDevice_GetAdapter</span><span>(dxgi_device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>dxgi_adapter)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    IDXGIFactory2 </span><span style="color:#81a1c1;">*</span><span>dxgi_factory</span><span style="color:#eceff4;">;
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">IDXGIAdapter_GetParent</span><span>(dxgi_adapter</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>IID_IDXGIFactory2</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>dxgi_factory)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    DXGI_SWAP_CHAIN_DESC1 swap_chain_desc </span><span style="color:#81a1c1;">= </span><span>{ 
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Format </span><span style="color:#81a1c1;">=</span><span> DXGI_FORMAT_R8G8B8A8_UNORM</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Count </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Quality </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BufferUsage </span><span style="color:#81a1c1;">=</span><span> DXGI_USAGE_RENDER_TARGET_OUTPUT</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BufferCount </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">2</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Scaling </span><span style="color:#81a1c1;">=</span><span> DXGI_SCALING_NONE</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>SwapEffect </span><span style="color:#81a1c1;">=</span><span> DXGI_SWAP_EFFECT_FLIP_DISCARD</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Flags </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, 
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">IDXGIFactory2_CreateSwapChainForHwnd</span><span>(dxgi_factory</span><span style="color:#eceff4;">, </span><span>(IUnknown </span><span style="color:#81a1c1;">*</span><span>)device</span><span style="color:#eceff4;">,</span><span> window</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>swap_chain_desc</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>swap_chain)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">IDXGIFactory_MakeWindowAssociation</span><span>(dxgi_factory</span><span style="color:#eceff4;">,</span><span> window</span><span style="color:#eceff4;">,</span><span> DXGI_MWA_NO_ALT_ENTER)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">IDXGIFactory2_Release</span><span>(dxgi_factory)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">IDXGIAdapter_Release</span><span>(dxgi_adapter)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device_Release</span><span>(dxgi_device)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Render target view.
+</span><span>    
+</span><span>    ID3D11Texture2D </span><span style="color:#81a1c1;">*</span><span>back_buffer</span><span style="color:#eceff4;">;
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">IDXGISwapChain1_GetBuffer</span><span>(swap_chain</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>IID_ID3D11Texture2D</span><span style="color:#eceff4;">, </span><span>(</span><span style="color:#81a1c1;">void **</span><span>)</span><span style="color:#81a1c1;">&amp;</span><span>back_buffer)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device_CreateRenderTargetView</span><span>(device</span><span style="color:#eceff4;">, </span><span>(ID3D11Resource </span><span style="color:#81a1c1;">*</span><span>)back_buffer</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>render_target_view)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Texture2D_Release</span><span>(back_buffer)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Shader.
+</span><span>    
+</span><span>    ID3D11VertexShader </span><span style="color:#81a1c1;">*</span><span>vs</span><span style="color:#eceff4;">;
+</span><span>    ID3D11PixelShader </span><span style="color:#81a1c1;">*</span><span>ps</span><span style="color:#eceff4;">;
+</span><span>    ID3D10Blob </span><span style="color:#81a1c1;">*</span><span>vs_blob</span><span style="color:#eceff4;">;
+</span><span>    ID3D10Blob </span><span style="color:#81a1c1;">*</span><span>ps_blob</span><span style="color:#eceff4;">;
+</span><span>    ID3D11InputLayout </span><span style="color:#81a1c1;">*</span><span>il</span><span style="color:#eceff4;">;
+</span><span>    ID3D11Buffer </span><span style="color:#81a1c1;">*</span><span>buffer</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3DCompileFromFile</span><span>(</span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;shader.hlsl&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;vs_main&quot;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;vs_5_0&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>vs_blob</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">D3DCompileFromFile</span><span>(</span><span style="color:#81a1c1;">L</span><span style="color:#a3be8c;">&quot;shader.hlsl&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;ps_main&quot;</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;ps_5_0&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ps_blob</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateVertexShader</span><span>(
+</span><span>                                          device</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ID3D10Blob_GetBufferPointer</span><span>(vs_blob)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ID3D10Blob_GetBufferSize</span><span>(vs_blob)</span><span style="color:#eceff4;">, 
+</span><span>                                          </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>vs)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreatePixelShader</span><span>(
+</span><span>                                         device</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ID3D10Blob_GetBufferPointer</span><span>(ps_blob)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ID3D10Blob_GetBufferSize</span><span>(ps_blob)</span><span style="color:#eceff4;">, 
+</span><span>                                         </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>ps)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Input layout.
+</span><span>    
+</span><span>    D3D11_INPUT_ELEMENT_DESC
+</span><span>        input_element_desc[] </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        {</span><span style="color:#a3be8c;">&quot;POSITION&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> DXGI_FORMAT_R32G32B32_FLOAT</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>            D3D11_INPUT_PER_VERTEX_DATA</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">,
+</span><span>        {</span><span style="color:#a3be8c;">&quot;UV&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> DXGI_FORMAT_R32G32_FLOAT</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> D3D11_APPEND_ALIGNED_ELEMENT</span><span style="color:#eceff4;">,
+</span><span>            D3D11_INPUT_PER_VERTEX_DATA</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>}</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateInputLayout</span><span>(device</span><span style="color:#eceff4;">,</span><span> input_element_desc</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ARRAYSIZE</span><span>(input_element_desc)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ID3D10Blob_GetBufferPointer</span><span>(vs_blob)</span><span style="color:#eceff4;">, </span><span style="font-weight:bold;color:#88c0d0;">ID3D10Blob_GetBufferSize</span><span>(vs_blob)</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>input_layout)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Mesh.
+</span><span>    
+</span><span>    F32 vertices[] </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">5</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    U32 stride </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">5 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(F32)</span><span style="color:#eceff4;">;
+</span><span>    U32 num_vertices </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(vertices) </span><span style="color:#81a1c1;">/</span><span> stride</span><span style="color:#eceff4;">;
+</span><span>    U32 offset </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    D3D11_BUFFER_DESC buffer_desc </span><span style="color:#81a1c1;">= </span><span>{ 
+</span><span>        </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(vertices)</span><span style="color:#eceff4;">, 
+</span><span>        D3D11_USAGE_DEFAULT</span><span style="color:#eceff4;">, 
+</span><span>        D3D11_BIND_VERTEX_BUFFER</span><span style="color:#eceff4;">, 
+</span><span>        </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0 
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    D3D11_SUBRESOURCE_DATA initial_data </span><span style="color:#81a1c1;">= </span><span>{ vertices }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateBuffer</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>buffer_desc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>initial_data</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>buffer)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Texture.
+</span><span>    
+</span><span>    U32 image_width </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>    U32 image_height </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>    U32 image_channels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>    U32 image_desired_channels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>image_data </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">stbi_load</span><span>(</span><span style="color:#a3be8c;">&quot;image.png&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>image_width</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>image_height</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>image_channels</span><span style="color:#eceff4;">,</span><span> image_desired_channels)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">Assert</span><span>(image_data)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    U32 image_pitch </span><span style="color:#81a1c1;">=</span><span> image_width </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">4</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    D3D11_TEXTURE2D_DESC texture_desc </span><span style="color:#81a1c1;">= </span><span>{ 
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Width </span><span style="color:#81a1c1;">=</span><span> image_width</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Height </span><span style="color:#81a1c1;">=</span><span> image_height</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>MipLevels </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>ArraySize </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Format </span><span style="color:#81a1c1;">=</span><span> DXGI_FORMAT_R8G8B8A8_UNORM</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Count </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>SampleDesc</span><span style="color:#81a1c1;">.</span><span>Quality </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Usage </span><span style="color:#81a1c1;">=</span><span> D3D11_USAGE_IMMUTABLE</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BindFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_BIND_SHADER_RESOURCE</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    D3D11_SUBRESOURCE_DATA texture_subresource_data </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>pSysMem </span><span style="color:#81a1c1;">=</span><span> image_data</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>SysMemPitch </span><span style="color:#81a1c1;">=</span><span> image_pitch</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    ID3D11Texture2D </span><span style="color:#81a1c1;">*</span><span>texture</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateTexture2D</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>texture_desc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>texture_subresource_data</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>texture)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#88c0d0;">free</span><span>(image_data)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateShaderResourceView</span><span>(device</span><span style="color:#eceff4;">, </span><span>(ID3D11Resource </span><span style="color:#81a1c1;">*</span><span>)texture</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>shader_resource_view)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Sampler.
+</span><span>    
+</span><span>    D3D11_SAMPLER_DESC sampler_desc </span><span style="color:#81a1c1;">= </span><span>{ 
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Filter </span><span style="color:#81a1c1;">=</span><span> D3D11_FILTER_MIN_MAG_MIP_LINEAR</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>AddressU </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>AddressV </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>AddressW </span><span style="color:#81a1c1;">=</span><span> D3D11_TEXTURE_ADDRESS_CLAMP</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>MipLODBias </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>MaxAnisotropy </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>ComparisonFunc </span><span style="color:#81a1c1;">=</span><span> D3D11_COMPARISON_NEVER</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">0</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">1</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">2</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BorderColor[</span><span style="color:#b48ead;">3</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>MinLOD </span><span style="color:#81a1c1;">= -</span><span>FLT_MAX</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>MaxLOD </span><span style="color:#81a1c1;">=</span><span> FLT_MAX</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">=  </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateSamplerState</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>sampler_desc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>sampler_state)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Constant buffer.
+</span><span>    
+</span><span>    D3D11_BUFFER_DESC constant_buffer_desc </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>ByteWidth </span><span style="color:#81a1c1;">= </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(D3D11Constants)</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>Usage </span><span style="color:#81a1c1;">=</span><span> D3D11_USAGE_DYNAMIC</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>BindFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_BIND_CONSTANT_BUFFER</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>CPUAccessFlags </span><span style="color:#81a1c1;">=</span><span> D3D11_CPU_ACCESS_WRITE</span><span style="color:#eceff4;">,
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    hr </span><span style="color:#81a1c1;">=
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11Device1_CreateBuffer</span><span>(device</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>constant_buffer_desc</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>constant_buffer)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="font-weight:bold;color:#88c0d0;">AssertHR</span><span>(hr)</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Loop.
+</span><span>    
+</span><span>    </span><span style="color:#81a1c1;">for</span><span>(</span><span style="color:#eceff4;">;;</span><span>) {
+</span><span>        MSG msg</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">if</span><span>(</span><span style="font-weight:bold;color:#88c0d0;">PeekMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> PM_REMOVE)) {
+</span><span>            </span><span style="color:#81a1c1;">if</span><span>(msg</span><span style="color:#81a1c1;">.</span><span>message </span><span style="color:#81a1c1;">==</span><span> WM_QUIT) </span><span style="color:#81a1c1;">break</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">TranslateMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="font-weight:bold;color:#88c0d0;">DispatchMessage</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>msg)</span><span style="color:#eceff4;">;
+</span><span>            </span><span style="color:#81a1c1;">continue</span><span style="color:#eceff4;">;
+</span><span>        }
+</span><span>        
+</span><span>        F32 color[] </span><span style="color:#81a1c1;">= </span><span>{ </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">2</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">2</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">2</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span>}</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_ClearRenderTargetView</span><span>(context</span><span style="color:#eceff4;">,</span><span> render_target_view</span><span style="color:#eceff4;">,</span><span> color)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_RSSetViewports</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>viewport)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_OMSetRenderTargets</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>render_target_view</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">NULL</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_PSSetShaderResources</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>shader_resource_view)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_PSSetSamplers</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>sampler_state)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_VSSetConstantBuffers</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>constant_buffer)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_IASetInputLayout</span><span>(context</span><span style="color:#eceff4;">,</span><span> input_layout)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_VSSetShader</span><span>(context</span><span style="color:#eceff4;">,</span><span> vs</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_PSSetShader</span><span>(context</span><span style="color:#eceff4;">,</span><span> ps</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_IASetPrimitiveTopology</span><span>(context</span><span style="color:#eceff4;">,</span><span> D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_IASetVertexBuffers</span><span>(context</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>buffer</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>stride</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>offset)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="color:#616e88;">// Constants.
+</span><span>        
+</span><span>        D3D11_MAPPED_SUBRESOURCE mapped_subresource</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_Map</span><span>(context</span><span style="color:#eceff4;">, 
+</span><span>                                 (ID3D11Resource </span><span style="color:#81a1c1;">*</span><span>)constant_buffer</span><span style="color:#eceff4;">, 
+</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> D3D11_MAP_WRITE_DISCARD</span><span style="color:#eceff4;">, 
+</span><span>                                 </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">&amp;</span><span>mapped_subresource)</span><span style="color:#eceff4;">;
+</span><span>        D3D11Constants </span><span style="color:#81a1c1;">*</span><span>constants </span><span style="color:#81a1c1;">= </span><span>(D3D11Constants </span><span style="color:#81a1c1;">*</span><span>)mapped_subresource</span><span style="color:#81a1c1;">.</span><span>pData</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        constants</span><span style="color:#81a1c1;">-&gt;</span><span>model </span><span style="color:#81a1c1;">= </span><span>(Matrix){
+</span><span>            </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>            </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>            </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
+</span><span>            </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f
+</span><span>        }</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_Unmap</span><span>(context</span><span style="color:#eceff4;">, </span><span>(ID3D11Resource </span><span style="color:#81a1c1;">*</span><span>)constant_buffer</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="color:#616e88;">// Draw.
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">ID3D11DeviceContext1_Draw</span><span>(context</span><span style="color:#eceff4;">,</span><span> num_vertices</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">;
+</span><span>        
+</span><span>        </span><span style="color:#616e88;">// Swap.
+</span><span>        
+</span><span>        </span><span style="font-weight:bold;color:#88c0d0;">IDXGISwapChain1_Present</span><span>(swap_chain</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span>)</span><span style="color:#eceff4;">; 
+</span><span>        
+</span><span>    }
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<h3 id="shader-hlsl-1">shader.hlsl</h3>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>cbuffer constants </span><span style="color:#81a1c1;">: register</span><span>(b0) {
+</span><span>	row_major float4x4 model</span><span style="color:#eceff4;">;
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">struct </span><span style="color:#8fbcbb;">VS_Input </span><span>{
+</span><span>	float3 position</span><span style="color:#81a1c1;">:</span><span> POSITION</span><span style="color:#eceff4;">;
+</span><span>	float2 uv</span><span style="color:#81a1c1;">:</span><span> UV</span><span style="color:#eceff4;">;
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#81a1c1;">struct </span><span style="color:#8fbcbb;">VS_Output </span><span>{
+</span><span>	float4 position</span><span style="color:#81a1c1;">:</span><span> SV_POSITION</span><span style="color:#eceff4;">;
+</span><span>	float2 uv</span><span style="color:#81a1c1;">:</span><span> UV</span><span style="color:#eceff4;">;
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span style="color:#616e88;">/*
+</span><span style="color:#616e88;">static matrix model = {
+</span><span style="color:#616e88;">	{1,0,0,0},
+</span><span style="color:#616e88;">	{0,1,0,0},
+</span><span style="color:#616e88;">	{0,0,1,0},
+</span><span style="color:#616e88;">	{1,0,0,1}
+</span><span style="color:#616e88;">};
+</span><span style="color:#616e88;">*/
+</span><span>
+</span><span>VS_Output </span><span style="font-weight:bold;color:#88c0d0;">vs_main</span><span>(VS_Input </span><span style="font-weight:bold;color:#d8dee9;">input</span><span>) {
+</span><span>	VS_Output output</span><span style="color:#eceff4;">;
+</span><span>	output</span><span style="color:#81a1c1;">.</span><span>position </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">float4</span><span>(input</span><span style="color:#81a1c1;">.</span><span>position</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span>)</span><span style="color:#eceff4;">;
+</span><span>	output</span><span style="color:#81a1c1;">.</span><span>position </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">mul</span><span>(output</span><span style="color:#81a1c1;">.</span><span>position</span><span style="color:#eceff4;">,</span><span> model)</span><span style="color:#eceff4;">;
+</span><span>	output</span><span style="color:#81a1c1;">.</span><span>uv </span><span style="color:#81a1c1;">=</span><span> input</span><span style="color:#81a1c1;">.</span><span>uv</span><span style="color:#eceff4;">;
+</span><span>	</span><span style="color:#81a1c1;">return</span><span> output</span><span style="color:#eceff4;">;
+</span><span>}</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>Texture2D my_texture</span><span style="color:#eceff4;">;
+</span><span>SamplerState my_sampler</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>float4 </span><span style="font-weight:bold;color:#88c0d0;">ps_main</span><span>(VS_Output </span><span style="font-weight:bold;color:#d8dee9;">input</span><span>)</span><span style="color:#81a1c1;">:</span><span> SV_TARGET {
+</span><span>	</span><span style="color:#81a1c1;">return</span><span> my_texture</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Sample</span><span>(my_sampler</span><span style="color:#eceff4;">,</span><span> input</span><span style="color:#81a1c1;">.</span><span>uv)</span><span style="color:#eceff4;">;
+</span><span>}</span><span style="color:#eceff4;">;
+</span></code></pre>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer">
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Samuli Natri
+                </div>
+                <div class="footer-text">
+                    Entrepreneur. <br>Software Engineer.
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Blog
+                </div>
+                <div class="footer-text">
+                    <a href="/blog/direct3d-11-constant-buffer-tutorial/">Direct3D 11 - Constant Buffer Tutorial (C & Win32)</a>  
+                    <a href="/blog/memory-management/">Memory Management (C)</a> 
+                    <a href="/blog/win32-window-creation-tutorial/">Win32 - Window Creation Tutorial (C)</a>
+                    <a href="/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Menu
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>
