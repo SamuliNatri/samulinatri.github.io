@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description"
+        content="How to work with template files in Go.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon_blue/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon_blue/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon_blue/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicon_blue/site.webmanifest">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/ascetic.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/go.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <link rel="stylesheet" href="/styles.css?v=109">
+    <title>Golang - Template Tutorial | Samuli Natri. Entrepreneur. Software Engineer.</title>
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-7348837-18');
+
+    </script>
+    
+
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16466253971">
+    </script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-16466253971');
+    </script>
+    
+
+</head>
+
+<body>
+    <div class="main ">
+
+        
+        <div class="book">
+
+            <img class="book-img" src="/images/books/django11.jpg">
+            
+            <h1 class="book-h1">Making Money with Django and AI: How to Build SaaS Services Using Python</h1>
+            
+            <div class="book-description">
+            Learn how to build AI-driven websites with the Django web framework and monetize your services.
+            </div>
+            
+            <a href="/books/making-money-with-django-and-ai" class="book-buy ai-gradient">Read more</a>
+        </div>
+        
+
+        <div class="content">
+            
+
+<div class="tutorial">
+    <div class="tutorial-inner">
+        <div class="tutorial-title">
+            Golang - Template Tutorial
+        </div>
+        <div class="tutorial-subtitle">
+            How to work with template files in Go.
+        </div>
+
+        <div class="tutorial-updated" itemprop="dateModified" content=" Mar  2, 2024">
+            Updated <strong>Mar  2, 2024</strong>
+        </div>
+
+        <div class="hide" id="toc-container"></div>
+
+        <div class="tutorial-body">
+            <h2 id="what-you-will-learn">What you will learn</h2>
+<ul>
+<li>How to pre-parse templates from a directory.</li>
+<li>How to pass arbitrary data to templates using a map.</li>
+<li>How to use a base template.</li>
+<li>How to pass default data to all templates.</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>Create <em>main.go</em> and add these lines to it:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#81a1c1;">package </span><span>main
+</span><span>
+</span><span style="color:#81a1c1;">import </span><span>(
+</span><span>	</span><span style="color:#a3be8c;">&quot;fmt&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;net/http&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;log&quot;
+</span><span>)
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">homeHandler</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">r </span><span style="color:#81a1c1;">*</span><span>http</span><span style="color:#81a1c1;">.Request</span><span style="color:#eceff4;">,
+</span><span>) {
+</span><span>	fmt</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fprintf</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Home page&quot;</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">aboutHandler</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">r </span><span style="color:#81a1c1;">*</span><span>http</span><span style="color:#81a1c1;">.Request</span><span style="color:#eceff4;">,
+</span><span>) {
+</span><span>	fmt</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fprintf</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;About page&quot;</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Handlers.
+</span><span>
+</span><span>	http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">HandleFunc</span><span>(</span><span style="color:#a3be8c;">&quot;/&quot;</span><span style="color:#eceff4;">, </span><span>homeHandler)
+</span><span>	http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">HandleFunc</span><span>(</span><span style="color:#a3be8c;">&quot;/about&quot;</span><span style="color:#eceff4;">, </span><span>aboutHandler)
+</span><span>	
+</span><span>	</span><span style="color:#616e88;">// Server.
+</span><span>
+</span><span>	log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Printf</span><span>(</span><span style="color:#a3be8c;">&quot;http://127.0.0.1:8080&quot;</span><span>)
+</span><span>	err </span><span style="color:#81a1c1;">:= </span><span>http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ListenAndServe</span><span>(</span><span style="color:#a3be8c;">&quot;:8080&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nil</span><span>)
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fatalf</span><span>(</span><span style="color:#a3be8c;">&quot;Server failed: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>	}
+</span><span>}
+</span></code></pre>
+<p>This will give you a basic app with two pages. Run these commands:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#81a1c1;">go </span><span>mod init a
+</span><span style="color:#81a1c1;">go </span><span>build
+</span><span>a</span><span style="color:#81a1c1;">.</span><span>exe or </span><span style="color:#81a1c1;">./</span><span>a</span><span style="color:#81a1c1;">.</span><span>out
+</span></code></pre>
+<h2 id="parsing-a-single-template">Parsing a single template</h2>
+<p>You can use the <code>ParseFiles()</code> function from the <code>template</code> package to parse one or more template files. Modify the <code>homeHandler()</code> function as follows:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#81a1c1;">import </span><span>(
+</span><span>	</span><span style="color:#a3be8c;">&quot;fmt&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;net/http&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;log&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;html/template&quot; </span><span style="color:#616e88;">// import this
+</span><span>)
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">homeHandler</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">r </span><span style="color:#81a1c1;">*</span><span>http</span><span style="color:#81a1c1;">.Request</span><span style="color:#eceff4;">,
+</span><span>) {
+</span><span>	tmpl</span><span style="color:#eceff4;">, </span><span>err </span><span style="color:#81a1c1;">:= </span><span>template</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ParseFiles</span><span>(</span><span style="color:#a3be8c;">&quot;templates/home.html&quot;</span><span>)
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Printf</span><span>(</span><span style="color:#a3be8c;">&quot;Error parsing home.html: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">,  </span><span>err)
+</span><span>		http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Error</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Internal Server Error&quot;</span><span style="color:#eceff4;">, </span><span>http</span><span style="color:#81a1c1;">.</span><span>StatusInternalServerError)
+</span><span>	}
+</span><span>
+</span><span>	err </span><span style="color:#81a1c1;">= </span><span>tmpl</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Execute</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nil</span><span>)
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Printf</span><span>(</span><span style="color:#a3be8c;">&quot;Template execution failed: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>		http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Error</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Internal Server Error&quot;</span><span style="color:#eceff4;">, </span><span>http</span><span style="color:#81a1c1;">.</span><span>StatusInternalServerError)
+</span><span>	}
+</span><span>}
+</span></code></pre>
+<ul>
+<li><code>ParseFiles()</code> returns a pointer to a <code>Template</code> struct that we can &quot;execute&quot; later to produce the final output.</li>
+<li>The <code>Execute()</code> function accepts an output <em>writer</em> and <em>data</em> that you want to pass to the template. </li>
+</ul>
+<p>Create <em>templates/home.html</em> and add this line to it:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">Home page</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span></code></pre>
+<p>Compile and run the program. Visit the home page, and you should see the &quot;Home page&quot; heading.</p>
+<h2 id="passing-data-to-templates">Passing data to templates</h2>
+<p>A simple way to pass data to the template is by using a <em>map</em>:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span>err </span><span style="color:#81a1c1;">= </span><span>tmpl</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Execute</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}{
+</span><span>	</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Home&quot;</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#a3be8c;">&quot;Name&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;John&quot;</span><span style="color:#eceff4;">,
+</span><span>})
+</span></code></pre>
+<p>Update <em>templates/home.html</em>:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">Hello, {{.Name}}.</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span></code></pre>
+<p>The dot (.) refers to the current data context. You should see <em>Hello, John.</em> on the home page.</p>
+<p>I like the flexibility of a <em>map</em>, but you might want to enforce stricter typing by using a <em>struct</em> for the passed data:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#81a1c1;">type PageData struct </span><span>{
+</span><span>	Title </span><span style="color:#8fbcbb;">string
+</span><span>	Name  </span><span style="color:#8fbcbb;">string
+</span><span>}
+</span><span>
+</span><span>data </span><span style="color:#81a1c1;">:= </span><span>PageData{
+</span><span>	Title</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Home&quot;</span><span style="color:#eceff4;">,
+</span><span>	Name</span><span style="color:#eceff4;">:  </span><span style="color:#a3be8c;">&quot;John&quot;</span><span style="color:#eceff4;">,
+</span><span>}
+</span><span>err </span><span style="color:#81a1c1;">:= </span><span>tmpl</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Execute</span><span>(w</span><span style="color:#eceff4;">, </span><span>data)
+</span></code></pre>
+<h2 id="base-template">Base template</h2>
+<p>The &quot;Base&quot; template contains elements common to all pages. You can parse it with the child template like this:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span>tmpl</span><span style="color:#eceff4;">, </span><span>err </span><span style="color:#81a1c1;">:= </span><span>template</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ParseFiles</span><span>(
+</span><span>	</span><span style="color:#a3be8c;">&quot;templates/base.html&quot;</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#a3be8c;">&quot;templates/home.html&quot;</span><span style="color:#eceff4;">,
+</span><span>)
+</span></code></pre>
+<p>Create <em>templates/base.html</em> and specify a &quot;content&quot; block that child templates can fill in:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;!</span><span style="color:#eceff4;">DOCTYPE </span><span style="color:#81a1c1;">html&gt;
+</span><span style="color:#81a1c1;">&lt;html </span><span style="color:#8fbcbb;">lang</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;en&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;head&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">charset</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;UTF-8&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">name</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;viewport&quot; </span><span style="color:#8fbcbb;">content</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;width=device-width, initial-scale=1.0&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;title&gt;</span><span style="color:#eceff4;">{{.Title}}</span><span style="color:#81a1c1;">&lt;/title&gt;
+</span><span style="color:#81a1c1;">&lt;/head&gt;
+</span><span style="color:#81a1c1;">&lt;body&gt;
+</span><span style="color:#eceff4;">    {{block &quot;content&quot; .}}{{end}}
+</span><span style="color:#81a1c1;">&lt;/body&gt;
+</span><span style="color:#81a1c1;">&lt;/html&gt;
+</span></code></pre>
+<p>The <code>Title</code> variable is passed to the base template in the <code>Execute()</code> function's data argument in <code>homeHandler()</code>. The dot (.) in <code>{{block &quot;content&quot; .}}{{end}}</code> indicates that the &quot;content&quot; block should inherit the current data context.</p>
+<p>Edit <em>templates/home.html</em> and define the &quot;content&quot; block:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#eceff4;">{{define &quot;content&quot;}}
+</span><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">Hello, {{.Name}}.</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#eceff4;">{{end}}
+</span></code></pre>
+<p>Visit the home page, and you should see this markup:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;!</span><span style="color:#eceff4;">DOCTYPE </span><span style="color:#81a1c1;">html&gt;
+</span><span style="color:#81a1c1;">&lt;html </span><span style="color:#8fbcbb;">lang</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;en&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;head&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">charset</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;UTF-8&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">name</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;viewport&quot; </span><span style="color:#8fbcbb;">content</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;width=device-width, initial-scale=1.0&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">    </span><span style="color:#81a1c1;">&lt;title&gt;</span><span style="color:#eceff4;">Home</span><span style="color:#81a1c1;">&lt;/title&gt;
+</span><span style="color:#81a1c1;">&lt;/head&gt;
+</span><span style="color:#81a1c1;">&lt;body&gt;
+</span><span style="color:#eceff4;">    
+</span><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">Hello, John.</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#eceff4;">
+</span><span style="color:#81a1c1;">&lt;/body&gt;
+</span><span style="color:#81a1c1;">&lt;/html&gt;
+</span></code></pre>
+<h2 id="pre-parsing-templates">Pre-parsing templates</h2>
+<p>At the moment, we are parsing the template files every time the <code>homeHandler()</code> function is called, that is, every time we visit the homepage.</p>
+<p>Let's create a global <code>templates</code> map that stores pointers to parsed templates and add a function that parses these files from a <em>templates</em> directory when the app executable is run.</p>
+<p>Make these changes:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#616e88;">// Import these:
+</span><span style="color:#81a1c1;">import </span><span>(
+</span><span>	</span><span style="color:#a3be8c;">&quot;os&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;path/filepath&quot;
+</span><span>	</span><span style="color:#616e88;">// ...
+</span><span>)
+</span><span>
+</span><span style="color:#616e88;">// Globals.
+</span><span>
+</span><span style="color:#616e88;">// Add this map:
+</span><span style="color:#81a1c1;">var </span><span>templates </span><span style="color:#81a1c1;">= map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">*</span><span>template</span><span style="color:#81a1c1;">.Template</span><span>{} 
+</span><span>
+</span><span style="color:#616e88;">// Add this function:
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">parseTemplates</span><span>() {
+</span><span>	files</span><span style="color:#eceff4;">, </span><span>err </span><span style="color:#81a1c1;">:= </span><span>os</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ReadDir</span><span>(</span><span style="color:#a3be8c;">&quot;templates&quot;</span><span>)
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fatalf</span><span>(</span><span style="color:#a3be8c;">&quot;Error reading dir &#39;templates&#39;: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>	}
+</span><span>	</span><span style="color:#81a1c1;">for _</span><span style="color:#eceff4;">, </span><span>file </span><span style="color:#81a1c1;">:= range </span><span>files {
+</span><span>		</span><span style="color:#81a1c1;">if </span><span>file</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Type</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">IsRegular</span><span>() {
+</span><span>			fileName </span><span style="color:#81a1c1;">:= </span><span>file</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Name</span><span>()
+</span><span>			</span><span style="color:#616e88;">// Ignore base template and Emacs temp files.
+</span><span>			</span><span style="color:#81a1c1;">if </span><span>fileName </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;base.html&quot; </span><span style="color:#81a1c1;">|| </span><span>fileName[</span><span style="font-style:italic;color:#88c0d0;">len</span><span>(fileName)</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">:</span><span>] </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;~&quot; </span><span>{
+</span><span>				</span><span style="color:#81a1c1;">continue
+</span><span>			}
+</span><span>			tmpl</span><span style="color:#eceff4;">, </span><span>err </span><span style="color:#81a1c1;">:= </span><span>template</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ParseFiles</span><span>(
+</span><span>				</span><span style="color:#a3be8c;">&quot;templates/base.html&quot;</span><span style="color:#eceff4;">,
+</span><span>				</span><span style="color:#a3be8c;">&quot;templates/&quot; </span><span style="color:#81a1c1;">+ </span><span>fileName</span><span style="color:#eceff4;">,
+</span><span>			)
+</span><span>			</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>				log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fatalf</span><span>(</span><span style="color:#a3be8c;">&quot;Error parsing template </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>fileName</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>			}
+</span><span>			key </span><span style="color:#81a1c1;">:= </span><span>fileName[</span><span style="color:#eceff4;">:</span><span style="font-style:italic;color:#88c0d0;">len</span><span>(fileName)</span><span style="color:#81a1c1;">-</span><span style="font-style:italic;color:#88c0d0;">len</span><span>(filepath</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Ext</span><span>(fileName))]
+</span><span>			templates[key] </span><span style="color:#81a1c1;">= </span><span>tmpl 
+</span><span>		}
+</span><span>	}
+</span><span>}
+</span></code></pre>
+<ul>
+<li>The <code>IsRegular()</code> function ensures that we are parsing regular files, that is, files that are not directories or symbolic links, for example.</li>
+<li><code>key := fileName[:len(fileName)-len(filepath.Ext(fileName))]</code> extracts the base part of the filename.</li>
+</ul>
+<p>Call the <code>parseTemplates()</code> function in the <code>main()</code> function:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Init.
+</span><span>
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">parseTemplates</span><span>() </span><span style="color:#616e88;">// here
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Handlers.
+</span><span>
+</span><span>	http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">HandleFunc</span><span>(</span><span style="color:#a3be8c;">&quot;/&quot;</span><span style="color:#eceff4;">, </span><span>homeHandler)
+</span><span>	http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">HandleFunc</span><span>(</span><span style="color:#a3be8c;">&quot;/about&quot;</span><span style="color:#eceff4;">, </span><span>aboutHandler)
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// ...
+</span></code></pre>
+<p>Update the <code>homeHandler()</code> function:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span>
+</span><span style="color:#616e88;">// Remove these lines:
+</span><span>
+</span><span style="color:#616e88;">/* tmpl, err := template.ParseFiles(
+</span><span style="color:#616e88;">	&quot;templates/base.html&quot;,
+</span><span style="color:#616e88;">	&quot;templates/home.html&quot;,
+</span><span style="color:#616e88;">)
+</span><span style="color:#616e88;">if err != nil {
+</span><span style="color:#616e88;">	log.Fatalf(&quot;Error parsing home.html template: %v&quot;,  err)
+</span><span style="color:#616e88;">}
+</span><span style="color:#616e88;">*/	
+</span><span>
+</span><span style="color:#616e88;">// Use the template from the templates map:
+</span><span>err </span><span style="color:#81a1c1;">:= </span><span>templates[</span><span style="color:#a3be8c;">&quot;home&quot;</span><span>]</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Execute</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}{
+</span><span>	</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Home&quot;</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#a3be8c;">&quot;Name&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;John&quot;</span><span style="color:#eceff4;">,
+</span><span>})
+</span></code></pre>
+<h2 id="specifying-default-template-data">Specifying default template data</h2>
+<p>We can create a map that holds default data and merge it with the data passed to the template. Make the following changes:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#81a1c1;">import </span><span>(
+</span><span>	</span><span style="color:#a3be8c;">&quot;github.com/google/uuid&quot; </span><span style="color:#616e88;">// import this
+</span><span>	</span><span style="color:#616e88;">// ..
+</span><span>)
+</span><span>
+</span><span style="color:#616e88;">// Globals.
+</span><span>
+</span><span style="color:#81a1c1;">var </span><span>templates </span><span style="color:#81a1c1;">= map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">*</span><span>template</span><span style="color:#81a1c1;">.Template</span><span>{}
+</span><span style="color:#616e88;">// Add this:
+</span><span style="color:#81a1c1;">var </span><span>defaultTemplateData </span><span style="color:#81a1c1;">= map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}{
+</span><span>	</span><span style="color:#a3be8c;">&quot;Env&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Development&quot;</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#a3be8c;">&quot;CSSVersion&quot;</span><span style="color:#eceff4;">: </span><span>uuid</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">New</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">String</span><span>()</span><span style="color:#eceff4;">,
+</span><span>}
+</span></code></pre>
+<p>The <code>CSSVersion</code> variable can be used like this to prevent the browser from serving stale stylesheet data to the client:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;link </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;/static/css/styles.css?v={{.CSSVersion}}&quot; </span><span style="color:#8fbcbb;">rel</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;stylesheet&quot;</span><span style="color:#81a1c1;">&gt;
+</span></code></pre>
+<p>Run this:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">go</span><span> mod tidy
+</span></code></pre>
+<p>Add the following function:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#616e88;">// Merge defaultTemplateData and execute template.
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">executeTemplate</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">tmpl </span><span style="color:#8fbcbb;">string</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">data </span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}</span><span style="color:#eceff4;">,
+</span><span>) </span><span style="color:#8fbcbb;">error </span><span>{
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// mergedData is at least the size of defaultTemplateData.
+</span><span>	mergedData </span><span style="color:#81a1c1;">:= </span><span style="font-style:italic;color:#88c0d0;">make</span><span>(</span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}</span><span style="color:#eceff4;">, </span><span style="font-style:italic;color:#88c0d0;">len</span><span>(defaultTemplateData))
+</span><span>	
+</span><span>	</span><span style="color:#616e88;">// Fill mergedData with the default data.
+</span><span>	</span><span style="color:#81a1c1;">for </span><span>key</span><span style="color:#eceff4;">, </span><span>value </span><span style="color:#81a1c1;">:= range </span><span>defaultTemplateData {
+</span><span>		mergedData[key] </span><span style="color:#81a1c1;">= </span><span>value
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Merge the data passed in the handler with the default data,
+</span><span>	</span><span style="color:#616e88;">// potentially overriding the default data.
+</span><span>	</span><span style="color:#81a1c1;">for </span><span>key</span><span style="color:#eceff4;">, </span><span>value </span><span style="color:#81a1c1;">:= range </span><span>data {
+</span><span>		mergedData[key] </span><span style="color:#81a1c1;">= </span><span>value
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Check if a given key exists in the templates map,
+</span><span>	</span><span style="color:#616e88;">// and execute the template with the mergedData.
+</span><span>	</span><span style="color:#81a1c1;">_</span><span style="color:#eceff4;">, </span><span>exists </span><span style="color:#81a1c1;">:= </span><span>templates[tmpl]
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>exists {
+</span><span>		err </span><span style="color:#81a1c1;">:= </span><span>templates[tmpl]</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Execute</span><span>(w</span><span style="color:#eceff4;">, </span><span>mergedData)
+</span><span>		</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>			</span><span style="color:#81a1c1;">return </span><span>err
+</span><span>		}
+</span><span>	} </span><span style="color:#81a1c1;">else </span><span>{
+</span><span>		</span><span style="color:#81a1c1;">return </span><span>fmt</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Errorf</span><span>(</span><span style="color:#a3be8c;">&quot;Key &#39;</span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&#39; doesn&#39;t exist in templates.&quot;</span><span style="color:#eceff4;">, </span><span>tmpl)
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">return nil
+</span><span>}
+</span></code></pre>
+<p>Update <code>homeHandler()</code>:</p>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#616e88;">/*
+</span><span style="color:#616e88;">err := templates[&quot;home&quot;].Execute(w, map[string]interface{}{
+</span><span style="color:#616e88;">	&quot;Title&quot;: &quot;Home&quot;,
+</span><span style="color:#616e88;">	&quot;Name&quot;: &quot;John&quot;,
+</span><span style="color:#616e88;">})
+</span><span style="color:#616e88;">*/
+</span><span>
+</span><span>err </span><span style="color:#81a1c1;">:= </span><span style="font-weight:bold;color:#88c0d0;">executeTemplate</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;home&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{} {
+</span><span>	</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Home&quot;</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#a3be8c;">&quot;Name&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;John&quot;</span><span style="color:#eceff4;">,
+</span><span>})
+</span></code></pre>
+<p>Update <em>base.html</em>:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;!</span><span style="color:#eceff4;">DOCTYPE </span><span style="color:#81a1c1;">html&gt;
+</span><span style="color:#81a1c1;">&lt;html </span><span style="color:#8fbcbb;">lang</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;en&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;head&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">charset</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;UTF-8&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">name</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;viewport&quot; </span><span style="color:#8fbcbb;">content</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;width=device-width, initial-scale=1.0&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;title&gt;</span><span style="color:#eceff4;">{{.Title}}</span><span style="color:#81a1c1;">&lt;/title&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;link </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;/static/css/styles.css?v={{.CSSVersion}}&quot; </span><span style="color:#8fbcbb;">rel</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;stylesheet&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;/head&gt;
+</span><span style="color:#81a1c1;">&lt;body&gt;
+</span><span style="color:#eceff4;">	{{block &quot;content&quot; .}}{{end}}
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;p&gt;</span><span style="color:#eceff4;">Env: {{.Env}}</span><span style="color:#81a1c1;">&lt;/p&gt;
+</span><span style="color:#81a1c1;">&lt;/body&gt;
+</span><span style="color:#81a1c1;">&lt;/html&gt;
+</span></code></pre>
+<p>Visit the home page and you should see something like this:</p>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#eceff4;">Hello, John.
+</span><span style="color:#eceff4;">Env: Development
+</span></code></pre>
+<h2 id="final-files">Final files</h2>
+<h3 id="main-go">main.go</h3>
+<pre data-lang="go" style="background-color:#2e3440;color:#d8dee9;" class="language-go "><code class="language-go" data-lang="go"><span style="color:#81a1c1;">package </span><span>main
+</span><span>
+</span><span style="color:#81a1c1;">import </span><span>(
+</span><span>	</span><span style="color:#a3be8c;">&quot;os&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;path/filepath&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;fmt&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;net/http&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;log&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;html/template&quot;
+</span><span>	</span><span style="color:#a3be8c;">&quot;github.com/google/uuid&quot;
+</span><span>)
+</span><span>
+</span><span style="color:#616e88;">// Globals.
+</span><span>
+</span><span style="color:#81a1c1;">var </span><span>templates </span><span style="color:#81a1c1;">= map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">*</span><span>template</span><span style="color:#81a1c1;">.Template</span><span>{}
+</span><span style="color:#81a1c1;">var </span><span>defaultTemplateData </span><span style="color:#81a1c1;">= map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}{
+</span><span>	</span><span style="color:#a3be8c;">&quot;Env&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Development&quot;</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="color:#a3be8c;">&quot;CSSVersion&quot;</span><span style="color:#eceff4;">: </span><span>uuid</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">New</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">String</span><span>()</span><span style="color:#eceff4;">,
+</span><span>}
+</span><span>
+</span><span style="color:#616e88;">// Parse files in the &quot;templates&quot; folder.
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">parseTemplates</span><span>() {
+</span><span>	files</span><span style="color:#eceff4;">, </span><span>err </span><span style="color:#81a1c1;">:= </span><span>os</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ReadDir</span><span>(</span><span style="color:#a3be8c;">&quot;templates&quot;</span><span>)
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fatalf</span><span>(</span><span style="color:#a3be8c;">&quot;Error reading dir &#39;templates&#39;: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>	}
+</span><span>	</span><span style="color:#81a1c1;">for _</span><span style="color:#eceff4;">, </span><span>file </span><span style="color:#81a1c1;">:= range </span><span>files {
+</span><span>		</span><span style="color:#81a1c1;">if </span><span>file</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Type</span><span>()</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">IsRegular</span><span>() {
+</span><span>			fileName </span><span style="color:#81a1c1;">:= </span><span>file</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Name</span><span>()
+</span><span>			</span><span style="color:#616e88;">// Ignore base template and Emacs temp files.
+</span><span>			</span><span style="color:#81a1c1;">if </span><span>fileName </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;base.html&quot; </span><span style="color:#81a1c1;">|| </span><span>fileName[</span><span style="font-style:italic;color:#88c0d0;">len</span><span>(fileName)</span><span style="color:#81a1c1;">-</span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">:</span><span>] </span><span style="color:#81a1c1;">== </span><span style="color:#a3be8c;">&quot;~&quot; </span><span>{
+</span><span>				</span><span style="color:#81a1c1;">continue
+</span><span>			}
+</span><span>			tmpl</span><span style="color:#eceff4;">, </span><span>err </span><span style="color:#81a1c1;">:= </span><span>template</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ParseFiles</span><span>(
+</span><span>				</span><span style="color:#a3be8c;">&quot;templates/base.html&quot;</span><span style="color:#eceff4;">,
+</span><span>				</span><span style="color:#a3be8c;">&quot;templates/&quot; </span><span style="color:#81a1c1;">+ </span><span>fileName</span><span style="color:#eceff4;">,
+</span><span>			)
+</span><span>			</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>				log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fatalf</span><span>(</span><span style="color:#a3be8c;">&quot;Error parsing template </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>fileName</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>			}
+</span><span>			key </span><span style="color:#81a1c1;">:= </span><span>fileName[</span><span style="color:#eceff4;">:</span><span style="font-style:italic;color:#88c0d0;">len</span><span>(fileName)</span><span style="color:#81a1c1;">-</span><span style="font-style:italic;color:#88c0d0;">len</span><span>(filepath</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Ext</span><span>(fileName))]
+</span><span>			templates[key] </span><span style="color:#81a1c1;">= </span><span>tmpl 
+</span><span>		}
+</span><span>	}
+</span><span>}
+</span><span>
+</span><span style="color:#616e88;">// Merge defaultTemplateData and execute template.
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">executeTemplate</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">tmpl </span><span style="color:#8fbcbb;">string</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">data </span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}</span><span style="color:#eceff4;">,
+</span><span>) </span><span style="color:#8fbcbb;">error </span><span>{
+</span><span>
+</span><span>	mergedData </span><span style="color:#81a1c1;">:= </span><span style="font-style:italic;color:#88c0d0;">make</span><span>(</span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{}</span><span style="color:#eceff4;">, </span><span style="font-style:italic;color:#88c0d0;">len</span><span>(defaultTemplateData))
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">for </span><span>key</span><span style="color:#eceff4;">, </span><span>value </span><span style="color:#81a1c1;">:= range </span><span>defaultTemplateData {
+</span><span>		mergedData[key] </span><span style="color:#81a1c1;">= </span><span>value
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">for </span><span>key</span><span style="color:#eceff4;">, </span><span>value </span><span style="color:#81a1c1;">:= range </span><span>data {
+</span><span>		mergedData[key] </span><span style="color:#81a1c1;">= </span><span>value
+</span><span>	}
+</span><span>
+</span><span>	</span><span style="color:#81a1c1;">_</span><span style="color:#eceff4;">, </span><span>exists </span><span style="color:#81a1c1;">:= </span><span>templates[tmpl]
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>exists {
+</span><span>		err </span><span style="color:#81a1c1;">:= </span><span>templates[tmpl]</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Execute</span><span>(w</span><span style="color:#eceff4;">, </span><span>mergedData)
+</span><span>		</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>			</span><span style="color:#81a1c1;">return </span><span>err
+</span><span>		}
+</span><span>	} </span><span style="color:#81a1c1;">else </span><span>{
+</span><span>		</span><span style="color:#81a1c1;">return </span><span>fmt</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Errorf</span><span>(</span><span style="color:#a3be8c;">&quot;Key &#39;</span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&#39; doesn&#39;t exist in templates.&quot;</span><span style="color:#eceff4;">, </span><span>tmpl)
+</span><span>	}
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">return nil
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">homeHandler</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">r </span><span style="color:#81a1c1;">*</span><span>http</span><span style="color:#81a1c1;">.Request</span><span style="color:#eceff4;">,
+</span><span>) {
+</span><span>	</span><span style="color:#616e88;">/*
+</span><span style="color:#616e88;">	tmpl, err := template.ParseFiles(
+</span><span style="color:#616e88;">		&quot;templates/base.html&quot;,
+</span><span style="color:#616e88;">		&quot;templates/home.html&quot;,
+</span><span style="color:#616e88;">	)
+</span><span style="color:#616e88;">	if err != nil {
+</span><span style="color:#616e88;">		log.Printf(&quot;Error parsing home.html: %v&quot;,  err)
+</span><span style="color:#616e88;">		http.Error(w, &quot;Internal Server Error&quot;, http.StatusInternalServerError)
+</span><span style="color:#616e88;">	}
+</span><span style="color:#616e88;">
+</span><span style="color:#616e88;">	err := templates[&quot;home&quot;].Execute(w, map[string]interface{}{
+</span><span style="color:#616e88;">		&quot;Title&quot;: &quot;Home&quot;,
+</span><span style="color:#616e88;">		&quot;Name&quot;: &quot;John&quot;,
+</span><span style="color:#616e88;">	})
+</span><span style="color:#616e88;">	*/
+</span><span>	   
+</span><span>	err </span><span style="color:#81a1c1;">:= </span><span style="font-weight:bold;color:#88c0d0;">executeTemplate</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;home&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">map</span><span>[</span><span style="color:#8fbcbb;">string</span><span>]</span><span style="color:#81a1c1;">interface</span><span>{} {
+</span><span>		</span><span style="color:#a3be8c;">&quot;Title&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;Home&quot;</span><span style="color:#eceff4;">,
+</span><span>		</span><span style="color:#a3be8c;">&quot;Name&quot;</span><span style="color:#eceff4;">: </span><span style="color:#a3be8c;">&quot;John&quot;</span><span style="color:#eceff4;">,
+</span><span>	})
+</span><span>	
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Printf</span><span>(</span><span style="color:#a3be8c;">&quot;Template execution failed: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>		http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Error</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Internal Server Error&quot;</span><span style="color:#eceff4;">, </span><span>http</span><span style="color:#81a1c1;">.</span><span>StatusInternalServerError)
+</span><span>	}
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">aboutHandler</span><span>(
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">w </span><span>http</span><span style="color:#81a1c1;">.ResponseWriter</span><span style="color:#eceff4;">,
+</span><span>	</span><span style="font-weight:bold;color:#d8dee9;">r </span><span style="color:#81a1c1;">*</span><span>http</span><span style="color:#81a1c1;">.Request</span><span style="color:#eceff4;">,
+</span><span>) {
+</span><span>	fmt</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fprintf</span><span>(w</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;About page&quot;</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">func </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
+</span><span>
+</span><span>	</span><span style="color:#616e88;">// Init.
+</span><span>
+</span><span>	</span><span style="font-weight:bold;color:#88c0d0;">parseTemplates</span><span>()
+</span><span>	
+</span><span>	</span><span style="color:#616e88;">// Handlers.
+</span><span>
+</span><span>	http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">HandleFunc</span><span>(</span><span style="color:#a3be8c;">&quot;/&quot;</span><span style="color:#eceff4;">, </span><span>homeHandler)
+</span><span>	http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">HandleFunc</span><span>(</span><span style="color:#a3be8c;">&quot;/about&quot;</span><span style="color:#eceff4;">, </span><span>aboutHandler)
+</span><span>	
+</span><span>	</span><span style="color:#616e88;">// Server.
+</span><span>
+</span><span>	log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Printf</span><span>(</span><span style="color:#a3be8c;">&quot;http://127.0.0.1:8080&quot;</span><span>)
+</span><span>	err </span><span style="color:#81a1c1;">:= </span><span>http</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">ListenAndServe</span><span>(</span><span style="color:#a3be8c;">&quot;:8080&quot;</span><span style="color:#eceff4;">, </span><span style="color:#81a1c1;">nil</span><span>)
+</span><span>	</span><span style="color:#81a1c1;">if </span><span>err </span><span style="color:#81a1c1;">!= nil </span><span>{
+</span><span>		log</span><span style="color:#81a1c1;">.</span><span style="font-weight:bold;color:#88c0d0;">Fatalf</span><span>(</span><span style="color:#a3be8c;">&quot;Server failed: </span><span style="color:#ebcb8b;">%v</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">, </span><span>err)
+</span><span>	}
+</span><span>}
+</span></code></pre>
+<h3 id="base-html">base.html</h3>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#81a1c1;">&lt;!</span><span style="color:#eceff4;">DOCTYPE </span><span style="color:#81a1c1;">html&gt;
+</span><span style="color:#81a1c1;">&lt;html </span><span style="color:#8fbcbb;">lang</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;en&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;head&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">charset</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;UTF-8&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;meta </span><span style="color:#8fbcbb;">name</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;viewport&quot; </span><span style="color:#8fbcbb;">content</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;width=device-width, initial-scale=1.0&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;title&gt;</span><span style="color:#eceff4;">{{.Title}}</span><span style="color:#81a1c1;">&lt;/title&gt;
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;link </span><span style="color:#8fbcbb;">href</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;/static/css/styles.css?v={{.CSSVersion}}&quot; </span><span style="color:#8fbcbb;">rel</span><span style="color:#eceff4;">=</span><span style="color:#a3be8c;">&quot;stylesheet&quot;</span><span style="color:#81a1c1;">&gt;
+</span><span style="color:#81a1c1;">&lt;/head&gt;
+</span><span style="color:#81a1c1;">&lt;body&gt;
+</span><span style="color:#eceff4;">	{{block &quot;content&quot; .}}{{end}}
+</span><span style="color:#eceff4;">	</span><span style="color:#81a1c1;">&lt;p&gt;</span><span style="color:#eceff4;">Env: {{.Env}}</span><span style="color:#81a1c1;">&lt;/p&gt;
+</span><span style="color:#81a1c1;">&lt;/body&gt;
+</span><span style="color:#81a1c1;">&lt;/html&gt;
+</span></code></pre>
+<h3 id="home-html">home.html</h3>
+<pre data-lang="html" style="background-color:#2e3440;color:#d8dee9;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#eceff4;">{{define &quot;content&quot;}}
+</span><span style="color:#81a1c1;">&lt;h1&gt;</span><span style="color:#eceff4;">Hello, {{.Name}}.</span><span style="color:#81a1c1;">&lt;/h1&gt;
+</span><span style="color:#eceff4;">{{end}}
+</span></code></pre>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Get the container for the TOC
+    const tocContainer = document.getElementById("toc-container");
+
+    // Find all the headings you want to include in the TOC
+    const headings = document.querySelectorAll("h2");
+
+    // Create an unordered list to hold the TOC items
+    const tocList = document.createElement("ul");
+
+    headings.forEach((heading) => {
+        // Create list items for each heading
+        const listItem = document.createElement("li");
+
+        // Create links to the headings with their text content
+        const link = document.createElement("a");
+        link.textContent = heading.textContent;
+        link.setAttribute("href", `#${heading.id}`);
+
+        // Append the link to the list item
+        listItem.appendChild(link);
+
+        // Append the list item to the TOC list
+        tocList.appendChild(listItem);
+    });
+
+    // Append the TOC list to the container
+    tocContainer.appendChild(tocList);
+
+</script>
+
+<script>
+    const copyButtonLabel = "Copy";
+    let blocks = document.querySelectorAll("pre");
+    blocks.forEach((block) => {
+        if (navigator.clipboard) {
+            let button = document.createElement("button");
+            button.innerText = copyButtonLabel;
+            button.addEventListener("click", copyCode);
+            block.appendChild(button);
+        }
+    });
+    async function copyCode(event) {
+        const button = event.srcElement;
+        const pre = button.parentElement;
+        let code = pre.querySelector("code");
+        let text = code.innerText;
+        await navigator.clipboard.writeText(text);
+        button.innerText = "Copied";
+        setTimeout(() => {
+            button.innerText = copyButtonLabel;
+        }, 500)
+    }
+
+    let toggleable_toggle = document.getElementById("toggleable-toggle");
+    let toggleable_toggle_arrow = document.getElementById("toggleable-toggle-arrow");
+    let toggleable_toggle_info = document.getElementById("toggleable-toggle-info");
+    let toggleable = document.getElementById("toggleable");
+    toggleable_toggle.addEventListener('click', function (event) {
+        if (toggleable_toggle_arrow.classList.contains('toggleable-toggle-arrow-right')) {
+            toggleable_toggle_info.innerHTML = " (click to hide)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-right')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-down')
+        } else {
+            toggleable_toggle_info.innerHTML = " (click to reveal)"
+            toggleable_toggle_arrow.classList.remove('toggleable-toggle-arrow-down')
+            toggleable_toggle_arrow.classList.add('toggleable-toggle-arrow-right')
+        }
+        toggleable.classList.toggle('hide')
+    })
+
+</script>
+
+
+        </div>
+
+        <div class="footer-about-wrapper">
+
+            <div class=" footer-about">
+                <h2>About the author</h2>
+                Samuli Natri is an entrepreneur with over two decades of experience in software engineering. He studied computer science at the Helsinki University of Technology.
+            </div>
+
+        </div>
+
+        <div class="footer">
+
+            
+            <div class="footer-column">
+                <div class="footer-links">
+                    <div class="footer-title">
+                        Menu
+                    </div>
+                    <div class="footer-text">
+                        <a href="/">Home</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Platforms
+                </div>
+                <div class="footer-text">
+                    <a href="https://www.youtube.com/@SamuliNatri">YouTube</a>
+                    <a href="https://github.com/SamuliNatri">GitHub</a>
+                    <a href="https://twitter.com/SamuliNatri">X</a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Blog
+                </div>
+                <div class="footer-text">
+                    <a href="/blog/golang-template-tutorial">Golang - Template Tutorial</a>  
+                    <a href="/blog/direct3d-11-constant-buffer-tutorial/">Direct3D 11 - Constant Buffer Tutorial (C & Win32)</a>  
+                    <a href="/blog/memory-management/">Memory Management (C)</a> 
+                    <a href="/blog/win32-window-creation-tutorial/">Win32 - Window Creation Tutorial (C)</a>
+                    <a href="/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                </div>
+            </div>
+
+
+            <div class="footer-column">
+                <div class="footer-title">
+                    Books
+                </div>
+                <div class="footer-text">
+                    <a href="/books/making-money-with-django-and-ai/">Making Money with Django and AI: How to Build SaaS Services Using Python</a>
+                </div>
+            </div>
+
+     
+
+
+        </div>
+    </div>
+</body>
+
+</html>
