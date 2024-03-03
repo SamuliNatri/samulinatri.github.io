@@ -21,7 +21,7 @@
     <script>hljs.highlightAll();</script>
 
     <link rel="stylesheet" href="/styles.css?v=110">
-    <title>Memory Management (C) | Samuli Natri. Entrepreneur. Software Engineer.</title>
+    <title>Memory Arena Tutorial in C | Samuli Natri. Entrepreneur. Software Engineer.</title>
 
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-7348837-18"></script>
@@ -77,7 +77,7 @@
 <div class="tutorial">
     <div class="tutorial-inner">
         <div class="tutorial-title">
-            Memory Management (C)
+            Memory Arena Tutorial in C
         </div>
         <div class="tutorial-subtitle">
             How to create a simple arena allocator in C.
@@ -96,7 +96,102 @@
 <p>This tutorial introduces a very basic arena allocator. It doesn't handle out-of-memory situations and memory reuse, but it demonstrates the point. You can extend the implementation as your needs grow. For example, you can have one arena type that lasts the entire lifetime of the project and another that lasts just one frame. You can add &quot;pop&quot; and &quot;clear&quot; functions, use linked lists to add new chunks of memory, and reuse spots using a &quot;free list,&quot; etc.</p>
 <p>Why not use modern, garbage-collected languages? Well, you can, but for starters, it can be problematic in applications where predictable results are expected, as the collection process may occur at inconvenient times.</p>
 <p>You can also use arena-type memory management strategies in garbage-collected languages. For example, there seems to be an <a target="_blank" href="https://go.dev/src/arena/arena.go">experimental arena implementation </a> in Go.</p>
-<h2 id="quick-start">Quick Start</h2>
+<h2 id="arena-struct">Arena struct</h2>
+<p>Create a file named <code>main.c</code> and add these lines to it:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
+</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdlib.h&gt;
+</span><span>
+</span><span style="color:#81a1c1;">#define GB </span><span>(</span><span style="color:#b48ead;">1024 </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">1024 </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">1024</span><span>)
+</span><span>
+</span><span style="color:#81a1c1;">typedef struct </span><span>{
+</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>data</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#8fbcbb;">size_t</span><span> length</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#8fbcbb;">size_t</span><span> offset</span><span style="color:#eceff4;">;
+</span><span>} </span><span style="color:#81a1c1;">Arena</span><span style="color:#eceff4;">;
+</span></code></pre>
+<ul>
+<li><code>unsigned char</code> is typically used as buffer type for raw memory manipulation.</li>
+<li><code>size_t</code> is an unsigned integer type guaranteed to be large enough to contain the size of the largest possible object on the system. It is typically used in memory allocation and array indexing.</li>
+<li><code>length</code> represents the total size of the available memory in the arena, measured in number of bytes.</li>
+<li><code>offset</code> is used to obtain the next available memory slot in the arena, measured in number of bytes.</li>
+</ul>
+<h2 id="arenaalloc">ArenaAlloc()</h2>
+<p>Add these lines:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>Arena </span><span style="font-weight:bold;color:#88c0d0;">ArenaAlloc</span><span>(</span><span style="color:#8fbcbb;">size_t </span><span style="font-weight:bold;color:#d8dee9;">sz</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>memory </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">malloc</span><span>(sz)</span><span style="color:#eceff4;">;
+</span><span>    Arena arena </span><span style="color:#81a1c1;">= </span><span>{
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>data </span><span style="color:#81a1c1;">=</span><span> memory</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>length </span><span style="color:#81a1c1;">=</span><span> sz</span><span style="color:#eceff4;">,
+</span><span>        </span><span style="color:#81a1c1;">.</span><span>offset </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0
+</span><span>    }</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">return</span><span> arena</span><span style="color:#eceff4;">;
+</span><span>}
+</span><span>
+</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() { 
+</span><span>    Arena arena </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaAlloc</span><span>(GB)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<p><code>Arena arena = ArenaAlloc(GB);</code> creates a new arena that can hold 1 gigabyte.</p>
+<h2 id="arenapush">ArenaPush()</h2>
+<p><code>ArenaPush</code> allocates <code>sz</code> bytes from the <code>Arena</code> and returns the address of the allocated location:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">void *</span><span style="font-weight:bold;color:#88c0d0;">ArenaPush</span><span>(Arena </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">a</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">size_t </span><span style="font-weight:bold;color:#d8dee9;">sz</span><span>) {
+</span><span>    </span><span style="color:#81a1c1;">if</span><span>(a</span><span style="color:#81a1c1;">-&gt;</span><span>offset</span><span style="color:#81a1c1;">+</span><span>sz </span><span style="color:#81a1c1;">&lt;=</span><span> a</span><span style="color:#81a1c1;">-&gt;</span><span>length) {
+</span><span>        </span><span style="color:#81a1c1;">void *</span><span>p </span><span style="color:#81a1c1;">= &amp;</span><span>a</span><span style="color:#81a1c1;">-&gt;</span><span>data[a</span><span style="color:#81a1c1;">-&gt;</span><span>offset]</span><span style="color:#eceff4;">;
+</span><span>        a</span><span style="color:#81a1c1;">-&gt;</span><span>offset </span><span style="color:#81a1c1;">+=</span><span> sz</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#88c0d0;">memset</span><span>(p</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> sz)</span><span style="color:#eceff4;">;
+</span><span>        </span><span style="color:#81a1c1;">return</span><span> p</span><span style="color:#eceff4;">;
+</span><span>    }   
+</span><span>    </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Game over, man. Game over!&quot;</span><span>)</span><span style="color:#eceff4;">; </span><span style="color:#616e88;">// Handle out of memory.
+</span><span>    </span><span style="color:#81a1c1;">return NULL</span><span style="color:#eceff4;">;
+</span><span>}   
+</span></code></pre>
+<ul>
+<li><code>if(a-&gt;offset+sz &lt;= a-&gt;length) {</code> checks whether the requested allocation size <code>sz</code> fits in the arena. This simple allocator doesn't handle memory resizing.</li>
+<li><code>void *p = &amp;a-&gt;data[a-&gt;offset]</code> obtains an address to the next available slot and stores it in <code>p</code>. Initially, the offset is zero, so it points to the beginning of the arena.</li>
+<li><code>a-&gt;offset += sz</code> advances the offset, making it to point to the next available memory slot.</li>
+<li><code>memset(p, 0, sz)</code> zero-initializes the memory.</li>
+<li><code>return p</code> returns the address to the memory we just allocated.</li>
+<li>If the requested size doesn't fit in the arena, we simply print out a message and return <code>NULL</code>. You should handle this scenario better.</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>Here is how you can use the <code>Arena</code>:</p>
+<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
+</span><span>  
+</span><span>    </span><span style="color:#616e88;">// Create arena.
+</span><span>    Arena arena </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaAlloc</span><span>(GB)</span><span style="color:#eceff4;">; 
+</span><span>
+</span><span>    </span><span style="color:#616e88;">// Allocate memory.
+</span><span>    </span><span style="color:#81a1c1;">char *</span><span>str </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaPush</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>arena</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">8 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">char</span><span>))</span><span style="color:#eceff4;">; 
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// In C++, you must cast the return value explicitly:
+</span><span>    </span><span style="color:#616e88;">// char *str = (char *)ArenaPush(&amp;arena, 8 * sizeof(char));
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Store data.
+</span><span>    </span><span style="color:#88c0d0;">memcpy</span><span>(str</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Hello, &quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">7</span><span>)</span><span style="color:#eceff4;">; 
+</span><span>    str[</span><span style="color:#b48ead;">7</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;</span><span style="color:#ebcb8b;">\0</span><span style="color:#a3be8c;">&#39;</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#616e88;">// Allocate more memory.
+</span><span>    </span><span style="color:#81a1c1;">char *</span><span>str2 </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaPush</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>arena</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">7 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">char</span><span>))</span><span style="color:#eceff4;">;
+</span><span>
+</span><span>    </span><span style="color:#616e88;">// Store more data.
+</span><span>    </span><span style="color:#88c0d0;">memcpy</span><span>(str2</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;World!&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">6</span><span>)</span><span style="color:#eceff4;">;
+</span><span>    str2[</span><span style="color:#b48ead;">6</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;</span><span style="color:#ebcb8b;">\0</span><span style="color:#a3be8c;">&#39;</span><span style="color:#eceff4;">;
+</span><span>    
+</span><span>    </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;</span><span style="color:#ebcb8b;">%s%s</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">,</span><span> str</span><span style="color:#eceff4;">,</span><span> str2)</span><span style="color:#eceff4;">;
+</span><span>    </span><span style="color:#616e88;">// output: Hello, World!
+</span><span>
+</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
+</span><span>}
+</span></code></pre>
+<h2 id="memory-contents">Memory contents</h2>
+<p>The two strings are now stored contiguously in the memory, like this:</p>
+<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">----------</span><span> Arena ----------
+</span><span style="font-weight:bold;color:#88c0d0;">Hello,</span><span> 0World!0000000000000
+</span><span style="font-weight:bold;color:#88c0d0;">^</span><span>       ^      ^
+</span><span style="font-weight:bold;color:#88c0d0;">str</span><span>     str2   offset
+</span></code></pre>
+<h2 id="final-code">Final Code</h2>
 <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#616e88;">// cl main.c /Zi /nologo
 </span><span>
 </span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
@@ -151,105 +246,16 @@
 </span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
 </span><span>}
 </span></code></pre>
-<h2 id="simple-arena-allocator">Simple Arena Allocator</h2>
-<h3 id="arena-struct">Arena struct</h3>
-<p>Create a file named <code>main.c</code> and add these lines to it:</p>
-<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdio.h&gt;
-</span><span style="color:#5e81ac;">#include </span><span style="color:#a3be8c;">&lt;stdlib.h&gt;
-</span><span>
-</span><span style="color:#81a1c1;">#define GB </span><span>(</span><span style="color:#b48ead;">1024 </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">1024 </span><span style="color:#81a1c1;">* </span><span style="color:#b48ead;">1024</span><span>)
-</span><span>
-</span><span style="color:#81a1c1;">typedef struct </span><span>{
-</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>data</span><span style="color:#eceff4;">;
-</span><span>    </span><span style="color:#8fbcbb;">size_t</span><span> length</span><span style="color:#eceff4;">;
-</span><span>    </span><span style="color:#8fbcbb;">size_t</span><span> offset</span><span style="color:#eceff4;">;
-</span><span>} </span><span style="color:#81a1c1;">Arena</span><span style="color:#eceff4;">;
-</span></code></pre>
-<ul>
-<li><code>unsigned char</code> is typically used as buffer type for raw memory manipulation.</li>
-<li><code>size_t</code> is an unsigned integer type guaranteed to be large enough to contain the size of the largest possible object on the system. It is typically used in memory allocation and array indexing.</li>
-<li><code>length</code> represents the total size of the available memory in the arena, measured in number of bytes.</li>
-<li><code>offset</code> is used to obtain the next available memory slot in the arena, measured in number of bytes.</li>
-</ul>
-<h3 id="arenaalloc">ArenaAlloc</h3>
-<p>Add these lines:</p>
-<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>Arena </span><span style="font-weight:bold;color:#88c0d0;">ArenaAlloc</span><span>(</span><span style="color:#8fbcbb;">size_t </span><span style="font-weight:bold;color:#d8dee9;">sz</span><span>) {
-</span><span>    </span><span style="color:#81a1c1;">unsigned char *</span><span>memory </span><span style="color:#81a1c1;">= </span><span style="color:#88c0d0;">malloc</span><span>(sz)</span><span style="color:#eceff4;">;
-</span><span>    Arena arena </span><span style="color:#81a1c1;">= </span><span>{
-</span><span>        </span><span style="color:#81a1c1;">.</span><span>data </span><span style="color:#81a1c1;">=</span><span> memory</span><span style="color:#eceff4;">,
-</span><span>        </span><span style="color:#81a1c1;">.</span><span>length </span><span style="color:#81a1c1;">=</span><span> sz</span><span style="color:#eceff4;">,
-</span><span>        </span><span style="color:#81a1c1;">.</span><span>offset </span><span style="color:#81a1c1;">= </span><span style="color:#b48ead;">0
-</span><span>    }</span><span style="color:#eceff4;">;
-</span><span>    </span><span style="color:#81a1c1;">return</span><span> arena</span><span style="color:#eceff4;">;
-</span><span>}
-</span><span>
-</span><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() { 
-</span><span>    Arena arena </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaAlloc</span><span>(GB)</span><span style="color:#eceff4;">;
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
-</span><span>}
-</span></code></pre>
-<p><code>Arena arena = ArenaAlloc(GB);</code> creates a new arena that can hold 1 gigabyte.</p>
-<h3 id="arenapush">ArenaPush</h3>
-<p><code>ArenaPush</code> allocates <code>sz</code> bytes from the <code>Arena</code> and returns the address of the allocated location:</p>
-<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">void *</span><span style="font-weight:bold;color:#88c0d0;">ArenaPush</span><span>(Arena </span><span style="color:#81a1c1;">*</span><span style="font-weight:bold;color:#d8dee9;">a</span><span style="color:#eceff4;">, </span><span style="color:#8fbcbb;">size_t </span><span style="font-weight:bold;color:#d8dee9;">sz</span><span>) {
-</span><span>    </span><span style="color:#81a1c1;">if</span><span>(a</span><span style="color:#81a1c1;">-&gt;</span><span>offset</span><span style="color:#81a1c1;">+</span><span>sz </span><span style="color:#81a1c1;">&lt;=</span><span> a</span><span style="color:#81a1c1;">-&gt;</span><span>length) {
-</span><span>        </span><span style="color:#81a1c1;">void *</span><span>p </span><span style="color:#81a1c1;">= &amp;</span><span>a</span><span style="color:#81a1c1;">-&gt;</span><span>data[a</span><span style="color:#81a1c1;">-&gt;</span><span>offset]</span><span style="color:#eceff4;">;
-</span><span>        a</span><span style="color:#81a1c1;">-&gt;</span><span>offset </span><span style="color:#81a1c1;">+=</span><span> sz</span><span style="color:#eceff4;">;
-</span><span>        </span><span style="color:#88c0d0;">memset</span><span>(p</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">,</span><span> sz)</span><span style="color:#eceff4;">;
-</span><span>        </span><span style="color:#81a1c1;">return</span><span> p</span><span style="color:#eceff4;">;
-</span><span>    }   
-</span><span>    </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;Game over, man. Game over!&quot;</span><span>)</span><span style="color:#eceff4;">; </span><span style="color:#616e88;">// Handle out of memory.
-</span><span>    </span><span style="color:#81a1c1;">return NULL</span><span style="color:#eceff4;">;
-</span><span>}   
-</span></code></pre>
-<ul>
-<li><code>if(a-&gt;offset+sz &lt;= a-&gt;length) {</code> checks whether the requested allocation size <code>sz</code> fits in the arena. This simple allocator doesn't handle memory resizing.</li>
-<li><code>void *p = &amp;a-&gt;data[a-&gt;offset]</code> obtains an address to the next available slot and stores it in <code>p</code>. Initially, the offset is zero, so it points to the beginning of the arena.</li>
-<li><code>a-&gt;offset += sz</code> advances the offset, making it to point to the next available memory slot.</li>
-<li><code>memset(p, 0, sz)</code> zero-initializes the memory.</li>
-<li><code>return p</code> returns the address to the memory we just allocated.</li>
-<li>If the requested size doesn't fit in the arena, we simply print out a message and return <code>NULL</code>. You should handle this scenario better.</li>
-</ul>
-<h3 id="usage">Usage</h3>
-<p>Here is how you can use the <code>Arena</code>:</p>
-<pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">int </span><span style="font-weight:bold;color:#88c0d0;">main</span><span>() {
-</span><span>  
-</span><span>    </span><span style="color:#616e88;">// Create arena.
-</span><span>    Arena arena </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaAlloc</span><span>(GB)</span><span style="color:#eceff4;">; 
-</span><span>
-</span><span>    </span><span style="color:#616e88;">// Allocate memory.
-</span><span>    </span><span style="color:#81a1c1;">char *</span><span>str </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaPush</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>arena</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">8 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">char</span><span>))</span><span style="color:#eceff4;">; 
-</span><span>    
-</span><span>    </span><span style="color:#616e88;">// In C++, you must cast the return value explicitly:
-</span><span>    </span><span style="color:#616e88;">// char *str = (char *)ArenaPush(&amp;arena, 8 * sizeof(char));
-</span><span>    
-</span><span>    </span><span style="color:#616e88;">// Store data.
-</span><span>    </span><span style="color:#88c0d0;">memcpy</span><span>(str</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;Hello, &quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">7</span><span>)</span><span style="color:#eceff4;">; 
-</span><span>    str[</span><span style="color:#b48ead;">7</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;</span><span style="color:#ebcb8b;">\0</span><span style="color:#a3be8c;">&#39;</span><span style="color:#eceff4;">;
-</span><span>    
-</span><span>    </span><span style="color:#616e88;">// Allocate more memory.
-</span><span>    </span><span style="color:#81a1c1;">char *</span><span>str2 </span><span style="color:#81a1c1;">= </span><span style="font-weight:bold;color:#88c0d0;">ArenaPush</span><span>(</span><span style="color:#81a1c1;">&amp;</span><span>arena</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">7 </span><span style="color:#81a1c1;">* </span><span style="font-style:italic;color:#88c0d0;">sizeof</span><span>(</span><span style="color:#81a1c1;">char</span><span>))</span><span style="color:#eceff4;">;
-</span><span>
-</span><span>    </span><span style="color:#616e88;">// Store more data.
-</span><span>    </span><span style="color:#88c0d0;">memcpy</span><span>(str2</span><span style="color:#eceff4;">, </span><span style="color:#a3be8c;">&quot;World!&quot;</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">6</span><span>)</span><span style="color:#eceff4;">;
-</span><span>    str2[</span><span style="color:#b48ead;">6</span><span>] </span><span style="color:#81a1c1;">= </span><span style="color:#a3be8c;">&#39;</span><span style="color:#ebcb8b;">\0</span><span style="color:#a3be8c;">&#39;</span><span style="color:#eceff4;">;
-</span><span>    
-</span><span>    </span><span style="color:#88c0d0;">printf</span><span>(</span><span style="color:#a3be8c;">&quot;</span><span style="color:#ebcb8b;">%s%s</span><span style="color:#a3be8c;">&quot;</span><span style="color:#eceff4;">,</span><span> str</span><span style="color:#eceff4;">,</span><span> str2)</span><span style="color:#eceff4;">;
-</span><span>    </span><span style="color:#616e88;">// output: Hello, World!
-</span><span>
-</span><span>    </span><span style="color:#81a1c1;">return </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">;
-</span><span>}
-</span></code></pre>
-<h3 id="memory-contents">Memory contents</h3>
-<p>The two strings are now stored contiguously in the memory, like this:</p>
-<pre data-lang="bash" style="background-color:#2e3440;color:#d8dee9;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="font-weight:bold;color:#88c0d0;">----------</span><span> Arena ----------
-</span><span style="font-weight:bold;color:#88c0d0;">Hello,</span><span> 0World!0000000000000
-</span><span style="font-weight:bold;color:#88c0d0;">^</span><span>       ^      ^
-</span><span style="font-weight:bold;color:#88c0d0;">str</span><span>     str2   offset
-</span></code></pre>
 
         </div>
 
+        
+
+        <div class="tutorial-video-bottom">
+            <h2>Video</h2>
+            <iframe src="https://www.youtube.com/embed/Tc763vPm4Ws?si=8s3J9a6E23vsAIeY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>    
+        </div>
+    
         
 
     </div>
@@ -372,7 +378,7 @@
                 <div class="footer-text">
                     <a href="/blog/golang-template-tutorial">Golang - Template Tutorial</a>  
                     <a href="/blog/direct3d-11-constant-buffer-tutorial/">Direct3D 11 - Constant Buffer Tutorial (C & Win32)</a>  
-                    <a href="/blog/memory-management/">Memory Management (C)</a> 
+                    <a href="/blog/memory-management/">Memory Arena Tutorial in C</a> 
                     <a href="/blog/win32-window-creation-tutorial/">Win32 - Window Creation Tutorial (C)</a>
                     <a href="/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
                 </div>
