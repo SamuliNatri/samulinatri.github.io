@@ -83,8 +83,7 @@
 
         <div class="tutorial-body">
             <p>Constant buffers allow you to pass constant data, such as matrices or colors to shaders during runtime. </p>
-<h2 id="quick-start">Quick start</h2>
-<h3 id="shader-hlsl">shader.hlsl</h3>
+<h2 id="shader-hlsl">shader.hlsl</h2>
 <p>Add this to your shader:</p>
 <pre style="background-color:#2e3440;color:#d8dee9;"><code><span>cbuffer constants : register(b0) {
 </span><span>	row_major float4x4 model;
@@ -111,7 +110,7 @@
 </span><span>	return output;
 </span><span>};
 </span></code></pre>
-<h3 id="main-c">main.c</h3>
+<h2 id="main-c">main.c</h2>
 <p>Create a struct that matches the <code>constants</code> buffer in the shader:</p>
 <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#81a1c1;">typedef struct </span><span>{ 
 </span><span>    F32 m[</span><span style="color:#b48ead;">4</span><span>][</span><span style="color:#b48ead;">4</span><span>]</span><span style="color:#eceff4;">; 
@@ -172,7 +171,6 @@
 <li><code>constants-&gt;model = (Matrix){ ... };</code> updates the data in the constant buffer.</li>
 <li><code>ID3D11DeviceContext1_Unmap</code> unmaps the constant buffer, allowing the GPU to access it again.</li>
 </ul>
-<h2 id="result">Result</h2>
 <p>Result with an identity matrix:</p>
 <pre data-lang="c" style="background-color:#2e3440;color:#d8dee9;" class="language-c "><code class="language-c" data-lang="c"><span>constants</span><span style="color:#81a1c1;">-&gt;</span><span>model </span><span style="color:#81a1c1;">= </span><span>(Matrix){
 </span><span>    </span><span style="color:#b48ead;">1</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">, </span><span style="color:#b48ead;">0</span><span style="color:#eceff4;">.</span><span style="color:#b48ead;">0</span><span style="color:#81a1c1;">f</span><span style="color:#eceff4;">,
@@ -723,7 +721,7 @@
         <div class="footer-about-wrapper">
 
             <div class=" footer-about">
-                <h2>About the author</h2>
+                <h2>About</h2>
                 Samuli Natri is an entrepreneur with over two decades of experience in software engineering. He studied computer science at the Helsinki University of Technology.
             </div>
 
@@ -755,14 +753,15 @@
             </div>
 
             <div class="footer-column">
-                <div class="footer-title">
+                <a href="/blog" class="footer-title footer-title-a">
                     Blog
-                </div>
+                </a>
                 <div class="footer-text">
                     <a href="/blog/direct3d-11-constant-buffer-tutorial/">Direct3D 11 - Constant Buffer Tutorial (C & Win32)</a>  
                     <a href="/blog/memory-management/">Memory Arena Tutorial in C</a> 
-                    <a href="/blog/win32-window-creation-tutorial/">Win32 - Window Creation Tutorial (C)</a>
                     <a href="/blog/win32-drawing-pixels/">Win32 - Drawing Pixels (C)</a>
+                    <a href="/blog/win32-window-creation-tutorial/">Win32 - Window Creation Tutorial (C)</a>
+                    
                 </div>
             </div>
 
