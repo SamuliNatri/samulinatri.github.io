@@ -180,7 +180,7 @@
 </span></code></pre>
 <h2 id="closing-remarks">Closing remarks</h2>
 <p>This tutorial introduces a very basic allocator. It doesn't handle out-of-memory situations or memory reuse.</p>
-<p>Why not simply use <code>malloc()</code> every time you want to allocate memory? Because it's not free to allocate and release memory, and it can also become cumbersome to manage lifetimes. Additionally, you have to remember to <code>free()</code> each allocation.</p>
+<p>Why not simply use <code>malloc()</code> every time you want to allocate memory? Because it's not free to allocate and release memory, and it can also become cumbersome to manage lifetimes.</p>
 <p>In this example, the allocation process simply involves returning a pointer to the next available slot, and we are not manually freeing memory; the entire memory chunk is released at once when the program exits.</p>
 <p>What about garbage-collected languages? One issue with those is that the collection process may occur at inconvenient times. This can be problematic in applications where predictable results are expected, such as in games. However, you can also use arena-type memory management strategies in <a target="_blank" href="https://go.dev/src/arena/arena.go">those</a> languages as well.</p>
 <h2 id="complete-example">Complete example</h2>
